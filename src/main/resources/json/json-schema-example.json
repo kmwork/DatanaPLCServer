@@ -1,0 +1,366 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "description": "The root schema comprises the entire JSON document.",
+  "required": [
+    "request_id",
+    "task_id",
+    "request-datetime",
+    "request"
+  ],
+  "properties": {
+    "request_id": {
+      "$id": "#/properties/request_id",
+      "type": "integer",
+      "title": "The Request_id Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        34234234234234
+      ]
+    },
+    "task_id": {
+      "$id": "#/properties/task_id",
+      "type": "integer",
+      "title": "The Task_id Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        12345
+      ]
+    },
+    "request-datetime": {
+      "$id": "#/properties/request-datetime",
+      "type": "string",
+      "title": "The Request-datetime Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2020-02-01T12:03:23.3556"
+      ]
+    },
+    "request": {
+      "$id": "#/properties/request",
+      "type": "array",
+      "title": "The Request Schema",
+      "description": "An explanation about the purpose of this instance.",
+      "default": [],
+      "items": {
+        "$id": "#/properties/request/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "description": "An explanation about the purpose of this instance.",
+        "default": {},
+        "examples": [
+          {
+            "data": [
+              {
+                "data-vals": [
+                  {
+                    "offset": 0.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1345.0,
+                    "operation": "read"
+                  },
+                  {
+                    "offset": 1.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1356.0,
+                    "operation": "read"
+                  },
+                  {
+                    "operation": "write",
+                    "offset": 24.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1334.0
+                  }
+                ],
+                "data-block": "DB001"
+              },
+              {
+                "data-block": "DB002",
+                "data-vals": [
+                  {
+                    "operation": "read",
+                    "offset": 10.0,
+                    "data-type": "byte",
+                    "id": 1345.0
+                  },
+                  {
+                    "data-type": "bool",
+                    "id": 1336.0,
+                    "operation": "read",
+                    "offset": 13.0,
+                    "bitmask": "00010000"
+                  },
+                  {
+                    "operation": "read",
+                    "offset": 43.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1330.0
+                  }
+                ]
+              }
+            ],
+            "controller_id": 123.0
+          },
+          {
+            "data": [
+              {
+                "data-block": "DB101",
+                "data-vals": [
+                  {
+                    "operation": "read",
+                    "offset": 10.0,
+                    "data-type": "real",
+                    "id": 1245.0
+                  },
+                  {
+                    "operation": "read",
+                    "offset": 11.0,
+                    "data-type": "word",
+                    "id": 1256.0
+                  },
+                  {
+                    "offset": 224.0,
+                    "data-type": "byte",
+                    "id": 1234.0,
+                    "operation": "read"
+                  }
+                ]
+              },
+              {
+                "data-block": "DB102",
+                "data-vals": [
+                  {
+                    "data-type": "bool",
+                    "id": 1245.0,
+                    "operation": "read",
+                    "offset": 11.0,
+                    "bitmask": "00010000"
+                  },
+                  {
+                    "offset": 23.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1236.0,
+                    "operation": "write"
+                  },
+                  {
+                    "offset": 56.0,
+                    "bitmask": "00010000",
+                    "data-type": "bool",
+                    "id": 1230.0,
+                    "operation": "write"
+                  }
+                ]
+              }
+            ],
+            "controller_id": 12.0
+          }
+        ],
+        "required": [
+          "controller_id",
+          "data"
+        ],
+        "properties": {
+          "controller_id": {
+            "$id": "#/properties/request/items/properties/controller_id",
+            "type": "integer",
+            "title": "The Controller_id Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              123
+            ]
+          },
+          "data": {
+            "$id": "#/properties/request/items/properties/data",
+            "type": "array",
+            "title": "The Data Schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "items": {
+              "$id": "#/properties/request/items/properties/data/items",
+              "type": "object",
+              "title": "The Items Schema",
+              "description": "An explanation about the purpose of this instance.",
+              "default": {},
+              "examples": [
+                {
+                  "data-vals": [
+                    {
+                      "operation": "read",
+                      "offset": 0.0,
+                      "bitmask": "00010000",
+                      "data-type": "bool",
+                      "id": 1345.0
+                    },
+                    {
+                      "operation": "read",
+                      "offset": 1.0,
+                      "bitmask": "00010000",
+                      "data-type": "bool",
+                      "id": 1356.0
+                    },
+                    {
+                      "operation": "write",
+                      "offset": 24.0,
+                      "bitmask": "00010000",
+                      "data-type": "bool",
+                      "id": 1334.0
+                    }
+                  ],
+                  "data-block": "DB001"
+                },
+                {
+                  "data-block": "DB002",
+                  "data-vals": [
+                    {
+                      "data-type": "byte",
+                      "id": 1345.0,
+                      "operation": "read",
+                      "offset": 10.0
+                    },
+                    {
+                      "operation": "read",
+                      "offset": 13.0,
+                      "bitmask": "00010000",
+                      "data-type": "bool",
+                      "id": 1336.0
+                    },
+                    {
+                      "data-type": "bool",
+                      "id": 1330.0,
+                      "operation": "read",
+                      "offset": 43.0,
+                      "bitmask": "00010000"
+                    }
+                  ]
+                }
+              ],
+              "required": [
+                "data-block",
+                "data-vals"
+              ],
+              "properties": {
+                "data-block": {
+                  "$id": "#/properties/request/items/properties/data/items/properties/data-block",
+                  "type": "string",
+                  "title": "The Data-block Schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "DB001"
+                  ]
+                },
+                "data-vals": {
+                  "$id": "#/properties/request/items/properties/data/items/properties/data-vals",
+                  "type": "array",
+                  "title": "The Data-vals Schema",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": [],
+                  "items": {
+                    "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items",
+                    "type": "object",
+                    "title": "The Items Schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                      {
+                        "offset": 0.0,
+                        "bitmask": "00010000",
+                        "data-type": "bool",
+                        "id": 1345.0,
+                        "operation": "read"
+                      },
+                      {
+                        "operation": "read",
+                        "offset": 1.0,
+                        "bitmask": "00010000",
+                        "data-type": "bool",
+                        "id": 1356.0
+                      },
+                      {
+                        "offset": 24.0,
+                        "bitmask": "00010000",
+                        "data-type": "bool",
+                        "id": 1334.0,
+                        "operation": "write"
+                      }
+                    ],
+                    "required": [
+                      "operation",
+                      "data-type",
+                      "offset",
+                      "bitmask",
+                      "id"
+                    ],
+                    "properties": {
+                      "operation": {
+                        "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items/properties/operation",
+                        "type": "string",
+                        "title": "The Operation Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                          "read"
+                        ]
+                      },
+                      "data-type": {
+                        "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items/properties/data-type",
+                        "type": "string",
+                        "title": "The Data-type Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                          "bool"
+                        ]
+                      },
+                      "offset": {
+                        "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items/properties/offset",
+                        "type": "integer",
+                        "title": "The Offset Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": 0,
+                        "examples": [
+                          0
+                        ]
+                      },
+                      "bitmask": {
+                        "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items/properties/bitmask",
+                        "type": "string",
+                        "title": "The Bitmask Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": "",
+                        "examples": [
+                          "00010000"
+                        ]
+                      },
+                      "id": {
+                        "$id": "#/properties/request/items/properties/data/items/properties/data-vals/items/properties/id",
+                        "type": "integer",
+                        "title": "The Id Schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": 0,
+                        "examples": [
+                          1345
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

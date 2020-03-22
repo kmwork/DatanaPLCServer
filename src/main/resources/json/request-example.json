@@ -1,0 +1,117 @@
+{
+  "request_id": 34234234234234,
+  "task_id": 12345,
+  "request-datetime": "2020-02-01T12:03:23.3556",
+  "request": [
+    {
+      "controller_id": 123,
+      "data": [
+        {
+          "data-block": "DB001",
+          "data-vals": [
+            {
+              "operation": "read",
+              "data-type": "bool",
+              "offset": 0,
+              "bitmask": "00010000",
+              "id": 1345
+            },
+            {
+              "operation": "read",
+              "data-type": "bool",
+              "offset": 1,
+              "bitmask": "00010000",
+              "id": 1356
+            },
+            {
+              "operation": "write",
+              "data-type": "bool",
+              "offset": 24,
+              "bitmask": "00010000",
+              "id": 1334
+            }
+          ]
+        },
+        {
+          "data-block": "DB002",
+          "data-vals": [
+            {
+              "operation": "read",
+              "data-type": "byte",
+              "offset": 10,
+              "id": 1345
+            },
+            {
+              "operation": "read",
+              "data-type": "bool",
+              "offset": 13,
+              "bitmask": "00010000",
+              "id": 1336
+            },
+            {
+              "operation": "read",
+              "data-type": "bool",
+              "offset": 43,
+              "bitmask": "00010000",
+              "id": 1330
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "controller_id": 12,
+      "data": [
+        {
+          "data-block": "DB101",
+          "data-vals": [
+            {
+              "operation": "read",
+              "data-type": "real",
+              "offset": 10,
+              "id": 1245
+            },
+            {
+              "operation": "read",
+              "data-type": "word",
+              "offset": 11,
+              "id": 1256
+            },
+            {
+              "operation": "read",
+              "data-type": "byte",
+              "offset": 224,
+              "id": 1234
+            }
+          ]
+        },
+        {
+          "data-block": "DB102",
+          "data-vals": [
+            {
+              "operation": "read",
+              "data-type": "bool",
+              "offset": 11,
+              "bitmask": "00010000",
+              "id": 1245
+            },
+            {
+              "operation": "write",
+              "data-type": "bool",
+              "offset": 23,
+              "bitmask": "00010000",
+              "id": 1236
+            },
+            {
+              "operation": "write",
+              "data-type": "bool",
+              "offset": 56,
+              "bitmask": "00010000",
+              "id": 1230
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
