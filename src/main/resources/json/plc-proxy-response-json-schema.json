@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://datana.ru/plc-proxy-response.json",
+  "type": "object",
+  "required": [
+    "request-datetime",
+    "request-datetime-proxy",
+    "response-datetime",
+    "request_id",
+    "task_id",
+    "response"
+  ],
+  "properties": {
+    "request-datetime": {
+      "$id": "#/properties/request-datetime",
+      "type": "string"
+    },
+    "request-datetime-proxy": {
+      "$id": "#/properties/request-datetime-proxy",
+      "type": "string"
+    },
+    "response-datetime": {
+      "$id": "#/properties/response-datetime",
+      "type": "string"
+    },
+    "request_id": {
+      "$id": "#/properties/request_id",
+      "type": "string"
+    },
+    "task_id": {
+      "$id": "#/properties/task_id",
+      "type": "integer"
+    },
+    "response": {
+      "$id": "#/properties/response",
+      "type": "array",
+      "items": {
+        "$id": "#/properties/response/items",
+        "type": "object",
+        "required": [
+          "id",
+          "data",
+          "controller-datetime",
+          "status",
+          "errors"
+        ],
+        "properties": {
+          "id": {
+            "$id": "#/properties/response/items/properties/id",
+            "type": "integer"
+          },
+          "data": {
+            "$id": "#/properties/response/items/properties/data",
+            "type": "string"
+          },
+          "controller-datetime": {
+            "$id": "#/properties/response/items/properties/controller-datetime",
+            "type": "string"
+          },
+          "status": {
+            "$id": "#/properties/response/items/properties/status",
+            "type": "integer"
+          },
+          "errors": {
+            "$id": "#/properties/response/items/properties/errors",
+            "type": "array",
+            "items": {
+              "$id": "#/properties/response/items/properties/errors/items",
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
