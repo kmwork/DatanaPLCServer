@@ -5,31 +5,46 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "controller_id",
-        "data"
+        "request_id",
+        "task_id",
+        "request-datetime",
+        "request"
 })
 @Data
-public class Request {
+public class JsonRootRequest {
 
     /**
      * (Required)
      */
-    @JsonProperty("controller_id")
+    @JsonProperty("request_id")
     @NotNull
-    public Integer controllerId;
+    public String requestId;
     /**
      * (Required)
      */
-    @JsonProperty("data")
+    @JsonProperty("task_id")
+    @NotNull
+    public Integer taskId;
+    /**
+     * (Required)
+     */
+    @JsonProperty("request-datetime")
+    @NotNull
+    public LocalDate requestDatetime;
+    /**
+     * (Required)
+     */
+    @JsonProperty("request")
     @Valid
     @NotNull
-    public List<Datum> data = null;
+    public List<Request> request = null;
     @JsonIgnore
     @Valid
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();

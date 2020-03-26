@@ -1,54 +1,64 @@
-package ru.datana.steel.plc.model.json.request;
+package ru.datana.steel.plc.model.json.response;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "operation",
-        "data-type",
-        "offset",
-        "bitmask",
-        "id"
+        "request-datetime",
+        "request-datetime-proxy",
+        "response-datetime",
+        "request_id",
+        "task_id",
+        "response"
 })
 @Data
-public class DataVal {
+public class JsonRootResponse {
 
     /**
      * (Required)
      */
-    @JsonProperty("operation")
+    @JsonProperty("request-datetime")
     @NotNull
-    public String operation;
+    public LocalDate requestDatetime;
     /**
      * (Required)
      */
-    @JsonProperty("data-type")
+    @JsonProperty("request-datetime-proxy")
     @NotNull
-    public String dataType;
+    public LocalDate requestDatetimeProxy;
     /**
      * (Required)
      */
-    @JsonProperty("offset")
+    @JsonProperty("response-datetime")
     @NotNull
-    public Integer offset;
+    public LocalDate responseDatetime;
     /**
      * (Required)
      */
-    @JsonProperty("bitmask")
+    @JsonProperty("request_id")
     @NotNull
-    public String bitmask;
+    public String requestId;
     /**
      * (Required)
      */
-    @JsonProperty("id")
+    @JsonProperty("task_id")
     @NotNull
-    public Integer id;
+    public Integer taskId;
+    /**
+     * (Required)
+     */
+    @JsonProperty("response")
+    @Valid
+    @NotNull
+    public List<Response> response = null;
     @JsonIgnore
     @Valid
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();

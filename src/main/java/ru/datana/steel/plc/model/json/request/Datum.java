@@ -1,8 +1,10 @@
-
 package ru.datana.steel.plc.model.json.request;
 
 import com.fasterxml.jackson.annotation.*;
+import lombok.Data;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,34 +14,25 @@ import java.util.Map;
         "data-block",
         "data-vals"
 })
+@Data
 public class Datum {
 
+    /**
+     * (Required)
+     */
     @JsonProperty("data-block")
-    private String dataBlock;
+    @NotNull
+    public String dataBlock;
+    /**
+     * (Required)
+     */
     @JsonProperty("data-vals")
-    private List<DataVal> dataVals = null;
+    @Valid
+    @NotNull
+    public List<DataVal> dataVals = null;
     @JsonIgnore
+    @Valid
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonProperty("data-block")
-    public String getDataBlock() {
-        return dataBlock;
-    }
-
-    @JsonProperty("data-block")
-    public void setDataBlock(String dataBlock) {
-        this.dataBlock = dataBlock;
-    }
-
-    @JsonProperty("data-vals")
-    public List<DataVal> getDataVals() {
-        return dataVals;
-    }
-
-    @JsonProperty("data-vals")
-    public void setDataVals(List<DataVal> dataVals) {
-        this.dataVals = dataVals;
-    }
 
     @JsonAnyGetter
     public Map<String, Object> getAdditionalProperties() {
