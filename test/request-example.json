@@ -18,6 +18,18 @@
             },
             {
               "operation": "read",
+              "data-type": "byte",
+              "offset": 1,
+              "id": 122
+            },
+            {
+              "operation": "read",
+              "data-type": "word",
+              "offset": 0,
+              "id": 123
+            },
+            {
+              "operation": "read",
               "data-type": "bool",
               "offset": 1,
               "bitmask": "00010000",

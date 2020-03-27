@@ -17,7 +17,7 @@ public class BitOperationsUtils {
 
     public static BigDecimal doBitsOperations(byte[] data, int bytesOffset, EnumSiemensDataType type, int intBitPosition) throws AppException {
 
-        if (data == null || data.length >= bytesOffset) {
+        if (data == null || data.length <= bytesOffset) {
             log.info(PREFIX_LOG + " Пустые данные");
             return null;
         }

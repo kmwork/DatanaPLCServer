@@ -84,7 +84,7 @@ public class S7GithubExecutor {
         }
     }
 
-    public JsonRootResponse run(JsonRootRequest request) throws AppException {
+    public JsonRootResponse run(JsonRootRequest request) {
         LocalDateTime proxyTime = getCurrentTime();
 
         List<JsonResponse> jsonResponseList = new ArrayList<>();
