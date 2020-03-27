@@ -1,0 +1,35 @@
+{
+  "datablock_write_enable": false,
+  "controllers": [
+    {
+      "id": 1,
+      "controller_name": "PLC_01",
+      "rack": 0,
+      "slot": 0,
+      "ip": "172.30.20.10",
+      "write_enable": false,
+      "permanent_connection": true,
+      "timeout": 5000
+    },
+    {
+      "id": 2,
+      "controller_name": "PLC_02",
+      "rack": 0,
+      "slot": 1,
+      "ip": "172.30.20.11",
+      "write_enable": false,
+      "permanent_connection": false,
+      "timeout": 5000
+    },
+    {
+      "id": 3,
+      "controller_name": "PLC_03",
+      "rack": 0,
+      "slot": 3,
+      "ip": "172.30.20.12",
+      "write_enable": true,
+      "permanent_connection": true,
+      "timeout": 5000
+    }
+  ]
+}
