@@ -33,9 +33,11 @@ public class JsonParserUtil {
 
             JsonMetaRootController jsonRootMetaResponse = mapper.readValue(new File(dir, "plc-meta-response-example.json"), JsonMetaRootController.class);
 
-            S7GithubExecutor s7 = new S7GithubExecutor();
-            s7.init(jsonRootMetaResponse);
-            JsonRootResponse jsonRootResponse = s7.run(jsonRootRequest);
+            JsonRootResponse jsonRootResponse = null;
+            try (S7GithubExecutor s7 = new S7GithubExecutor()) {
+                s7.init(jsonRootMetaResponse);
+                jsonRootResponse = s7.run(jsonRootRequest);
+            }
             log.info("[JSON-Parser] jsonRootResponse = " + jsonRootResponse);
             log.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRootResponse));
         } catch (Exception ex) {

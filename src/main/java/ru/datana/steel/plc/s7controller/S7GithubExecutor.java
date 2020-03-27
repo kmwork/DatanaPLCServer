@@ -16,12 +16,10 @@ import ru.datana.steel.plc.model.json.response.JsonRootResponse;
 import ru.datana.steel.plc.moka7.EnumSiemensDataType;
 import ru.datana.steel.plc.util.*;
 
+import java.io.Closeable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Движок от GitHub (упрещенное апи - поключил через зависимость мавен)
@@ -30,7 +28,7 @@ import java.util.Map;
  * https://github.com/s7connector/s7connector
  */
 @Slf4j
-public class S7GithubExecutor {
+public class S7GithubExecutor implements Closeable {
 
     private static final String PREFIX_LOG = "[S7 Контроллер] ";
     private Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
@@ -47,15 +45,17 @@ public class S7GithubExecutor {
         log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : ", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
-    private void closeS7Connect(Integer controllerId) {
+    private boolean closeS7Connect(Integer controllerId) {
 
         log.info(PREFIX_LOG + " Завершение сессии для controllerId = {}", controllerId);
         connectionByControllerId.remove(controllerId);
+        boolean success = false;
         if (currentConnector != null) {
             currentConnector.close();
             currentConnector = null;
+            success = true;
         }
-
+        return success;
     }
 
     private void initS7Connection(Integer controllerId) throws AppException {
@@ -189,6 +189,22 @@ public class S7GithubExecutor {
             }
         }
         return dataBytes;
+    }
+
+    @Override
+    public void close() {
+        log.info(PREFIX_LOG + " Закрытие коннектов для ID = " + connectionByControllerId.keySet());
+        Set<Integer> ids = new HashSet<>();
+        for (Integer id : connectionByControllerId.keySet()) {
+            try {
+                boolean isSuccess = closeS7Connect(id);
+                if (isSuccess)
+                    ids.add(id);
+            } catch (Exception ex) {
+                log.warn(AppConst.ERROR_LOG_PREFIX + " Ошибка дисконнекта S7 для id = " + id, " Error: " + ex.getMessage());
+            }
+        }
+        log.info(PREFIX_LOG + " Коннекты  весели открытыми с ID = " + ids);
     }
 
     private List<JsonResponse> readBlockFromS7(JsonRequest jsonRequest, JsonDatum datum) throws AppException, InterruptedException {
