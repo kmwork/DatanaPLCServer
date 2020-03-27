@@ -124,7 +124,7 @@ public class S7GithubExecutor {
 
             initS7Connection(request.getControllerId());
             for (JsonDatum datum : request.getData()) {
-                List<JsonResponse> responsesByOneRequest = readBlockFromS7(request.getControllerId(), datum);
+                List<JsonResponse> responsesByOneRequest = readBlockFromS7(request, datum);
                 responseList.addAll(responsesByOneRequest);
             }
         } catch (Exception ex) {
