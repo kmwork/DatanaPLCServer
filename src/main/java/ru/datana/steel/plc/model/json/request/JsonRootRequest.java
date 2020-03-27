@@ -50,6 +50,6 @@ public class JsonRootRequest {
     @JsonProperty("request")
     @Valid
     @NotNull
-    protected List<Request> request = null;
+    protected List<JsonRequest> request = null;
 
 }

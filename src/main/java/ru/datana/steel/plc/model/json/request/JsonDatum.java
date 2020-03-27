@@ -15,7 +15,7 @@ import java.util.List;
         "data-vals"
 })
 @Data
-public class Datum {
+public class JsonDatum {
 
     /**
      * (Required)
@@ -29,6 +29,6 @@ public class Datum {
     @JsonProperty("data-vals")
     @Valid
     @NotNull
-    protected List<DataVal> dataVals = null;
+    protected List<JsonDataVal> dataVals = null;
 
 }

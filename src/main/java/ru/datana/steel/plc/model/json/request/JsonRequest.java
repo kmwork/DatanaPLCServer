@@ -15,7 +15,7 @@ import java.util.List;
         "data"
 })
 @Data
-public class Request {
+public class JsonRequest {
 
     /**
      * (Required)
@@ -29,6 +29,6 @@ public class Request {
     @JsonProperty("data")
     @Valid
     @NotNull
-    protected List<Datum> data = null;
+    protected List<JsonDatum> data = null;
 
 }

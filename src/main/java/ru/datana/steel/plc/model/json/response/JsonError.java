@@ -12,16 +12,16 @@ import javax.validation.constraints.NotNull;
 
 })
 @Data
-public class Error {
+public class JsonError {
     @NotNull
     @JsonProperty("type-code")
-    private final Integer typeCode;
+    private Integer typeCode;
 
     @NotNull
     @JsonProperty("str-args")
-    private final String strArgs;
+    private String strArgs;
 
     @NotNull
     @JsonProperty("msg")
-    private final String msg;
+    private String msg;
 }

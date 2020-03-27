@@ -1,4 +1,4 @@
-package ru.datana.steel.plc.s7controller;
+package ru.datana.steel.plc.moka7;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Calendar;

@@ -3,7 +3,7 @@ package ru.datana.steel.plc.config;
 /**
  * Константы программы
  */
-public class AppConts {
+public class AppConst {
 
     public static final String CONF_FILE_NAME = "datana_siemens.properties";
     public static final String SYS_DIR_PROP = "app.dir";
@@ -17,4 +17,6 @@ public class AppConts {
     public static final int TRY_S7CONTROLLER_READ_OF_COUNT = 3;
 
     public static final long S7_SLEEP_MS = 500;
+    public static final Integer JSON_SUCCESS_CODE = 1;
+    public static final Integer JSON_ERROR_CODE = 0;
 }

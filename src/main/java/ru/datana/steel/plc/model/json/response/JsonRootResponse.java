@@ -68,6 +68,6 @@ public class JsonRootResponse {
     @JsonProperty("response")
     @Valid
     @NotNull
-    protected List<Response> response = null;
+    protected List<JsonResponse> response = null;
 
 }

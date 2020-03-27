@@ -3,10 +3,15 @@ package ru.datana.steel.plc.model.json.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,14 +23,14 @@ import java.util.List;
         "errors"
 })
 @Data
-public class Response {
+public class JsonResponse {
 
     /**
      * (Required)
      */
     @JsonProperty("id")
     @NotNull
-    protected Integer id;
+    protected String id;
     /**
      * (Required)
      */
@@ -37,7 +42,9 @@ public class Response {
      */
     @JsonProperty("controller-datetime")
     @NotNull
-    protected String controllerDatetime;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    protected LocalDateTime controllerDatetime;
     /**
      * (Required)
      */
@@ -50,6 +57,6 @@ public class Response {
     @JsonProperty("errors")
     @Valid
     @NotNull
-    protected List<Error> errors = null;
+    protected List<JsonError> errors = null;
 
 }
