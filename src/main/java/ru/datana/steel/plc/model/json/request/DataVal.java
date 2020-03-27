@@ -1,12 +1,11 @@
 package ru.datana.steel.plc.model.json.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -24,43 +23,30 @@ public class DataVal {
      */
     @JsonProperty("operation")
     @NotNull
-    public String operation;
+    protected String operation;
     /**
      * (Required)
      */
     @JsonProperty("data-type")
     @NotNull
-    public String dataType;
+    protected String dataType;
     /**
      * (Required)
      */
     @JsonProperty("offset")
     @NotNull
-    public Integer offset;
+    protected Integer offset;
     /**
      * (Required)
      */
     @JsonProperty("bitmask")
     @NotNull
-    public String bitmask;
+    protected String bitmask;
     /**
      * (Required)
      */
     @JsonProperty("id")
     @NotNull
-    public Integer id;
-    @JsonIgnore
-    @Valid
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+    protected Integer id;
 
 }

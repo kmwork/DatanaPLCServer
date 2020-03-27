@@ -1,11 +1,11 @@
 package ru.datana.steel.plc.model.json.response;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
+import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -13,19 +13,15 @@ import java.util.Map;
 })
 @Data
 public class Error {
+    @NotNull
+    @JsonProperty("type-code")
+    private final Integer typeCode;
 
-    @JsonIgnore
-    @Valid
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @NotNull
+    @JsonProperty("str-args")
+    private final String strArgs;
 
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
+    @NotNull
+    @JsonProperty("msg")
+    private final String msg;
 }

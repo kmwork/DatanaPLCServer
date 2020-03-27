@@ -1,18 +1,18 @@
 package ru.datana.steel.plc.model.json.request;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,40 +29,27 @@ public class JsonRootRequest {
      */
     @JsonProperty("request_id")
     @NotNull
-    public String requestId;
+    protected String requestId;
     /**
      * (Required)
      */
     @JsonProperty("task_id")
     @NotNull
-    public Integer taskId;
+    protected Integer taskId;
     /**
      * (Required)
      */
     @JsonProperty("request-datetime")
     @NotNull
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    public LocalDate requestDatetime;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    protected LocalDateTime requestDatetime;
     /**
      * (Required)
      */
     @JsonProperty("request")
     @Valid
     @NotNull
-    public List<Request> request = null;
-    @JsonIgnore
-    @Valid
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+    protected List<Request> request = null;
 
 }

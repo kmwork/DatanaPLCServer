@@ -1,4 +1,4 @@
-package ru.datana.steel.plc.model.json.request;
+package ru.datana.steel.plc.model.json.meta;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,24 +11,17 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "data-block",
-        "data-vals"
+        "datablock_write_enable",
+        "controllers"
 })
 @Data
-public class Datum {
+public class JsonMetaRootController {
 
-    /**
-     * (Required)
-     */
-    @JsonProperty("data-block")
-    @NotNull
-    protected String dataBlock;
-    /**
-     * (Required)
-     */
-    @JsonProperty("data-vals")
+    @JsonProperty("datablock_write_enable")
+    protected Boolean datablockWriteEnable;
+    @JsonProperty("controllers")
     @Valid
     @NotNull
-    protected List<DataVal> dataVals = null;
+    protected List<Controller> controllers = null;
 
 }

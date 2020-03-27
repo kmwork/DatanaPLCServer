@@ -1,13 +1,13 @@
 package ru.datana.steel.plc.model.json.response;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -25,44 +25,31 @@ public class Response {
      */
     @JsonProperty("id")
     @NotNull
-    public Integer id;
+    protected Integer id;
     /**
      * (Required)
      */
     @JsonProperty("data")
     @NotNull
-    public String data;
+    protected String data;
     /**
      * (Required)
      */
     @JsonProperty("controller-datetime")
     @NotNull
-    public String controllerDatetime;
+    protected String controllerDatetime;
     /**
      * (Required)
      */
     @JsonProperty("status")
     @NotNull
-    public Integer status;
+    protected Integer status;
     /**
      * (Required)
      */
     @JsonProperty("errors")
     @Valid
     @NotNull
-    public List<Error> errors = null;
-    @JsonIgnore
-    @Valid
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
+    protected List<Error> errors = null;
 
 }
