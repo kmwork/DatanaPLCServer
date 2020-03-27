@@ -1,6 +1,6 @@
 package ru.datana.steel.plc.moka7;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,13 +41,13 @@ public class S7 {
     // Returns a 32 bit unsigned value : from 0 to 4294967295 (2^32-1)
     public static long GetDWordAt(byte[] Buffer, int Pos) {
         long result;
-        result = (long) (Buffer[Pos] & 0x0FF);
+        result = Buffer[Pos] & 0x0FF;
         result <<= 8;
-        result += (long) (Buffer[Pos + 1] & 0x0FF);
+        result += Buffer[Pos + 1] & 0x0FF;
         result <<= 8;
-        result += (long) (Buffer[Pos + 2] & 0x0FF);
+        result += Buffer[Pos + 2] & 0x0FF;
         result <<= 8;
-        result += (long) (Buffer[Pos + 3] & 0x0FF);
+        result += Buffer[Pos + 3] & 0x0FF;
         return result;
     }
 
@@ -75,11 +75,7 @@ public class S7 {
         byte[] StrBuffer = new byte[MaxLen];
         System.arraycopy(Buffer, Pos, StrBuffer, 0, MaxLen);
         String S;
-        try {
-            S = new String(StrBuffer, "UTF-8"); // the charset is UTF-8
-        } catch (UnsupportedEncodingException ex) {
-            S = "";
-        }
+        S = new String(StrBuffer, StandardCharsets.UTF_8); // the charset is UTF-8
         return S;
     }
 
@@ -91,11 +87,7 @@ public class S7 {
                 StrBuffer[c] = 46; // '.'
         }
         String S;
-        try {
-            S = new String(StrBuffer, "UTF-8"); // the charset is UTF-8
-        } catch (UnsupportedEncodingException ex) {
-            S = "";
-        }
+        S = new String(StrBuffer, StandardCharsets.UTF_8); // the charset is UTF-8
         return S;
     }
 

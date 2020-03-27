@@ -103,7 +103,7 @@ public class ValueParser {
         int index = -1;
         String hex = null;
         try {
-            String strBytes[] = strBytesLine.split(" ");
+            String[] strBytes = strBytesLine.split(" ");
             byte[] bytes = new byte[strBytes.length];
             for (index = 0; index < strBytes.length; index++) {
                 hex = strBytes[index];

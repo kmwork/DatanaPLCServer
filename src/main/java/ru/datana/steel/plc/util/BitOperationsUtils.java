@@ -27,7 +27,7 @@ public class BitOperationsUtils {
             boolean bitBoolean = S7.GetBitAt(data, bytesOffset, intBitPosition);
             result = new BigDecimal(bitBoolean ? 1 : 0);
         } else if (type == EnumSiemensDataType.TYPE_BYTE) {
-            result = new BigDecimal((int) data[bytesOffset]);
+            result = new BigDecimal(data[bytesOffset]);
         } else if (type == EnumSiemensDataType.TYPE_UNSIGNED_WORD) {
             int valueWord = S7.GetWordAt(data, bytesOffset);
             result = new BigDecimal(valueWord);
