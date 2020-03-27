@@ -1,7 +1,7 @@
 package ru.datana.steel.plc.util;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.datana.siemensopc.config.AppConts;
+import ru.datana.steel.plc.config.AppConst;
 
 import java.io.*;
 import java.util.Properties;
@@ -13,9 +13,9 @@ import java.util.Properties;
 public class LanitFileUtils {
 
     public static Properties readDataConfig() throws AppException {
-        String dirConf = ValueParser.readPropAsText(System.getProperties(), AppConts.SYS_DIR_PROP, false);
+        String dirConf = ValueParser.readPropAsText(System.getProperties(), AppConst.SYS_DIR_PROP, false);
 
-        File f = new File(dirConf, AppConts.CONF_FILE_NAME);
+        File f = new File(dirConf, AppConst.CONF_FILE_NAME);
         if (!f.isFile() || !f.exists()) {
             log.error("Файл не найден: " + f.getAbsolutePath());
             System.exit(-100);

@@ -1,5 +1,6 @@
 package ru.datana.steel.plc.s7controller;
 
+import com.github.s7connector.api.DaveArea;
 import com.github.s7connector.impl.S7TCPConnection;
 import lombok.extern.slf4j.Slf4j;
 import ru.datana.steel.plc.config.AppConst;
@@ -73,8 +74,8 @@ public class S7GithubExecutor {
 
         List<JsonResponse> jsonResponseList = new ArrayList<>();
         for (JsonRequest req : request.getRequest()) {
-            JsonResponse response = doWorkRequest(req);
-            jsonResponseList.add(response);
+            List<JsonResponse> rList = doWorkRequest(req);
+            jsonResponseList.addAll(rList);
         }
         JsonRootResponse jsonResult = new JsonRootResponse();
         jsonResult.setRequestDatetime(getCurrentTime());
@@ -135,16 +136,19 @@ public class S7GithubExecutor {
     }
 
     private byte[] tryRead(Integer controllerId, int intS7DBNumber, int length, int offset) throws AppException, InterruptedException {
-        for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++)
+        byte[] dataBytes = null;
+        for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
             try {
                 Thread.sleep(AppConst.S7_SLEEP_MS);
-                byte[] dataBytes = currentConnecter.read(EnumS7Area.S7AreaDB.getS7AreaCode()., intS7DBNumber, length, offset);
-                return dataBytes;
+                dataBytes = currentConnecter.read(DaveArea.DB, intS7DBNumber, length, offset);
+                break;
             } catch (Exception e) {
                 log.warn(AppConst.ERROR_LOG_PREFIX + "Ошибка чтения S7: controllerId= {}, intS7DBNumber = {}, length = {}, offset= {}", controllerId, intS7DBNumber, length, offset);
                 closeS7Connect(controllerId);
                 initS7Connection(controllerId);
             }
+        }
+        return dataBytes;
     }
 
     private List<JsonResponse> readBlockFromS7(Integer controllerId, JsonDatum datum) throws AppException, InterruptedException {
