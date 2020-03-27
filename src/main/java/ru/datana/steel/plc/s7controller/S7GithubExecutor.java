@@ -35,7 +35,7 @@ public class S7GithubExecutor {
     private static final String PREFIX_LOG = "[S7 Контроллер] ";
     private Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
     private Map<Integer, Controller> metaByControllerId = new HashMap<>();
-    private S7TCPConnection currentConnecter = null;
+    private S7TCPConnection currentConnector = null;
     private static int RESPONSE_COUNT = 0;
 
     public void init(JsonMetaRootController controllerMeta) {
@@ -51,27 +51,33 @@ public class S7GithubExecutor {
 
         log.info(PREFIX_LOG + " Завершение сессии для controllerId = {}", controllerId);
         connectionByControllerId.remove(controllerId);
-        if (currentConnecter != null) {
-            currentConnecter.close();
-            currentConnecter = null;
+        if (currentConnector != null) {
+            currentConnector.close();
+            currentConnector = null;
         }
 
     }
 
     private void initS7Connection(Integer controllerId) throws AppException {
+        Controller c = metaByControllerId.get(controllerId);
+        String host = c.getIp();
+        int rack = c.getRack();
+        int slot = c.getSlot();
+        int port = c.getPort() == null ? AppConst.S7CONNECTOR_PORT_DEFAULT : c.getPort();
+        int timeout = c.getTimeout();
+
         try {
-            Controller c = metaByControllerId.get(controllerId);
-            currentConnecter = connectionByControllerId.get(controllerId);
-            if (currentConnecter == null) {
-                currentConnecter = connectionByControllerId.get(controllerId);
-                if (currentConnecter == null) {
-                    int port = c.getPort() == null ? AppConst.S7CONNECTOR_PORT_DEFAULT : c.getPort();
-                    currentConnecter = new S7TCPConnection(c.getIp(), c.getRack(), c.getSlot(), port, c.getTimeout());
-                    connectionByControllerId.put(controllerId, currentConnecter);
+            currentConnector = connectionByControllerId.get(controllerId);
+            if (currentConnector == null) {
+                currentConnector = connectionByControllerId.get(controllerId);
+                if (currentConnector == null) {
+                    currentConnector = new S7TCPConnection(host, rack, slot, port, timeout);
+                    connectionByControllerId.put(controllerId, currentConnector);
                 }
             }
         } catch (Exception ex) {
-            String strArgs = "controllerId = " + controllerId;
+            String strArgs = "controllerId = " + controllerId + ", " +
+                    "host: " + host + ", rack: " + rack + ", slot: " + slot + ", port: " + port + ", timeout: " + timeout;
             String msg = "Ошибка подключения к контроллеру Сименса: " + ex.getMessage();
             log.error(msg + ". args:" + strArgs, ex);
             throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_CONNECTION, msg, strArgs, ex);
@@ -164,31 +170,31 @@ public class S7GithubExecutor {
         return jsonResult;
     }
 
-    private byte[] tryRead(Integer controllerId, int intS7DBNumber, int length, int offset) throws AppException {
+    private byte[] tryRead(JsonRequest jsonRequest, int intS7DBNumber, int length, int offset) throws AppException {
         byte[] dataBytes = null;
         for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
             try {
                 Thread.sleep(AppConst.S7_SLEEP_MS);
-                dataBytes = currentConnecter.read(DaveArea.DB, intS7DBNumber, length, offset);
+                dataBytes = currentConnector.read(DaveArea.DB, intS7DBNumber, length, offset);
                 break;
             } catch (Exception ex) {
-                String msg = "Ошибка чтения S7. было " + i + " попыток.";
-                String strArgs = "controllerId= " + controllerId + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
+                int tryCount = i + 1;
+                String msg = "Ошибка чтения S7. было " + tryCount + " попыток.";
+                String strArgs = "controllerId= " + jsonRequest.getControllerId() + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
                 log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs);
-                closeS7Connect(controllerId);/**/
-                if (i == AppConst.TRY_S7CONTROLLER_READ_OF_COUNT)
+                closeS7Connect(jsonRequest.getControllerId());/**/
+                if (tryCount == AppConst.TRY_S7CONTROLLER_READ_OF_COUNT)
                     throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
-                initS7Connection(controllerId);
+                initS7Connection(jsonRequest.getControllerId());
             }
         }
         return dataBytes;
     }
 
-    private List<JsonResponse> readBlockFromS7(Integer controllerId, JsonDatum datum) throws AppException, InterruptedException {
+    private List<JsonResponse> readBlockFromS7(JsonRequest jsonRequest, JsonDatum datum) throws AppException, InterruptedException {
         //читаем данные
         int intS7DBNumber = ValueParser.parseInt(datum.getDataBlock().substring(2), "Json:DataBlock");
-
-        //   readBlock()
+        List<JsonResponse> jsonResponseList = new ArrayList<>();
         int minOffset = Integer.MAX_VALUE;
         int maxOffset = Integer.MIN_VALUE;
         for (JsonDataVal dataVal : datum.getDataVals()) {
@@ -199,22 +205,28 @@ public class S7GithubExecutor {
             maxOffset = Math.max(maxOffset, offset + sizeBytes);
         }
         int length = maxOffset - minOffset;
-        byte[] dataBytes = tryRead(controllerId, intS7DBNumber, length, minOffset);
-        FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
+        try {
+            byte[] dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
 
-        LocalDateTime time = LocalDateTime.now();
-        List<JsonResponse> jsonResponseList = new ArrayList<>();
-        for (JsonDataVal dataVal : datum.getDataVals()) {
-            int bytesOffset = dataVal.getOffset() - minOffset;
-            assert bytesOffset >= 0;
-            EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
-            int intBitPosition = 0;
-            if (type == EnumSiemensDataType.TYPE_BIT) {
-                intBitPosition = dataVal.getBitmask().indexOf("1");
+
+            FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
+
+            LocalDateTime time = LocalDateTime.now();
+            for (JsonDataVal dataVal : datum.getDataVals()) {
+                int bytesOffset = dataVal.getOffset() - minOffset;
+                assert bytesOffset >= 0;
+                EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
+                int intBitPosition = 0;
+                if (type == EnumSiemensDataType.TYPE_BIT) {
+                    intBitPosition = dataVal.getBitmask().indexOf("1");
+                }
+                BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
+                JsonResponse response = createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);
+                jsonResponseList.add(response);
             }
-            BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
-            JsonResponse response = createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);
-            jsonResponseList.add(response);
+        } catch (Exception ex) {
+            JsonResponse jsonResponse = createJsonRequestWithError(jsonRequest, ex);
+            jsonResponseList.add(jsonResponse);
         }
         return jsonResponseList;
     }

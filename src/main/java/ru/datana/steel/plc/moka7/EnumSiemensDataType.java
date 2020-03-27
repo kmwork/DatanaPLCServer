@@ -27,7 +27,7 @@ public enum EnumSiemensDataType {
             throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "Не указан тип данны для S7", "EnumSiemensDataType is empty", null);
         strType = strType.toLowerCase().trim();
         switch (strType) {
-            case "bit":
+            case "bool":
                 return TYPE_BIT;
             case "byte":
                 return TYPE_BYTE;
