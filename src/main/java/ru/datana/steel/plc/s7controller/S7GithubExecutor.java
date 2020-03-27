@@ -72,7 +72,7 @@ public class S7GithubExecutor {
             }
         } catch (Exception ex) {
             String strArgs = "controllerId = " + controllerId;
-            String msg = "Ошибка подключения к контроллеру Сименса: " + ex.getLocalizedMessage();
+            String msg = "Ошибка подключения к контроллеру Сименса: " + ex.getMessage();
             log.error(msg + ". args:" + strArgs, ex);
             throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_CONNECTION, msg, strArgs, ex);
         }
@@ -97,7 +97,6 @@ public class S7GithubExecutor {
         jsonResult.setRequestDatetimeProxy(proxyTime);
         jsonResult.setResponseDatetime(getCurrentTime());
         jsonResult.setRequestId(request.getRequestId());
-        jsonResult.setRequestId(genId());
         jsonResult.setTaskId(request.getTaskId());
         jsonResult.setResponse(jsonResponseList);
         return jsonResult;
@@ -156,7 +155,7 @@ public class S7GithubExecutor {
             jsonError.setTypeCode(appEx.getType().getCodeError());
         } else {
             jsonError.setStrArgs("request.ControllerId = " + request.getControllerId());
-            jsonError.setMsg(e.getLocalizedMessage());
+            jsonError.setMsg("Ошибка при работе S7 контроллера: " + e.getMessage());
             jsonError.setTypeCode(TypeException.SYSTEM_ERROR.getCodeError());
         }
         List<JsonError> errors = new ArrayList<>();

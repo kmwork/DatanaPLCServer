@@ -16,7 +16,8 @@
       "controller_name": "PLC_02",
       "rack": 0,
       "slot": 1,
-      "ip": "172.30.20.11",
+      "port": 102,
+      "ip": "172.30.143.30",
       "write_enable": false,
       "permanent_connection": false,
       "timeout": 5000
