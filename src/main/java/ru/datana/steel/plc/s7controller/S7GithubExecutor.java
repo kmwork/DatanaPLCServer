@@ -156,7 +156,7 @@ public class S7GithubExecutor {
         JsonError jsonError = new JsonError();
         if (e instanceof AppException) {
             AppException appEx = (AppException) e;
-            jsonError.setMsg(appEx.getMsg());
+            jsonError.setMsg(appEx.getMsg() + ": " + appEx.getMainEx().getMessage());
             jsonError.setStrArgs(appEx.getStrArgs());
             jsonError.setTypeCode(appEx.getType().getCodeError());
         } else {
@@ -181,8 +181,8 @@ public class S7GithubExecutor {
                 int tryCount = i + 1;
                 String msg = "Ошибка чтения S7. было " + tryCount + " попыток.";
                 String strArgs = "controllerId= " + jsonRequest.getControllerId() + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
-                log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs);
-                closeS7Connect(jsonRequest.getControllerId());/**/
+                log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs, ex);
+                closeS7Connect(jsonRequest.getControllerId());
                 if (tryCount == AppConst.TRY_S7CONTROLLER_READ_OF_COUNT)
                     throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
                 initS7Connection(jsonRequest.getControllerId());
@@ -207,8 +207,6 @@ public class S7GithubExecutor {
         int length = maxOffset - minOffset;
         try {
             byte[] dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
-
-
             FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
 
             LocalDateTime time = LocalDateTime.now();
