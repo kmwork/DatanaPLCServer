@@ -2,20 +2,10 @@
   "datablock_write_enable": false,
   "controllers": [
     {
-      "id": 1,
-      "controller_name": "PLC_01",
-      "rack": 0,
-      "slot": 0,
-      "ip": "172.30.20.10",
-      "write_enable": false,
-      "permanent_connection": true,
-      "timeout": 5000
-    },
-    {
       "id": 2,
       "controller_name": "PLC_02",
       "rack": 0,
-      "slot": 1,
+      "slot": 0,
       "port": 102,
       "ip": "172.30.143.30",
       "write_enable": false,
