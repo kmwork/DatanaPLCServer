@@ -1,6 +1,10 @@
 package ru.datana.steel.plc.model.json.request;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -37,6 +41,8 @@ public class JsonRootRequest {
      */
     @JsonProperty("request-datetime")
     @NotNull
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     public LocalDate requestDatetime;
     /**
      * (Required)
