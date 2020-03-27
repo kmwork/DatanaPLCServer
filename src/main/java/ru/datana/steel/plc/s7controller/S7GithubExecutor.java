@@ -160,8 +160,10 @@ public class S7GithubExecutor {
         int maxOffset = Integer.MIN_VALUE;
         for (JsonDataVal dataVal : datum.getDataVals()) {
             int offset = dataVal.getOffset();
+            EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
+            int sizeBytes = (type.getBitCount() + 7) / 8;
             minOffset = Math.min(minOffset, offset);
-            maxOffset = Math.max(maxOffset, offset);
+            maxOffset = Math.max(maxOffset, offset + sizeBytes);
         }
         int length = maxOffset - minOffset;
         byte[] dataBytes = tryRead(controllerId, intS7DBNumber, length, minOffset);
