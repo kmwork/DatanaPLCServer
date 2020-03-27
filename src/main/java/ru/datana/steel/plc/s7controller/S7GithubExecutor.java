@@ -44,7 +44,7 @@ public class S7GithubExecutor {
         for (Controller c : controllerMeta.getControllers()) {
             metaByControllerId.put(c.getId(), c);
         }
-        log.debug(PREFIX_LOG + " Прочитаны настройка для {} контролееров : ", metaByControllerId.size(), metaByControllerId.keySet());
+        log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : ", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
     private void closeS7Connect(Integer controllerId) {
