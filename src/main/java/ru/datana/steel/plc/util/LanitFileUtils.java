@@ -22,7 +22,7 @@ public class LanitFileUtils {
         }
 
         Properties p = new Properties();
-        try (Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(f), AppConts.ENCODING));) {
+        try (Reader fileReader = new BufferedReader(new InputStreamReader(new FileInputStream(f), AppConst.ENCODING));) {
             p.load(fileReader);
         } catch (IOException ex) {
             log.error("Не смог прочитать файл: " + f.getAbsolutePath(), ex);
