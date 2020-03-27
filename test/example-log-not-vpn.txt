@@ -1,0 +1,60 @@
+/home/lin/apps/jdk13/bin/java -Dapp.dir=/home/lin/work-lanit/Datata-Kafla-Gateway-K7/test -javaagent:/home/lin/apps/idea-IU-191.7479.19/lib/idea_rt.jar=46697:/home/lin/apps/idea-IU-191.7479.19/bin -Dfile.encoding=UTF-8 -classpath /home/lin/work-lanit/Datata-Kafla-Gateway-K7/target/classes:/home/lin/.m2/repository/org/springframework/boot/spring-boot-starter/2.2.5.RELEASE/spring-boot-starter-2.2.5.RELEASE.jar:/home/lin/.m2/repository/org/springframework/boot/spring-boot/2.2.5.RELEASE/spring-boot-2.2.5.RELEASE.jar:/home/lin/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/2.2.5.RELEASE/spring-boot-autoconfigure-2.2.5.RELEASE.jar:/home/lin/.m2/repository/org/springframework/boot/spring-boot-starter-logging/2.2.5.RELEASE/spring-boot-starter-logging-2.2.5.RELEASE.jar:/home/lin/.m2/repository/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar:/home/lin/.m2/repository/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar:/home/lin/.m2/repository/org/apache/logging/log4j/log4j-to-slf4j/2.12.1/log4j-to-slf4j-2.12.1.jar:/home/lin/.m2/repository/org/apache/logging/log4j/log4j-api/2.12.1/log4j-api-2.12.1.jar:/home/lin/.m2/repository/org/slf4j/jul-to-slf4j/1.7.30/jul-to-slf4j-1.7.30.jar:/home/lin/.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar:/home/lin/.m2/repository/org/springframework/spring-core/5.2.4.RELEASE/spring-core-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-jcl/5.2.4.RELEASE/spring-jcl-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/yaml/snakeyaml/1.25/snakeyaml-1.25.jar:/home/lin/.m2/repository/org/springframework/kafka/spring-kafka/2.3.6.RELEASE/spring-kafka-2.3.6.RELEASE.jar:/home/lin/.m2/repository/org/apache/kafka/kafka-clients/2.3.1/kafka-clients-2.3.1.jar:/home/lin/.m2/repository/com/github/luben/zstd-jni/1.4.0-1/zstd-jni-1.4.0-1.jar:/home/lin/.m2/repository/org/lz4/lz4-java/1.6.0/lz4-java-1.6.0.jar:/home/lin/.m2/repository/org/xerial/snappy/snappy-java/1.1.7.3/snappy-java-1.1.7.3.jar:/home/lin/.m2/repository/org/springframework/retry/spring-retry/1.2.5.RELEASE/spring-retry-1.2.5.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-context/5.2.4.RELEASE/spring-context-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-aop/5.2.4.RELEASE/spring-aop-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-beans/5.2.4.RELEASE/spring-beans-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-expression/5.2.4.RELEASE/spring-expression-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-messaging/5.2.4.RELEASE/spring-messaging-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/springframework/spring-tx/5.2.4.RELEASE/spring-tx-5.2.4.RELEASE.jar:/home/lin/.m2/repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar:/home/lin/.m2/repository/org/projectlombok/lombok/1.18.12/lombok-1.18.12.jar:/home/lin/.m2/repository/org/apache/commons/commons-lang3/3.9/commons-lang3-3.9.jar:/home/lin/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.10.3/jackson-databind-2.10.3.jar:/home/lin/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.10.2/jackson-annotations-2.10.2.jar:/home/lin/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.10.2/jackson-core-2.10.2.jar:/home/lin/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.10.3/jackson-datatype-jsr310-2.10.3.jar:/home/lin/.m2/repository/javax/validation/validation-api/2.0.1.Final/validation-api-2.0.1.Final.jar:/home/lin/.m2/repository/com/github/s7connector/s7connector/2.1/s7connector-2.1.jar ru.datana.steel.plc.util.JsonParserUtil
+21:04:34.413 [main] INFO ru.datana.steel.plc.util.JsonParserUtil - [JSON-Parser] jsonRootRequest = JsonRootRequest(requestId=34234234234234, taskId=12345, requestDatetime=2020-02-01T12:03:23.355600, request=[JsonRequest(controllerId=2, data=[JsonDatum(dataBlock=DB003, dataVals=[JsonDataVal(operation=read, dataType=bool, offset=0, bitmask=00010000, id=1345), JsonDataVal(operation=read, dataType=byte, offset=1, bitmask=null, id=122), JsonDataVal(operation=read, dataType=word, offset=0, bitmask=null, id=123), JsonDataVal(operation=read, dataType=bool, offset=1, bitmask=00010000, id=1356)]), JsonDatum(dataBlock=DB002, dataVals=[JsonDataVal(operation=read, dataType=byte, offset=1, bitmask=null, id=1345), JsonDataVal(operation=read, dataType=bool, offset=0, bitmask=00010000, id=1336), JsonDataVal(operation=read, dataType=bool, offset=1, bitmask=00010000, id=1330)])]), JsonRequest(controllerId=12, data=[JsonDatum(dataBlock=DB101, dataVals=[JsonDataVal(operation=read, dataType=real, offset=10, bitmask=null, id=1245), JsonDataVal(operation=read, dataType=word, offset=11, bitmask=null, id=1256), JsonDataVal(operation=read, dataType=byte, offset=224, bitmask=null, id=1234)]), JsonDatum(dataBlock=DB102, dataVals=[JsonDataVal(operation=read, dataType=bool, offset=11, bitmask=00010000, id=1245), JsonDataVal(operation=write, dataType=bool, offset=23, bitmask=00010000, id=1236), JsonDataVal(operation=write, dataType=bool, offset=56, bitmask=00010000, id=1230)])])])
+21:04:34.425 [main] DEBUG ru.datana.steel.plc.s7controller.S7GithubExecutor - [S7 Контроллер]  Прочитаны настройка для 2 контролееров :
+21:04:39.466 [main] ERROR ru.datana.steel.plc.s7controller.S7GithubExecutor - Ошибка подключения к контроллеру Сименса: constructor. args:controllerId = 2, host: 172.30.143.30, rack: 0, slot: 0, port: 102, timeout: 5000
+com.github.s7connector.exception.S7Exception: constructor
+	at com.github.s7connector.impl.S7TCPConnection.setupSocket(S7TCPConnection.java:120)
+	at com.github.s7connector.impl.S7TCPConnection.<init>(S7TCPConnection.java:83)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.initS7Connection(S7GithubExecutor.java:74)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.doWorkRequest(S7GithubExecutor.java:125)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.run(S7GithubExecutor.java:93)
+	at ru.datana.steel.plc.util.JsonParserUtil.main(JsonParserUtil.java:38)
+Caused by: java.net.SocketTimeoutException: Connect timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:546)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:339)
+	at java.base/java.net.Socket.connect(Socket.java:603)
+	at com.github.s7connector.impl.S7TCPConnection.setupSocket(S7TCPConnection.java:108)
+	... 5 common frames omitted
+21:04:39.476 [main] ERROR ru.datana.steel.plc.s7controller.S7GithubExecutor - [App-Ошибка] Ошибка при чтении S7 для request = JsonRequest(controllerId=2, data=[JsonDatum(dataBlock=DB003, dataVals=[JsonDataVal(operation=read, dataType=bool, offset=0, bitmask=00010000, id=1345), JsonDataVal(operation=read, dataType=byte, offset=1, bitmask=null, id=122), JsonDataVal(operation=read, dataType=word, offset=0, bitmask=null, id=123), JsonDataVal(operation=read, dataType=bool, offset=1, bitmask=00010000, id=1356)]), JsonDatum(dataBlock=DB002, dataVals=[JsonDataVal(operation=read, dataType=byte, offset=1, bitmask=null, id=1345), JsonDataVal(operation=read, dataType=bool, offset=0, bitmask=00010000, id=1336), JsonDataVal(operation=read, dataType=bool, offset=1, bitmask=00010000, id=1330)])])
+ru.datana.steel.plc.util.AppException: Type: TypeException.S7CONTROLLER_ERROR_OF_CONNECTION(codeError=1000, descError=S7:Ошибка связи с контроллером),
+ msg=Ошибка подключения к контроллеру Сименса: constructor
+ strArgs = controllerId = 2, host: 172.30.143.30, rack: 0, slot: 0, port: 102, timeout: 5000
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.initS7Connection(S7GithubExecutor.java:83)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.doWorkRequest(S7GithubExecutor.java:125)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.run(S7GithubExecutor.java:93)
+	at ru.datana.steel.plc.util.JsonParserUtil.main(JsonParserUtil.java:38)
+Caused by: com.github.s7connector.exception.S7Exception: constructor
+	at com.github.s7connector.impl.S7TCPConnection.setupSocket(S7TCPConnection.java:120)
+	at com.github.s7connector.impl.S7TCPConnection.<init>(S7TCPConnection.java:83)
+	at ru.datana.steel.plc.s7controller.S7GithubExecutor.initS7Connection(S7GithubExecutor.java:74)
+	... 3 common frames omitted
+Caused by: java.net.SocketTimeoutException: Connect timed out
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:546)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:597)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:339)
+	at java.base/java.net.Socket.connect(Socket.java:603)
+	at com.github.s7connector.impl.S7TCPConnection.setupSocket(S7TCPConnection.java:108)
+	... 5 common frames omitted
+21:04:39.476 [main] INFO ru.datana.steel.plc.s7controller.S7GithubExecutor - [S7 Контроллер]  Завершение сессии для controllerId = 2
+21:04:39.476 [main] WARN ru.datana.steel.plc.s7controller.S7GithubExecutor - [App-Ошибка] Мета информация о контролере S7 = 12 не найдена, есть информация только по ID = [2, 3]
+21:04:39.483 [main] INFO ru.datana.steel.plc.util.JsonParserUtil - [JSON-Parser] jsonRootResponse = JsonRootResponse(requestDatetime=2020-02-01T12:03:23.355600, requestDatetimeProxy=2020-03-27T21:04:34.440112, responseDatetime=2020-03-27T21:04:39.477287, requestId=34234234234234, taskId=12345, response=[JsonResponse(id=Response:28639676080895:Index:1, data=null, controllerDatetime=2020-03-27T21:04:39.472907, status=0, errors=[JsonError(typeCode=1000, strArgs=controllerId = 2, host: 172.30.143.30, rack: 0, slot: 0, port: 102, timeout: 5000, msg=Ошибка подключения к контроллеру Сименса: constructor: constructor)])])
+21:04:39.506 [main] INFO ru.datana.steel.plc.util.JsonParserUtil - {
+  "request-datetime" : "2020-02-01T12:03:23.3556",
+  "request-datetime-proxy" : "2020-03-27T21:04:34.440112",
+  "response-datetime" : "2020-03-27T21:04:39.477287",
+  "request_id" : "34234234234234",
+  "task_id" : 12345,
+  "response" : [ {
+    "id" : "Response:28639676080895:Index:1",
+    "controller-datetime" : "2020-03-27T21:04:39.472907",
+    "status" : 0,
+    "errors" : [ {
+      "type-code" : 1000,
+      "str-args" : "controllerId = 2, host: 172.30.143.30, rack: 0, slot: 0, port: 102, timeout: 5000",
+      "msg" : "Ошибка подключения к контроллеру Сименса: constructor: constructor"
+    } ]
+  } ]
+}
+
+Process finished with exit code 0
