@@ -5,7 +5,7 @@
 задача в JIRE: https://jira.dds.lanit.ru/browse/VACUM-23
 
 ## cборка Maven 3 + JDK 13
-`mvn clean compile package`
+`mvn clean compile assembly:single`
 
 ## Как пользоваться для теста (пока загрузка и работа с файлами так как нет PLC Client еще)
 в папке test командный файл run-datana.sh
@@ -26,7 +26,7 @@
 
 
 ### примерный синтаксис команды
-`java -Dapp.dir=<путь к папке config> -cp datana-kafka-Datata-PLC-Server-alfa-1.jar ru.datana.steel.plc.util.JsonParserUtil`
+java -Dapp.dir=<путь к json файлам> -Dfile.encoding=UTF-8 -jar Datata-PLC-Server-alfa-1-jar-with-dependencies.jar
 
 ## техническая документация 
 в папке <this project>/doc-manual
