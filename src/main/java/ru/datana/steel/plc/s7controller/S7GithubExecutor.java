@@ -232,7 +232,7 @@ public class S7GithubExecutor implements Closeable {
                 EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
                 int intBitPosition = 0;
                 if (type == EnumSiemensDataType.TYPE_BIT) {
-                    intBitPosition = dataVal.getBitmask().indexOf("1");
+                    intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
                 BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
                 JsonResponse response = createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);

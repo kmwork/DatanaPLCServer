@@ -36,31 +36,6 @@
               "id": 1356
             }
           ]
-        },
-        {
-          "data-block": "DB002",
-          "data-vals": [
-            {
-              "operation": "read",
-              "data-type": "byte",
-              "offset": 1,
-              "id": 1345
-            },
-            {
-              "operation": "read",
-              "data-type": "bool",
-              "offset": 0,
-              "bitmask": "00010000",
-              "id": 1336
-            },
-            {
-              "operation": "read",
-              "data-type": "bool",
-              "offset": 1,
-              "bitmask": "00010000",
-              "id": 1330
-            }
-          ]
         }
       ]
     },

@@ -9,7 +9,7 @@
       "port": 102,
       "ip": "172.30.143.30",
       "write_enable": false,
-      "permanent_connection": false,
+      "permanent_connection": true,
       "timeout": 5000
     },
     {
