@@ -16,36 +16,36 @@ import java.util.Map;
 @Configuration
 public class DatanaCommonKafkaConfig {
 
-    @Value(value = "${kafka.bootstrapAddress}")
+    @Value(value = "${datana.kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
-    @Value(value = "${kafka.topic}")
+    @Value(value = "${datana.kafka.topic}")
     private String topicName;
 
-    @Value(value = "${kafka.ssl.keystore.type}")
+    @Value(value = "${datana.kafka.ssl.keystore.type}")
     private String keyStoreType;
 
-    @Value(value = "${kafka.ssl.keystore.location}")
+    @Value(value = "${datana.kafka.ssl.keystore.location}")
     private String keystoreLocation;
 
 
-    @Value(value = "${kafka.ssl.keystore.password}")
+    @Value(value = "${datana.kafka.ssl.keystore.password}")
     private String keystorePassword;
 
-    @Value(value = "${kafka.ssl.key.password}")
+    @Value(value = "${datana.kafka.ssl.key.password}")
     private String keyPassword;
 
-    @Value(value = "${kafka.ssl.truststore.type}")
+    @Value(value = "${datana.kafka.ssl.truststore.type}")
     private String truststoreType;
 
-    @Value(value = "${kafka.ssl.truststore.location}")
+    @Value(value = "${datana.kafka.ssl.truststore.location}")
     private String truststoreLocation;
 
 
-    @Value(value = "${kafka.ssl.truststore.password}")
+    @Value(value = "${datana.kafka.ssl.truststore.password}")
     private String truststorePassword;
 
-    @Value(value = "${kafka.ssl.secure.random.implementation}")
+    @Value(value = "${datana.kafka.ssl.secure.random.implementation}")
     private String secureRandomImplementation;
 
     public Map<String, Object> getConfigForKafka(String kafkaClientId) {

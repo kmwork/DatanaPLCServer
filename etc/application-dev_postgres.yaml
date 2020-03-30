@@ -1,47 +1,101 @@
+datana:
+  global:
+    ## просьба версию не менять
+    appVersion: 2020-03-30_PLC_SERVER_AND_CLIENT
+    debug: true
+    log:
+      level: INFO
+    data-dir: "/home/lin/work-lanit/S7ParserXML-K6/DATA"
+  database-options:
+  spring:
+    datasource:
+      driver-class: org.postgresql.Driver
+      jdbcUrl: jdbc:postgresql://localhost:5432/postgres
+      username: postgres
+      password: 1
+      schema: datalake
+  kafka:
+    sever-topic-for-sensor: datana_topic_kafka_plc_for_sensor
+    client-topic-for-meta-info: datana_topic_kafka_plc_meta_info
+    bootstrapAddress: SSL://localhost:9093
+    producer-meta:
+      id: datanaProducerPlcServerMeta
+    consumer-meta:
+      id: datanaConsumerPlcClientMeta
+      group-id: datana-consumer-plc-server
+    ssl:
+      key:
+        password: 12345678
+      keystore:
+        location: /home/lin/apps/bin-gen-ssl-keys/keystore-client.jks
+        password: 12345678
+        type: JKS
+      protocol: TLS
+      secure:
+        random:
+          implementation: SHA1PRNG
+      trustmanager:
+        algorithm: PKIX
+      truststore:
+        location: /home/lin/apps/jdk13/lib/security/cacerts
+        password: changeit
+        type: JKS
+
+
+### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
 spring:
   main:
     banner-mode: off
-acks: all
-app:
-  version: Test-K8
-broker:
-  id: 0
-enable:
-  idempotence: true
-group:
-  id: datana-test-group
-isolation:
-  level: read_committed
-kafka:
-  topic: datana_topic_kafka
-  bootstrapAddress: SSL://localhost:9093
-  producer-id: datanaProducerK7
-  consumer-id: datanaConsumerK007
-  ssl:
-    key:
-      password: 12345678
-    keystore:
-      location: /home/lin/apps/bin-gen-ssl-keys/keystore-client.jks
-      password: 12345678
-      type: JKS
-    protocol: TLS
-    secure:
-      random:
-        implementation: SHA1PRNG
-    trustmanager:
-      algorithm: PKIX
-    truststore:
-      location: /home/lin/apps/jdk13/lib/security/cacerts
-      password: changeit
-      type: JKS
-max:
-  in:
-    flight:
-      requests:
-        per:
-          connection: 1
-retries: 3
-security:
-  protocol: SSL
+  application:
+    name: ${datana.global.appVersion}
+  datasource:
+    driver-class: ${datana.spring.datasource.driver-class}
+    driver-class-name: ${datana.spring.datasource.driver-class}
+    hikari:
+      auto-commit: false
+      connection-timeout: 60000
+      maximum-pool-size: 5
+      schema: ${datana.spring.datasource.schema}
+    password: ${datana.spring.datasource.password}
+    testWhileIdle: true
+    url: ${datana.spring.datasource.jdbcUrl}
+    jdbcUrl: ${datana.spring.datasource.jdbcUrl}
+    username: ${datana.spring.datasource.username}
+    validationQuery: SELECT 1
+
+    jooq:
+      sql-dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    jpa:
+      generate-ddl: false
+      show-sql: ${datana.global.debug}
+      hibernate:
+        ddl-auto: validate
+        naming:
+          implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+          physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        use-new-id-generator-mappings: false
+      open-in-view: false
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQL95Dialect
+### logging ###
+logging:
+  level:
+    root: ${datana.global.log.level}
+    executableSql: ${datana.global.log.level}
+    org:
+      apache:
+        tomcat:
+          util: INFO
+      hibernate:
+        engine:
+          transaction: ${datana.global.log.level}
+        SQL: ${datana.global.log.level}
+      springframework:
+        web: ${datana.global.log.level}
+    ru:
+      datana: DEBUG
+    sun: INFO
+    javax: INFO
 
 

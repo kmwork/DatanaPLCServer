@@ -15,7 +15,7 @@ public class DanataKafkaMessageProducer {
     private KafkaTemplate<String, String> kafkaTemplate;
 
 
-    @Value(value = "${kafka.topic}")
+    @Value(value = "${datana.kafka.topic}")
     private String topicName;
 
 

@@ -13,7 +13,7 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
 
-    @Value(value = "${kafka.producer-id}")
+    @Value(value = "${datana.kafka.producer-id}")
     private String kafkaProducerId;
 
     @Autowired

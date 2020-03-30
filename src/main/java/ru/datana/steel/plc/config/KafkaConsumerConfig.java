@@ -15,7 +15,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-    @Value(value = "${kafka.consumer-id}")
+    @Value(value = "${datana.kafka.consumer-id}")
     private String kafkaConsumerId;
 
     @Autowired
