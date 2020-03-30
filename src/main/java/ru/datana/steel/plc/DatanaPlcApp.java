@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.kafka.DanataPlcServerKafkaMessageProducer;
 import ru.datana.steel.plc.kafka.DatanaKafkaListener;
+import ru.datana.steel.plc.util.DatanaJsonHelper;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
 @SpringBootApplication
@@ -20,10 +22,11 @@ public class DatanaPlcApp {
         DanataPlcServerKafkaMessageProducer producer = context.getBean(DanataPlcServerKafkaMessageProducer.class);
         DatanaKafkaListener listener = context.getBean(DatanaKafkaListener.class);
 
-        producer.sendMessage("Hello, World!");
+        DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
+        producer.sendMessage(jsonHelper.genRequestId(AppConst.JSON_PREFIX_META_INFO), "Hello, World!");
 
         for (int i = 0; i < 5; i++) {
-            producer.sendMessage("Hello To Partioned Topic!");
+            producer.sendMessage(jsonHelper.genRequestId(AppConst.JSON_PREFIX_META_INFO), "Hello To Partioned Topic!");
         }
         context.close();
     }

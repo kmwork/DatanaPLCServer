@@ -141,7 +141,7 @@ public class S7GithubExecutor implements Closeable {
         if (value != null)
             response.setData(value.toString());
 
-        response.setId(jsonHelper.genResponseId());
+        response.setId(jsonHelper.genResponseId(AppConst.JSON_PREFIX_SENSOR));
         response.setStatus(status);
         return response;
     }

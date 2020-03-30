@@ -30,4 +30,6 @@ public class AppConst {
 
     public static final String DB_DEV_POSTGRES_PROFILE = "dev_postgres";
     public static final String DB_REMOTE_POSTGRES_PROFILE = "remote_postgres";
+    public static final String JSON_PREFIX_SENSOR = "Sensor";
+    public static final String JSON_PREFIX_META_INFO = "MetaInfo";
 }

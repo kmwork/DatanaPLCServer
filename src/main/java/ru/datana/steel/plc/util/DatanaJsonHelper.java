@@ -13,13 +13,13 @@ public class DatanaJsonHelper {
 
     }
 
-    public String genRequestId() {
+    public String genRequestId(String prefix) {
         requestCount++;
-        return "Request:" + System.nanoTime() + ":Req-Index:" + requestCount;
+        return "Request[" + prefix + "]:" + System.nanoTime() + ":Req-Index:" + requestCount;
     }
 
-    public String genResponseId() {
+    public String genResponseId(String prefix) {
         responseCount++;
-        return "Response:" + System.nanoTime() + ":Res-Index:" + responseCount;
+        return "Response[" + prefix + "]:" + System.nanoTime() + ":Res-Index:" + responseCount;
     }
 }
