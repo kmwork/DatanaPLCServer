@@ -15,14 +15,9 @@ public class DanataKafkaMessageProducer {
     private KafkaTemplate<String, String> kafkaTemplate;
 
 
-    @Value(value = "${message.topic.name}")
+    @Value(value = "${kafka.topic}")
     private String topicName;
 
-    @Value(value = "${partitioned.topic.name}")
-    private String partionedTopicName;
-
-    @Value(value = "${filtered.topic.name}")
-    private String filteredTopicName;
 
 
     public void sendMessage(String message) {

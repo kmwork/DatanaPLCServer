@@ -1,0 +1,48 @@
+spring:
+  main:
+    banner-mode: off
+acks: all
+app:
+  version: Test-K8
+broker:
+  id: 0
+enable:
+  idempotence: true
+group:
+  id: datana-test-group
+isolation:
+  level: read_committed
+kafka:
+  topic: datana_topic_kafka
+  bootstrapAddress: SSL://localhost:9093
+max:
+  in:
+    flight:
+      requests:
+        per:
+          connection: 1
+retries: 3
+security:
+  protocol: SSL
+ssl:
+  client:
+    auth: required
+  endpoint:
+    identification:
+      algorithm: ''
+  key:
+    password: 12345678
+  keystore:
+    location: /home/lin/apps/bin-gen-ssl-keys/keystore-client.jks
+    password: 12345678
+    type: JKS
+  protocol: TLS
+  secure:
+    random:
+      implementation: SHA1PRNG
+  trustmanager:
+    algorithm: PKIX
+  truststore:
+    location: /home/lin/apps/jdk13/lib/security/cacerts
+    password: changeit
+    type: JKS
