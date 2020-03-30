@@ -15,7 +15,7 @@ isolation:
 kafka:
   topic: datana_topic_kafka
   bootstrapAddress: SSL://localhost:9093
-  procuder-id: datanaProducerK7
+  producer-id: datanaProducerK7
   consumer-id: datanaConsumerK007
   ssl:
     auth: required
