@@ -19,4 +19,15 @@ public class AppConst {
     public static final long S7_SLEEP_MS = 500;
     public static final Integer JSON_SUCCESS_CODE = 1;
     public static final Integer JSON_ERROR_CODE = 0;
+
+
+    public static final String SYS_PROFILE_PROP = "app.profile";
+    public final static String EXT_DEV_CONFIG_NAME = "application-dev_postgres.yaml";
+    public final static String EXT_REMOTE_CONFIG_NAME = "application-remote_postgres.yaml";
+
+
+    public static final String S7_ROOT_CONFIG_FILE_NAME = "config-plc.xml";
+
+    public static final String DB_DEV_POSTGRES_PROFILE = "dev_postgres";
+    public static final String DB_REMOTE_POSTGRES_PROFILE = "remote_postgres";
 }
