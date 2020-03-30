@@ -18,7 +18,6 @@ kafka:
   producer-id: datanaProducerK7
   consumer-id: datanaConsumerK007
   ssl:
-    auth: required
     key:
       password: 12345678
     keystore:

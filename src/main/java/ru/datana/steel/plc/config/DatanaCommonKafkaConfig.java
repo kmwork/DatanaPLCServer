@@ -50,7 +50,7 @@ public class DatanaCommonKafkaConfig {
 
     public Map<String, Object> getConfigForKafka(String kafkaClientId) {
         Map<String, Object> configs = new HashMap<>();
-
+        configs.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
         configs.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2");
         configs.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, keyStoreType);
         configs.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation);

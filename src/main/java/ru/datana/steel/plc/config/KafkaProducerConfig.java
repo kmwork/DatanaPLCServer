@@ -8,7 +8,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -22,8 +21,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        datanaCommonKafkaConfig.getConfigForKafka(kafkaProducerId);
+        Map<String, Object> configProps = datanaCommonKafkaConfig.getConfigForKafka(kafkaProducerId);
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
