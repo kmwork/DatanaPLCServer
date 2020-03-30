@@ -14,10 +14,10 @@ import java.util.Map;
 @Configuration
 public class KafkaPlcClientConsumerMetaConfig {
     @Autowired
-    private DatanaCommonKafkaConfig datanaCommonKafkaConfig;
+    private DatanaCommonKafkaConfig kafkaConfig;
 
     public ConsumerFactory<String, String> consumerFactory(String groupId) {
-        Map<String, Object> props = datanaCommonKafkaConfig.getConfigForKafka(datanaCommonKafkaConfig.getKafkaConsumerMetaId());
+        Map<String, Object> props = kafkaConfig.getConfigForKafka(kafkaConfig.getKafkaConsumerMetaId());
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -28,8 +28,8 @@ public class KafkaPlcClientConsumerMetaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String> fooKafkaListenerContainerFactory() {
-        return kafkaListenerContainerFactory("kafkaConsumerMetaGroupId");
+    public ConcurrentKafkaListenerContainerFactory<String, String> metaKafkaListenerContainerFactory() {
+        return kafkaListenerContainerFactory(kafkaConfig.getKafkaConsumerMetaId());
     }
 
     @Bean
