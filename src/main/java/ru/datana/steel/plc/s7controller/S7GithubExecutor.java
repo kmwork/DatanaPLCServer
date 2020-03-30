@@ -6,9 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.Controller;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
-import ru.datana.steel.plc.model.json.request.JsonDataVal;
-import ru.datana.steel.plc.model.json.request.JsonDatum;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
+import ru.datana.steel.plc.model.json.request.JsonSensorDataVal;
+import ru.datana.steel.plc.model.json.request.JsonSensorDatum;
 import ru.datana.steel.plc.model.json.request.JsonSensorSingleRequest;
 import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
 import ru.datana.steel.plc.model.json.response.JsonSensorError;
@@ -118,7 +118,7 @@ public class S7GithubExecutor implements Closeable {
         try {
 
             initS7Connection(request.getControllerId());
-            for (JsonDatum datum : request.getData()) {
+            for (JsonSensorDatum datum : request.getData()) {
                 List<JsonSensorResponse> responsesByOneRequest = readBlockFromS7(request, datum);
                 responseList.addAll(responsesByOneRequest);
             }
@@ -202,13 +202,13 @@ public class S7GithubExecutor implements Closeable {
         log.info(PREFIX_LOG + " Коннекты  весели открытыми с ID = " + ids);
     }
 
-    private List<JsonSensorResponse> readBlockFromS7(JsonSensorSingleRequest jsonRequest, JsonDatum datum) throws AppException, InterruptedException {
+    private List<JsonSensorResponse> readBlockFromS7(JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
         //читаем данные
         int intS7DBNumber = ValueParser.parseInt(datum.getDataBlock().substring(2), "Json:DataBlock");
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         int minOffset = Integer.MAX_VALUE;
         int maxOffset = Integer.MIN_VALUE;
-        for (JsonDataVal dataVal : datum.getDataVals()) {
+        for (JsonSensorDataVal dataVal : datum.getDataVals()) {
             int offset = dataVal.getOffset();
             EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
             int sizeBytes = (type.getBitCount() + 7) / 8;
@@ -221,7 +221,7 @@ public class S7GithubExecutor implements Closeable {
             FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
 
             LocalDateTime time = LocalDateTime.now();
-            for (JsonDataVal dataVal : datum.getDataVals()) {
+            for (JsonSensorDataVal dataVal : datum.getDataVals()) {
                 int bytesOffset = dataVal.getOffset() - minOffset;
                 assert bytesOffset >= 0;
                 EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());

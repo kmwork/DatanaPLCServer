@@ -29,6 +29,6 @@ public class JsonSensorSingleRequest {
     @JsonProperty("data")
     @Valid
     @NotNull
-    protected List<JsonDatum> data = null;
+    protected List<JsonSensorDatum> data = null;
 
 }

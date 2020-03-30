@@ -15,7 +15,7 @@ import java.util.List;
         "data-vals"
 })
 @Data
-public class JsonDatum {
+public class JsonSensorDatum {
 
     /**
      * (Required)
@@ -29,6 +29,6 @@ public class JsonDatum {
     @JsonProperty("data-vals")
     @Valid
     @NotNull
-    protected List<JsonDataVal> dataVals = null;
+    protected List<JsonSensorDataVal> dataVals = null;
 
 }

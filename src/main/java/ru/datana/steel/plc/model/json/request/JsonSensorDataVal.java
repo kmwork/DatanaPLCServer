@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
         "id"
 })
 @Data
-public class JsonDataVal {
+public class JsonSensorDataVal {
 
     /**
      * (Required)
