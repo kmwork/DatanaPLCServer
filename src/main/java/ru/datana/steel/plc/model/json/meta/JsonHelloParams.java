@@ -1,4 +1,4 @@
-package ru.datana.steel.plc.model.json.request;
+package ru.datana.steel.plc.model.json.meta;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
