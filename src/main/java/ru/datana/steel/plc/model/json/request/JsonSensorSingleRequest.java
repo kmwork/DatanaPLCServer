@@ -15,7 +15,7 @@ import java.util.List;
         "data"
 })
 @Data
-public class JsonRequest {
+public class JsonSensorSingleRequest {
 
     /**
      * (Required)

@@ -20,7 +20,7 @@ import java.util.List;
         "response"
 })
 @Data
-public class JsonRootResponse {
+public class JsonRootSensorResponse {
 
     /**
      * (Required)
@@ -58,6 +58,6 @@ public class JsonRootResponse {
     @JsonProperty("response")
     @Valid
     @NotNull
-    protected List<JsonResponse> response = null;
+    protected List<JsonSensorResponse> response = null;
 
 }

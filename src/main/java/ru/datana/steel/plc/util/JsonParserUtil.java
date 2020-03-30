@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
-import ru.datana.steel.plc.model.json.request.JsonRootRequest;
-import ru.datana.steel.plc.model.json.response.JsonRootResponse;
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
+import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
 import ru.datana.steel.plc.s7controller.S7GithubExecutor;
 
 import java.io.File;
@@ -27,13 +27,13 @@ public class JsonParserUtil {
                 String strArgs = AppConst.SYS_DIR_PROP + " = '" + dir + "'";
                 throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "пустое значение", strArgs, null);
             }
-            JsonRootRequest jsonRootRequest = mapper.readValue(new File(dir, "request-example.json"), JsonRootRequest.class);
+            JsonRootSensorRequest jsonRootRequest = mapper.readValue(new File(dir, "request-example.json"), JsonRootSensorRequest.class);
             log.info("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
 
 
             JsonMetaRootController jsonRootMetaResponse = mapper.readValue(new File(dir, "plc-meta-response-example.json"), JsonMetaRootController.class);
 
-            JsonRootResponse jsonRootResponse = null;
+            JsonRootSensorResponse jsonRootResponse = null;
             try (S7GithubExecutor s7 = new S7GithubExecutor()) {
                 s7.init(jsonRootMetaResponse);
                 jsonRootResponse = s7.run(jsonRootRequest);

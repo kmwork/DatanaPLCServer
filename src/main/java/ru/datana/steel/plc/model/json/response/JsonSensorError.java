@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 })
 @Data
-public class JsonError {
+public class JsonSensorError {
     @NotNull
     @JsonProperty("type-code")
     private Integer typeCode;

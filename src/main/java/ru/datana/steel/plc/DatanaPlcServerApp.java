@@ -13,11 +13,11 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
 @SpringBootApplication
 @Slf4j
-public class DatanaPlcApp {
+public class DatanaPlcServerApp {
 
     public static void main(String[] args) throws Exception {
         ExtSpringProfileUtil.extConfigure();
-        ConfigurableApplicationContext context = SpringApplication.run(DatanaPlcApp.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(DatanaPlcServerApp.class, args);
 
         DanataPlcServerKafkaMessageProducer producer = context.getBean(DanataPlcServerKafkaMessageProducer.class);
         DatanaKafkaListener listener = context.getBean(DatanaKafkaListener.class);

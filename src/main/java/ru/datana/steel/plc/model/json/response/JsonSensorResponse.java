@@ -1,4 +1,4 @@
-package ru.datana.steel.plc.model.json.request;
+package ru.datana.steel.plc.model.json.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,38 +12,45 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "request_id",
-        "task_id",
-        "request-datetime",
-        "request"
+        "id",
+        "data",
+        "controller-datetime",
+        "status",
+        "errors"
 })
 @Data
-public class JsonRootRequest {
+public class JsonSensorResponse {
 
     /**
      * (Required)
      */
-    @JsonProperty("request_id")
+    @JsonProperty("id")
     @NotNull
-    protected String requestId;
+    protected String id;
     /**
      * (Required)
      */
-    @JsonProperty("task_id")
+    @JsonProperty("data")
     @NotNull
-    protected Integer taskId;
+    protected String data;
     /**
      * (Required)
      */
-    @JsonProperty("request-datetime")
+    @JsonProperty("controller-datetime")
     @NotNull
-    protected LocalDateTime requestDatetime;
+    protected LocalDateTime controllerDatetime;
     /**
      * (Required)
      */
-    @JsonProperty("request")
+    @JsonProperty("status")
+    @NotNull
+    protected Integer status;
+    /**
+     * (Required)
+     */
+    @JsonProperty("errors")
     @Valid
     @NotNull
-    protected List<JsonRequest> request = null;
+    protected List<JsonSensorError> errors = null;
 
 }
