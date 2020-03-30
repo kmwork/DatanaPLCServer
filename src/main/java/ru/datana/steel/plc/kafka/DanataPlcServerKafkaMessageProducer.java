@@ -23,7 +23,7 @@ public class DanataPlcServerKafkaMessageProducer {
 
     public void sendMessage(String requestId, String jsonMessage) {
         log.info(PREFIX_LOG + "Отпрака сообщение в кафку: requestId = {}, jsonMessage = {}", requestId, jsonMessage);
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(kafkaConfig.getMetaInfoTopic(), jsonMessage);
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(kafkaConfig.getMetaInfoTopic(), requestId, jsonMessage);
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 

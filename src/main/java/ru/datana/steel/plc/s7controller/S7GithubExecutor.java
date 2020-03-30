@@ -34,7 +34,8 @@ public class S7GithubExecutor implements Closeable {
     private Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
     private Map<Integer, Controller> metaByControllerId = new HashMap<>();
     private S7TCPConnection currentConnector = null;
-    private static int RESPONSE_COUNT = 0;
+    private DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
+
 
     public void init(JsonMetaRootController controllerMeta) {
         metaByControllerId.clear();
@@ -108,12 +109,6 @@ public class S7GithubExecutor implements Closeable {
         return jsonResult;
     }
 
-    private String genId() {
-        RESPONSE_COUNT++;
-        return "Response:" + System.nanoTime() + ":Index:" + RESPONSE_COUNT;
-
-    }
-
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
     }
@@ -146,7 +141,7 @@ public class S7GithubExecutor implements Closeable {
         if (value != null)
             response.setData(value.toString());
 
-        response.setId(genId());
+        response.setId(jsonHelper.genResponseId());
         response.setStatus(status);
         return response;
     }
