@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class DatanaKafkaListener {
 
 
-    @KafkaListener(topics = "${datana.kafka.topic}", groupId = "foo", containerFactory = "fooKafkaListenerContainerFactory")
+    @KafkaListener(topics = "${datanaCommonKafkaConfig.metaInfoTopic}", groupId = "{${datanaCommonKafkaConfig.kafkaConsumerMetaGroupId}", containerFactory = "fooKafkaListenerContainerFactory")
     public void listenGroupFoo(String message) {
         log.info("Received Messasge in group 'foo': " + message);
     }

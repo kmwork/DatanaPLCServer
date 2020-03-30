@@ -1,5 +1,6 @@
 package ru.datana.steel.plc.config;
 
+import lombok.Data;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -14,13 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@Data
 public class DatanaCommonKafkaConfig {
 
     @Value(value = "${datana.kafka.bootstrapAddress}")
     private String bootstrapAddress;
 
-    @Value(value = "${datana.kafka.topic}")
-    private String topicName;
+    @Value(value = "${datana.kafka.topic-for-sensor}")
+    private String sensorTopic;
+
+    @Value(value = "${datana.kafka.topic-for-meta-info}")
+    private String metaInfoTopic;
 
     @Value(value = "${datana.kafka.ssl.keystore.type}")
     private String keyStoreType;
@@ -47,6 +52,16 @@ public class DatanaCommonKafkaConfig {
 
     @Value(value = "${datana.kafka.ssl.secure.random.implementation}")
     private String secureRandomImplementation;
+
+
+    @Value(value = "${datana.kafka.consumer-meta.id}")
+    private String kafkaConsumerMetaId;
+
+    @Value(value = "${datana.kafka.producer-meta.id}")
+    private String kafkaProducerMetaId;
+
+    @Value(value = "${datana.kafka.consumer-meta.group-id}")
+    private String kafkaConsumerMetaGroupId;
 
     public Map<String, Object> getConfigForKafka(String kafkaClientId) {
         Map<String, Object> configs = new HashMap<>();

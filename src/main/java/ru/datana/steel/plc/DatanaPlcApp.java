@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
-import ru.datana.steel.plc.kafka.DanataKafkaMessageProducer;
+import ru.datana.steel.plc.kafka.DanataPlcServerKafkaMessageProducer;
 import ru.datana.steel.plc.kafka.DatanaKafkaListener;
 
 import java.io.File;
@@ -21,7 +21,7 @@ public class DatanaPlcApp {
         extConfigure();
         ConfigurableApplicationContext context = SpringApplication.run(DatanaPlcApp.class, args);
 
-        DanataKafkaMessageProducer producer = context.getBean(DanataKafkaMessageProducer.class);
+        DanataPlcServerKafkaMessageProducer producer = context.getBean(DanataPlcServerKafkaMessageProducer.class);
         DatanaKafkaListener listener = context.getBean(DatanaKafkaListener.class);
 
         producer.sendMessage("Hello, World!");

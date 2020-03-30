@@ -1,7 +1,6 @@
 package ru.datana.steel.plc.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
@@ -13,16 +12,12 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfig {
-
-    @Value(value = "${datana.kafka.consumer-id}")
-    private String kafkaConsumerId;
-
+public class KafkaPlcClientConsumerMetaConfig {
     @Autowired
     private DatanaCommonKafkaConfig datanaCommonKafkaConfig;
 
     public ConsumerFactory<String, String> consumerFactory(String groupId) {
-        Map<String, Object> props = datanaCommonKafkaConfig.getConfigForKafka(kafkaConsumerId);
+        Map<String, Object> props = datanaCommonKafkaConfig.getConfigForKafka(datanaCommonKafkaConfig.getKafkaConsumerMetaId());
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -34,7 +29,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> fooKafkaListenerContainerFactory() {
-        return kafkaListenerContainerFactory("foo");
+        return kafkaListenerContainerFactory("kafkaConsumerMetaGroupId");
     }
 
     @Bean

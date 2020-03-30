@@ -1,28 +1,25 @@
 package ru.datana.steel.plc.kafka;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+import ru.datana.steel.plc.config.DatanaCommonKafkaConfig;
 
 @Component
-public class DanataKafkaMessageProducer {
+public class DanataPlcServerKafkaMessageProducer {
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-
-    @Value(value = "${datana.kafka.topic}")
-    private String topicName;
-
-
+    @Autowired
+    private DatanaCommonKafkaConfig kafkaConfig;
 
     public void sendMessage(String message) {
 
-        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topicName, message);
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(kafkaConfig.getMetaInfoTopic(), message);
 
         future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
 
