@@ -1,4 +1,4 @@
-package ru.datana.steel.plc;
+package ru.datana.steel.plc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
