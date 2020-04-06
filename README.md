@@ -5,7 +5,7 @@
 задача в JIRE: https://jira.dds.lanit.ru/browse/VACUM-23
 
 ## cборка Maven 3 + JDK 13
-`mvn clean compile assembly:single`
+`mvn clean compile package spring-boot:repackage`
 
 ## Как пользоваться для теста (пока загрузка и работа с файлами так как нет PLC Client еще)
 в папке test командный файл run-datana.sh
