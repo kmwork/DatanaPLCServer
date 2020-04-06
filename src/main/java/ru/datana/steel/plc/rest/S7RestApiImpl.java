@@ -7,10 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.datana.steel.plc.config.SpringConfig;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
@@ -32,7 +29,7 @@ public class S7RestApiImpl implements S7RestApi {
     SpringConfig springConfig;
     private ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     @Override
     public String getVersion() {
@@ -46,10 +43,10 @@ public class S7RestApiImpl implements S7RestApi {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Override
-    public JsonRootSensorResponse getData(JsonRootSensorRequest fromJson) {
+    public JsonRootSensorResponse getData(@RequestBody JsonRootSensorRequest fromJson) {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
         try (S7GithubExecutor s7 = new S7GithubExecutor()) {
