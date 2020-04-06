@@ -12,14 +12,16 @@
         <profile>
             <id>plcClient</id>
             <properties>
-                <spring.boot.mainclass>ru.datana.steel.plc.DatanaPlcClientApp</spring.boot.mainclass>
+                <app.skip.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.skip.class>
+                <app.main.class>ru.datana.steel.plc.DatanaPlcClientApp</app.main.class>
                 <app.artifactId>PLC-Client</app.artifactId>
             </properties>
         </profile>
         <profile>
             <id>plcServer</id>
             <properties>
-                <spring.boot.mainclass>ru.datana.steel.plc.DatanaOnRestPlcServerApp</spring.boot.mainclass>
+                <app.skip.class>ru.datana.steel.plc.DatanaPlcClientApp</app.skip.class>
+                <app.main.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.main.class>
                 <app.artifactId>PLC-Server</app.artifactId>
             </properties>
         </profile>
@@ -108,39 +110,6 @@
 
     </dependencies>
 
-    <!--    <build>-->
-    <!--        <plugins>-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.codehaus.mojo</groupId>-->
-    <!--                <artifactId>exec-maven-plugin</artifactId>-->
-    <!--                <version>1.2.1</version>-->
-    <!--                <executions>-->
-    <!--                    <execution>-->
-    <!--                        <goals>-->
-    <!--                            <goal>java</goal>-->
-    <!--                        </goals>-->
-    <!--                    </execution>-->
-    <!--                </executions>-->
-    <!--            </plugin>-->
-    <!--            <plugin>-->
-    <!--                <groupId>org.apache.maven.plugins</groupId>-->
-    <!--                <artifactId>maven-shade-plugin</artifactId>-->
-    <!--                <version>2.4.3</version>-->
-    <!--                <executions>-->
-    <!--                    <execution>-->
-    <!--                        <phase>package</phase>-->
-    <!--                        <goals>-->
-    <!--                            <goal>shade</goal>-->
-    <!--                        </goals>-->
-    <!--                    </execution>-->
-    <!--                </executions>-->
-    <!--                <configuration>-->
-    <!--                    <finalName>datana-kafka-${project.artifactId}-${project.version}</finalName>-->
-    <!--                </configuration>-->
-    <!--            </plugin>-->
-    <!--        </plugins>-->
-    <!--    </build>-->
-
     <build>
         <plugins>
 
@@ -155,7 +124,7 @@
                         </goals>
                         <configuration>
                             <classifier>spring-boot</classifier>
-                            <mainClass>${spring.boot.mainclass}</mainClass>
+                            <mainClass>${app.main.class}</mainClass>
                         </configuration>
                     </execution>
                 </executions>
