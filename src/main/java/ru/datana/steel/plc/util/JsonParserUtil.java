@@ -3,45 +3,55 @@ package ru.datana.steel.plc.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
-import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
-import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
-import ru.datana.steel.plc.s7controller.S7GithubExecutor;
 
 import java.io.File;
+import java.io.IOException;
 
 @Slf4j
 public class JsonParserUtil {
+    @Getter
+    private final static JsonParserUtil instance = new JsonParserUtil();
 
-    public static void main(String[] args) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JavaTimeModule());
-            mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    private final ObjectMapper mapper = new ObjectMapper();
+    private String dir = System.getProperty(AppConst.SYS_DIR_PROP);
+    private long prevLastModified = 0;
+    private JsonMetaRootController prevJsonRootMetaResponse = null;
 
-            String dir = System.getProperty(AppConst.SYS_DIR_PROP);
-            if (StringUtils.isEmpty(dir)) {
-                String strArgs = AppConst.SYS_DIR_PROP + " = '" + dir + "'";
-                throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "пустое значение", strArgs, null);
-            }
-            JsonRootSensorRequest jsonRootRequest = mapper.readValue(new File(dir, "request-example.json"), JsonRootSensorRequest.class);
-            log.info("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
+    private JsonParserUtil() {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    }
 
-
-            JsonMetaRootController jsonRootMetaResponse = mapper.readValue(new File(dir, "plc-meta-response-example.json"), JsonMetaRootController.class);
-
-            JsonRootSensorResponse jsonRootResponse = null;
-            try (S7GithubExecutor s7 = new S7GithubExecutor()) {
-                s7.init(jsonRootMetaResponse);
-                jsonRootResponse = s7.run(jsonRootRequest);
-            }
-            log.info("[JSON-Parser] jsonRootResponse = " + jsonRootResponse);
-            log.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRootResponse));
-        } catch (Exception ex) {
-            log.error("Ошибка в программе: ", ex);
+    public JsonMetaRootController loadJsonMetaRootController() throws AppException {
+        if (StringUtils.isEmpty(dir)) {
+            String strArgs = AppConst.SYS_DIR_PROP + " = '" + dir + "'";
+            throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "пустое значение", strArgs, null);
         }
+
+        File f = new File(dir, "plc-meta-response-example.json");
+        try {
+
+            JsonMetaRootController result;
+            if (prevLastModified < f.lastModified() || prevJsonRootMetaResponse == null) {
+                log.info("[JSON-Parser:Load-Meta] Чтение файла = " + f.getAbsoluteFile());
+                result = mapper.readValue(f, JsonMetaRootController.class);
+                prevLastModified = f.lastModified();
+                prevJsonRootMetaResponse = result;
+            } else
+                result = prevJsonRootMetaResponse;
+            log.info("[JSON-Parser:Load-Meta] result = " + result);
+            //log.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRootResponse));
+            return result;
+        } catch (IOException ex) {
+            log.error("Ошибка в программе: ", ex);
+            String strArgs = "File: " + f.getAbsoluteFile();
+            throw new AppException(TypeException.INVALID_USER_INPUT_META_FILE, "Файл не смог прочитать", strArgs, ex);
+        }
+
     }
 }

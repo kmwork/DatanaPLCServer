@@ -11,7 +11,6 @@ import ru.datana.steel.plc.model.json.request.JsonSensorDataVal;
 import ru.datana.steel.plc.model.json.request.JsonSensorDatum;
 import ru.datana.steel.plc.model.json.request.JsonSensorSingleRequest;
 import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
-import ru.datana.steel.plc.model.json.response.JsonSensorError;
 import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
 import ru.datana.steel.plc.moka7.EnumSiemensDataType;
 import ru.datana.steel.plc.util.*;
@@ -86,7 +85,7 @@ public class S7GithubExecutor implements Closeable {
     }
 
     public JsonRootSensorResponse run(JsonRootSensorRequest request) {
-        LocalDateTime proxyTime = getCurrentTime();
+        LocalDateTime proxyTime = jsonHelper.getCurrentTime();
 
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         for (JsonSensorSingleRequest req : request.getRequest()) {
@@ -102,15 +101,11 @@ public class S7GithubExecutor implements Closeable {
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
         jsonResult.setRequestDatetime(request.getRequestDatetime());
         jsonResult.setRequestDatetimeProxy(proxyTime);
-        jsonResult.setResponseDatetime(getCurrentTime());
+        jsonResult.setResponseDatetime(jsonHelper.getCurrentTime());
         jsonResult.setRequestId(request.getRequestId());
         jsonResult.setTaskId(request.getTaskId());
         jsonResult.setResponse(jsonResponseList);
         return jsonResult;
-    }
-
-    private LocalDateTime getCurrentTime() {
-        return LocalDateTime.now();
     }
 
     private List<JsonSensorResponse> doWorkRequest(JsonSensorSingleRequest request) {
@@ -123,7 +118,7 @@ public class S7GithubExecutor implements Closeable {
                 responseList.addAll(responsesByOneRequest);
             }
         } catch (Exception ex) {
-            JsonSensorResponse response = createJsonRequestWithError(request, ex);
+            JsonSensorResponse response = jsonHelper.createJsonRequestWithError(request, ex);
             responseList.add(response);
             log.error(AppConst.ERROR_LOG_PREFIX + "Ошибка при чтении S7 для request = " + request, ex);
         } finally {
@@ -134,36 +129,6 @@ public class S7GithubExecutor implements Closeable {
         return responseList;
     }
 
-    private JsonSensorResponse createJsonRequest(BigDecimal value, int status) {
-        JsonSensorResponse response = new JsonSensorResponse();
-        response.setControllerDatetime(getCurrentTime());
-
-        if (value != null)
-            response.setData(value.toString());
-
-        response.setId(jsonHelper.genResponseId(AppConst.JSON_PREFIX_SENSOR));
-        response.setStatus(status);
-        return response;
-    }
-
-    private JsonSensorResponse createJsonRequestWithError(JsonSensorSingleRequest request, Exception e) {
-        JsonSensorResponse jsonResult = createJsonRequest(null, AppConst.JSON_ERROR_CODE);
-        JsonSensorError jsonError = new JsonSensorError();
-        if (e instanceof AppException) {
-            AppException appEx = (AppException) e;
-            jsonError.setMsg(appEx.getMsg() + ": " + appEx.getMainEx().getMessage());
-            jsonError.setStrArgs(appEx.getStrArgs());
-            jsonError.setTypeCode(appEx.getType().getCodeError());
-        } else {
-            jsonError.setStrArgs("request.ControllerId = " + request.getControllerId());
-            jsonError.setMsg("Ошибка при работе S7 контроллера: " + e.getMessage());
-            jsonError.setTypeCode(TypeException.SYSTEM_ERROR.getCodeError());
-        }
-        List<JsonSensorError> errors = new ArrayList<>();
-        errors.add(jsonError);
-        jsonResult.setErrors(errors);
-        return jsonResult;
-    }
 
     private byte[] tryRead(JsonSensorSingleRequest jsonRequest, int intS7DBNumber, int length, int offset) throws AppException {
         byte[] dataBytes = null;
@@ -230,11 +195,11 @@ public class S7GithubExecutor implements Closeable {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
                 BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
-                JsonSensorResponse response = createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);
+                JsonSensorResponse response = jsonHelper.createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);
                 jsonResponseList.add(response);
             }
         } catch (Exception ex) {
-            JsonSensorResponse jsonResponse = createJsonRequestWithError(jsonRequest, ex);
+            JsonSensorResponse jsonResponse = jsonHelper.createJsonRequestWithError(jsonRequest, ex);
             jsonResponseList.add(jsonResponse);
         }
         return jsonResponseList;
