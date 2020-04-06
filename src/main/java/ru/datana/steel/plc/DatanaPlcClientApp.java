@@ -34,7 +34,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
 
-            callDbService.dbLoad();
+            callDbService.dbGet();
+            callDbService.dbSave("{}");
 
         } catch (Exception ex) {
             log.error(AppConst.ERROR_LOG_PREFIX + " Ошибка в программе", ex);

@@ -18,29 +18,45 @@ import java.util.List;
 public class CallDbServiceImpl implements CallDbService {
 
     @PersistenceContext
-    EntityManager entityManager;
+    protected EntityManager entityManager;
 
     @Value("${datana.database-options.postgresql-get-function}")
     @Setter
-    private String pgNativeSQL;
+    private String pgNativeGetSQL;
+
+
+    @Value("${datana.database-options.postgresql-save-function}")
+    @Setter
+    private String pgNativeSaveSQL;
 
     private Query funcGet;
+    private Query funcSave;
 
     @PostConstruct
     private void init() {
-        log.debug("[SQL] pgNativeSQL = " + pgNativeSQL);
-        funcGet = entityManager.createNativeQuery(pgNativeSQL);
+        log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
+        log.debug("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
+        funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
     }
 
 
     @Override
-    public void dbLoad() throws SQLException {
-        Object dl = entityManager.getDelegate();
-        log.debug("[SQL] pgNativeSQL = " + pgNativeSQL);
+    public String dbGet() throws SQLException {
+        log.debug("[SQL:Get] старт");
 
-        Query q = entityManager.createNativeQuery(pgNativeSQL);
-        List result = q.getResultList();
+        List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        log.info("toJson: " + toJson);
+        log.debug("[SQL:Get] результат = " + toJson);
+        return toJson;
+    }
+
+    @Override
+    public String dbSave(String fromJson) throws SQLException {
+        log.debug("[SQL:Save] data = " + fromJson);
+        funcSave.setParameter("fromJson", fromJson);
+        String toJson = funcGet.getResultList().get(0).toString();
+        log.debug("[SQL:Get] результат = " + toJson);
+        return toJson;
     }
 }
