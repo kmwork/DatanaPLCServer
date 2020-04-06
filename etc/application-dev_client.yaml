@@ -6,6 +6,7 @@ datana:
     log:
       level: INFO
   database-options:
+    postgresql-get-function: "select cast( datalake.plc_get_config('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}'::json) as text)"
   spring:
     datasource:
       driver-class: org.postgresql.Driver
@@ -34,22 +35,10 @@ spring:
     jdbcUrl: ${datana.spring.datasource.jdbcUrl}
     username: ${datana.spring.datasource.username}
     validationQuery: SELECT 1
-
-    jooq:
-      sql-dialect: org.hibernate.dialect.PostgreSQL95Dialect
-    jpa:
-      generate-ddl: false
-      show-sql: ${datana.global.debug}
+  jpa:
+    properties:
       hibernate:
-        ddl-auto: validate
-        naming:
-          implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
-          physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-        use-new-id-generator-mappings: false
-      open-in-view: false
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        dialect: ru.datana.steel.plc.db.DatanaJsonPostgreSQLDialect
 ### logging ###
 logging:
   level:
