@@ -1,0 +1,37 @@
+datana:
+  global:
+    ## просьба версию не менять
+    appVersion: 2020-04-06_PLC_SERVER
+    debug: true
+    log:
+      level: INFO
+  database-options:
+
+
+### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: ${datana.global.appVersion}
+### logging ###
+logging:
+  level:
+    root: ${datana.global.log.level}
+    executableSql: ${datana.global.log.level}
+    org:
+      apache:
+        tomcat:
+          util: INFO
+      hibernate:
+        engine:
+          transaction: ${datana.global.log.level}
+        SQL: ${datana.global.log.level}
+      springframework:
+        web: ${datana.global.log.level}
+    ru:
+      datana: DEBUG
+    sun: INFO
+    javax: INFO
+
+

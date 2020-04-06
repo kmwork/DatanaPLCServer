@@ -5,6 +5,7 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Profile;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
@@ -12,11 +13,12 @@ import java.util.Arrays;
 
 @Slf4j
 @SpringBootApplication
+@Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
 
 
     public static void main(String[] args) throws Exception {
-        ExtSpringProfileUtil.extConfigure();
+        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, AppConst.EXT_CLIENT_YAML);
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
@@ -24,7 +26,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
 

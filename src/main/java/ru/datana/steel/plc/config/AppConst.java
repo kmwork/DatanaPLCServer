@@ -21,14 +21,14 @@ public class AppConst {
     public static final Integer JSON_ERROR_CODE = 0;
 
 
-    public static final String SYS_PROFILE_PROP = "app.profile";
-    public final static String EXT_DEV_CONFIG_NAME = "application-dev_postgres.yaml";
-    public final static String EXT_REMOTE_CONFIG_NAME = "application-remote_postgres.yaml";
+    public final static String EXT_SERVER_YAML = "application-server.yaml";
+    public final static String EXT_CLIENT_YAML = "application-remote_postgres.yaml";
 
 
     public static final String S7_ROOT_CONFIG_FILE_NAME = "config-plc.xml";
 
-    public static final String DB_DEV_POSTGRES_PROFILE = "dev_postgres";
+    public static final String DB_DEV_POSTGRES_PROFILE = "dev_client";
+    public static final String SERVER_PROFILE = "server";
     public static final String DB_REMOTE_POSTGRES_PROFILE = "remote_postgres";
     public static final String JSON_PREFIX_SENSOR = "Sensor";
     public static final String JSON_PREFIX_META_INFO = "MetaInfo";
