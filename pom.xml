@@ -5,21 +5,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.datana</groupId>
-    <artifactId>Datata-PLC-Server</artifactId>
     <version>alfa-1</version>
-
+    <artifactId>${app.artifactId}</artifactId>
 
     <profiles>
         <profile>
             <id>plcClient</id>
             <properties>
                 <spring.boot.mainclass>ru.datana.steel.plc.DatanaPlcClientApp</spring.boot.mainclass>
+                <app.artifactId>PLC-Client</app.artifactId>
             </properties>
         </profile>
         <profile>
             <id>plcServer</id>
             <properties>
                 <spring.boot.mainclass>ru.datana.steel.plc.DatanaOnRestPlcServerApp</spring.boot.mainclass>
+                <app.artifactId>PLC-Server</app.artifactId>
             </properties>
         </profile>
     </profiles>
@@ -154,7 +155,7 @@
                         </goals>
                         <configuration>
                             <classifier>spring-boot</classifier>
-                            <mainClass>${app.main.class}</mainClass>
+                            <mainClass>${spring.boot.mainclass}</mainClass>
                         </configuration>
                     </execution>
                 </executions>
