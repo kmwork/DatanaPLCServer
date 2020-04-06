@@ -9,19 +9,19 @@
             <id>plcClient</id>
             <properties>
                 <app.main.class>ru.datana.steel.plc.DatanaPlcClientApp</app.main.class>
-                <build>
-                    <finalName>plc-client</finalName>
-                </build>
             </properties>
+            <build>
+                <finalName>plc-client</finalName>
+            </build>
         </profile>
         <profile>
             <id>plcServer</id>
             <properties>
                 <app.main.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.main.class>
-                <build>
-                    <finalName>plc-server</finalName>
-                </build>
             </properties>
+            <build>
+                <finalName>plc-server</finalName>
+            </build>
         </profile>
     </profiles>
 
@@ -116,22 +116,6 @@
     <build>
         <plugins>
 
-            <!--            <plugin>-->
-            <!--                <groupId>org.springframework.boot</groupId>-->
-            <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-            <!--                <version>${spring.boot.version}</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>repackage</goal>-->
-            <!--                        </goals>-->
-            <!--                        <configuration>-->
-            <!--                            <classifier>spring-boot</classifier>-->
-            <!--                            <mainClass>${app.main.class}</mainClass>-->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
