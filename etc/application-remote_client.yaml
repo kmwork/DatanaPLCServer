@@ -5,6 +5,8 @@ datana:
     debug: true
     log:
       level: INFO
+  plc-server:
+    url-server: http://localhost:8080/rest
   database-options:
     postgresql-get-function: "select cast( datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as json)) as text)"
     postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response( cast(:fromJson as json)) as text)"
@@ -17,8 +19,10 @@ datana:
       schema: datalake
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
+
 spring:
   main:
+    web-environment: false
     banner-mode: off
   application:
     name: ${datana.global.appVersion}

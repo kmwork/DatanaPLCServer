@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.SpringConfig;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
@@ -24,6 +26,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
+@Profile(AppConst.SERVER_PROFILE)
 public class S7RestApiImpl implements S7RestApi {
     @Autowired
     SpringConfig springConfig;
