@@ -4,28 +4,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ru.datana</groupId>
-    <version>alfa-1</version>
-    <artifactId>${app.artifactId}</artifactId>
-
     <profiles>
         <profile>
             <id>plcClient</id>
             <properties>
-                <app.skip.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.skip.class>
                 <app.main.class>ru.datana.steel.plc.DatanaPlcClientApp</app.main.class>
-                <app.artifactId>PLC-Client</app.artifactId>
+                <build>
+                    <finalName>plc-client</finalName>
+                </build>
             </properties>
         </profile>
         <profile>
             <id>plcServer</id>
             <properties>
-                <app.skip.class>ru.datana.steel.plc.DatanaPlcClientApp</app.skip.class>
                 <app.main.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.main.class>
-                <app.artifactId>PLC-Server</app.artifactId>
+                <build>
+                    <finalName>plc-server</finalName>
+                </build>
             </properties>
         </profile>
     </profiles>
+
+    <groupId>ru.datana</groupId>
+    <version>alfa-1</version>
+    <artifactId>plc</artifactId>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -113,23 +116,29 @@
     <build>
         <plugins>
 
+            <!--            <plugin>-->
+            <!--                <groupId>org.springframework.boot</groupId>-->
+            <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--                <version>${spring.boot.version}</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>repackage</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                            <classifier>spring-boot</classifier>-->
+            <!--                            <mainClass>${app.main.class}</mainClass>-->
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>spring-boot</classifier>
-                            <mainClass>${app.main.class}</mainClass>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <mainClass>${app.main.class}</mainClass>
+                </configuration>
             </plugin>
-
 
             <plugin>
                 <!-- для mvn dependency:tree -->

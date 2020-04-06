@@ -31,6 +31,7 @@ public class CallDbServiceImpl implements CallDbService {
     @Value("${datana.database-options.postgresql-save-function}")
     @Setter
     private String pgNativeSaveSQL;
+
     @PostConstruct
     private void init() {
         log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
