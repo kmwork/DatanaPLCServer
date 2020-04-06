@@ -8,8 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.support.GenericApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
@@ -18,12 +20,17 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import java.util.Arrays;
 
 @Slf4j
-@SpringBootApplication(exclude = {
-        ServletWebServerFactoryAutoConfiguration.class,
-        WebMvcAutoConfiguration.class})
+@SpringBootApplication(
+        exclude = {
+                ServletWebServerFactoryAutoConfiguration.class,
+                ServletWebServerFactory.class,
+                WebMvcAutoConfiguration.class})
 @EnableFeignClients
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
+    @Autowired
+    protected GenericApplicationContext context;
+
     @Autowired
     protected CallDbService callDbService;
 
