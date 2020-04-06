@@ -9,9 +9,9 @@ datana:
   spring:
     datasource:
       driver-class: org.postgresql.Driver
-      jdbcUrl: jdbc:postgresql://localhost:5432/postgres
+      jdbcUrl: jdbc:postgresql://172.29.40.50:5432/postgres
+      password: GHvbn-65
       username: postgres
-      password: 1
       schema: datalake
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####

@@ -22,7 +22,8 @@ public class AppConst {
 
 
     public final static String EXT_SERVER_YAML = "application-server.yaml";
-    public final static String EXT_CLIENT_YAML = "application-dev_client.yaml";
+    public final static String EXT_LOCAL_CLIENT_YAML = "application-dev_client.yaml";
+    public final static String EXT_REMOTE_CLIENT_YAML = "application-remote_client.yaml";
 
 
     public static final String S7_ROOT_CONFIG_FILE_NAME = "config-plc.xml";

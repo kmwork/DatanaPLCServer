@@ -22,7 +22,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
 
     public static void main(String[] args) throws Exception {
-        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, AppConst.EXT_CLIENT_YAML);
+        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, AppConst.EXT_REMOTE_CLIENT_YAML);
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
