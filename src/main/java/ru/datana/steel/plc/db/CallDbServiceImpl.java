@@ -28,23 +28,17 @@ public class CallDbServiceImpl implements CallDbService {
     @Value("${datana.database-options.postgresql-save-function}")
     @Setter
     private String pgNativeSaveSQL;
-
-    private Query funcGet;
-    private Query funcSave;
-
     @PostConstruct
     private void init() {
         log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
         log.debug("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
-        funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
-        funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
     }
 
 
     @Override
     public String dbGet() throws SQLException {
         log.debug("[SQL:Get] старт");
-
+        Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
         log.debug("[SQL:Get] результат = " + toJson);
@@ -54,8 +48,9 @@ public class CallDbServiceImpl implements CallDbService {
     @Override
     public String dbSave(String fromJson) throws SQLException {
         log.debug("[SQL:Save] data = " + fromJson);
+        Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
-        String toJson = funcGet.getResultList().get(0).toString();
+        String toJson = funcSave.getResultList().get(0).toString();
         log.debug("[SQL:Get] результат = " + toJson);
         return toJson;
     }
