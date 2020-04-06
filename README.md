@@ -18,7 +18,15 @@
        по controller id =2 -- нормальные настройки а остальные ошибочные (так как 2 байта с контроллера можно  
        вычитывать в текущей версии  настроек S1200)
        и программа матерится на ошибки так как просят вычитать не доступные данные
-    3) правильные данные читает и формирует в консоли JSON и ошибки что были тоже пишет в JSON
+    3) и ждет рест запросы
+        GET - http://localhost:8080/rest/getVersion
+        POST - http://localhost:8080/rest/getData   (в теле нужно передать JSON-запрос)
+        примеры JSON можно copy-past в POSTMEN  -cм в папке `user-manual`
+        
+#### Для тестирования рекомендация
+желательно использовать Open JDK/JRE 13
+и для RESTfull запросов POSTMEN как плагин к Хрому - 
+    postmen - расшрение к хрому - https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop/related?hl=ru          
     
 #### Примеры работы программы (тестовой)
     пример лога "1" в <this project>/test/example-log-not-vpn.txt (это без vpn) - проказываю когда нет связи
