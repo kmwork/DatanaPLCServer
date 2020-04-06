@@ -9,12 +9,25 @@
     <version>alfa-1</version>
 
 
+    <profiles>
+        <profile>
+            <id>plcClient</id>
+            <properties>
+                <spring.boot.mainclass>ru.datana.steel.plc.DatanaPlcClientApp</spring.boot.mainclass>
+            </properties>
+        </profile>
+        <profile>
+            <id>plcServer</id>
+            <properties>
+                <spring.boot.mainclass>ru.datana.steel.plc.DatanaOnRestPlcServerApp</spring.boot.mainclass>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>13</maven.compiler.target>
-        <app.main.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.main.class>
         <spring.boot.version>2.2.6.RELEASE</spring.boot.version>
     </properties>
 
