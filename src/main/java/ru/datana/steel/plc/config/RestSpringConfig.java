@@ -31,18 +31,37 @@ public class RestSpringConfig implements WebMvcConfigurer {
         objectMapper = createObjectMapper();
     }
 
+    /**
+     * Движок по работе JSON
+     *
+     * @return
+     */
     private ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         mapper.registerModule(new JavaTimeModule());
+
+        //для форматирование LocalDateTime полей
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        if (beautyJson)
+
+        if (beautyJson) {
+            //режим красирого форматирования
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        }
+
         return mapper;
     }
 
 
+    /**
+     * Красивое форматирование json
+     *
+     * @param logPrefix
+     * @param fromJson
+     * @return
+     * @throws AppException
+     */
     public String formatBeautyJson(String logPrefix, String fromJson) throws AppException {
         if (!beautyJson) {
             log.info(logPrefix + "не отформатированный json = " + fromJson);
