@@ -88,16 +88,18 @@ public class S7GithubExecutor implements Closeable {
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
 
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
-        for (JsonSensorSingleRequest req : request.getRequest()) {
-            if (metaByControllerId.containsKey(req.getControllerId())) {
-                List<JsonSensorResponse> rList = doWorkRequest(req);
-                jsonResponseList.addAll(rList);
-            } else {
-                log.warn(AppConst.ERROR_LOG_PREFIX +
-                                "Мета информация о контролере S7 = {} не найдена, есть информация только по ID = {}",
-                        req.getControllerId(), metaByControllerId.keySet());
+        List<JsonSensorSingleRequest> list = request.getRequest();
+        if (list != null)
+            for (JsonSensorSingleRequest req : list) {
+                if (metaByControllerId.containsKey(req.getControllerId())) {
+                    List<JsonSensorResponse> rList = doWorkRequest(req);
+                    jsonResponseList.addAll(rList);
+                } else {
+                    log.warn(AppConst.ERROR_LOG_PREFIX +
+                                    "Мета информация о контролере S7 = {} не найдена, есть информация только по ID = {}",
+                            req.getControllerId(), metaByControllerId.keySet());
+                }
             }
-        }
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
         jsonResult.setRequestDatetime(request.getRequestDatetime());
         jsonResult.setRequestDatetimeProxy(proxyTime);

@@ -1,7 +1,7 @@
 datana:
   global:
     ## просьба версию не менять
-    appVersion: 2020-04-07_PLC_CLIENT
+    appVersion: 2020-04-07_PLC_CLIENT_LOCAL
     debug: true
     log:
       # уровень вывода логов
