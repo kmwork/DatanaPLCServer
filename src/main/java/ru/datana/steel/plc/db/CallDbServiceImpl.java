@@ -23,11 +23,17 @@ public class CallDbServiceImpl implements CallDbService {
     @PersistenceContext
     protected EntityManager entityManager;
 
+    /**
+     * Хранимка генерации запросов на сервер
+     */
     @Value("${datana.database-options.postgresql-get-function}")
     @Setter
     private String pgNativeGetSQL;
 
 
+    /**
+     * Хранимка на сохранение данных в базе данных PostgreSQL
+     */
     @Value("${datana.database-options.postgresql-save-function}")
     @Setter
     private String pgNativeSaveSQL;

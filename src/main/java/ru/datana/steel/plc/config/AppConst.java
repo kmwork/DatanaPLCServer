@@ -22,15 +22,9 @@ public class AppConst {
     public static final Integer JSON_ERROR_CODE = 0;
 
     public final static String EXT_SERVER_YAML = "application-server.yaml";
-    public final static String EXT_LOCAL_CLIENT_YAML = "application-dev_client.yaml";
-    public final static String EXT_REMOTE_CLIENT_YAML = "application-remote_client.yaml";
 
-
-    public static final String S7_ROOT_CONFIG_FILE_NAME = "config-plc.xml";
 
     public static final String DB_DEV_POSTGRES_PROFILE = "dev_client";
     public static final String SERVER_PROFILE = "server";
-    public static final String DB_REMOTE_POSTGRES_PROFILE = "remote_postgres";
     public static final String JSON_PREFIX_SENSOR = "Sensor";
-    public static final String JSON_PREFIX_META_INFO = "MetaInfo";
 }

@@ -5,7 +5,7 @@ import org.hibernate.dialect.PostgreSQL10Dialect;
 import java.sql.Types;
 
 /**
- * Wrap default PostgreSQL9Dialect with 'json' type.
+ * Диалект по работе PostgreSQL при JSON типах
  *
  * @author timfulmer
  */

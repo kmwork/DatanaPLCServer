@@ -30,12 +30,35 @@ import java.util.*;
 public class S7GithubExecutor implements Closeable {
 
     private static final String PREFIX_LOG = "[S7 Контроллер] ";
+
+    /**
+     * Коннекты
+     * ключ - наш ID в базе данных, значение - коннект Socket с S7
+     */
     private Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
+
+    /**
+     * Описание котроллеров по ID
+     * ключ - наш ID в базе данных, значение - описание контроллера
+     */
     private Map<Integer, Controller> metaByControllerId = new HashMap<>();
+
+    /**
+     * Текущий коннект S7
+     */
     private S7TCPConnection currentConnector = null;
+
+    /**
+     * Утилита по работе Json
+     */
     private DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
 
 
+    /**
+     * настройка сервиса чтения Siemens котроллеров
+     *
+     * @param controllerMeta
+     */
     public void init(JsonMetaRootController controllerMeta) {
         metaByControllerId.clear();
         connectionByControllerId.clear();
@@ -45,6 +68,12 @@ public class S7GithubExecutor implements Closeable {
         log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : ", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
+    /**
+     * Закрыть сокет с S7
+     *
+     * @param controllerId
+     * @return
+     */
     private boolean closeS7Connect(Integer controllerId) {
 
         log.info(PREFIX_LOG + " Завершение сессии для controllerId = {}", controllerId);
@@ -58,6 +87,12 @@ public class S7GithubExecutor implements Closeable {
         return success;
     }
 
+    /**
+     * Установить связь с контроллером
+     *
+     * @param controllerId
+     * @throws AppException
+     */
     private void initS7Connection(Integer controllerId) throws AppException {
         Controller c = metaByControllerId.get(controllerId);
         String host = c.getIp();
@@ -84,6 +119,12 @@ public class S7GithubExecutor implements Closeable {
         }
     }
 
+    /**
+     * Выполнить запрос клиента по снянию датчиков с нескольких контроллеров
+     *
+     * @param request все запросы на контроллеры для один сеанс сканироавания датчиков
+     * @return
+     */
     public JsonRootSensorResponse run(JsonRootSensorRequest request) {
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
 
@@ -110,6 +151,12 @@ public class S7GithubExecutor implements Closeable {
         return jsonResult;
     }
 
+    /**
+     * Выполнить запрос на один контроллер
+     *
+     * @param request
+     * @return
+     */
     private List<JsonSensorResponse> doWorkRequest(JsonSensorSingleRequest request) {
         List<JsonSensorResponse> responseList = new ArrayList<>();
         try {
@@ -132,6 +179,16 @@ public class S7GithubExecutor implements Closeable {
     }
 
 
+    /**
+     * Пытаться прочитать массив байт на несколько датчиков сразу в рамках одного контроллера
+     *
+     * @param jsonRequest
+     * @param intS7DBNumber
+     * @param length
+     * @param offset
+     * @return
+     * @throws AppException
+     */
     private byte[] tryRead(JsonSensorSingleRequest jsonRequest, int intS7DBNumber, int length, int offset) throws AppException {
         byte[] dataBytes = null;
         for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
@@ -153,6 +210,9 @@ public class S7GithubExecutor implements Closeable {
         return dataBytes;
     }
 
+    /**
+     * Все закрыть - завершается приложение
+     */
     @Override
     public void close() {
         log.info(PREFIX_LOG + " Закрытие коннектов для ID = " + connectionByControllerId.keySet());
@@ -169,17 +229,34 @@ public class S7GithubExecutor implements Closeable {
         log.info(PREFIX_LOG + " Коннекты  весели открытыми с ID = " + ids);
     }
 
+    /**
+     * Прочитать блок по нескольким переменным
+     *
+     * @param jsonRequest
+     * @param datum
+     * @return
+     * @throws AppException
+     * @throws InterruptedException
+     */
     private List<JsonSensorResponse> readBlockFromS7(JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
         //читаем данные
         int intS7DBNumber = ValueParser.parseInt(datum.getDataBlock().substring(2), "Json:DataBlock");
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         int minOffset = Integer.MAX_VALUE;
         int maxOffset = Integer.MIN_VALUE;
+
+        // опеределяем крайние переменные одного блока (минимум  и максимум для offset) для чтения блока данных
         for (JsonSensorDataVal dataVal : datum.getDataVals()) {
             int offset = dataVal.getOffset();
+
+            // нужно прочитать кратно байтам, если бит то округляем до 1 байта
             EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
             int sizeBytes = (type.getBitCount() + 7) / 8;
+
+            //опередяем крайнее датчики по их смещению offset
             minOffset = Math.min(minOffset, offset);
+
+            //нужно прибавить размер переменной датчика что бы его захватить при чтении блока
             maxOffset = Math.max(maxOffset, offset + sizeBytes);
         }
         int length = maxOffset - minOffset;
@@ -193,6 +270,8 @@ public class S7GithubExecutor implements Closeable {
                 assert bytesOffset >= 0;
                 EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
                 int intBitPosition = 0;
+
+                //получения позиции если это бит
                 if (type == EnumSiemensDataType.TYPE_BIT) {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
