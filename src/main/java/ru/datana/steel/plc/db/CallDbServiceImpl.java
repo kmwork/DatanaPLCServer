@@ -34,28 +34,28 @@ public class CallDbServiceImpl implements CallDbService {
 
     @PostConstruct
     private void init() {
-        log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
-        log.debug("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        log.trace("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
+        log.trace("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
     }
 
 
     @Override
     public String dbGet() throws SQLException {
-        log.debug("[SQL:Get] старт");
+        log.trace("[SQL:Get] старт");
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        log.debug("[SQL:Get] результат = " + toJson);
+        log.trace("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 
     @Override
     public String dbSave(String fromJson) throws SQLException {
-        log.debug("[SQL:Save] data = " + fromJson);
+        log.trace("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         String toJson = funcSave.getResultList().get(0).toString();
-        log.debug("[SQL:Get] результат = " + toJson);
+        log.trace("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 }

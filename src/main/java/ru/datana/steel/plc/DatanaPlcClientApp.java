@@ -73,8 +73,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 String fromJson = callDbService.dbGet();
                 String formattedFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Request] ", fromJson);
                 String toJson = clientWebService.getData(formattedFromJson);
-                String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", fromJson);
-                callDbService.dbSave(resultFromJson);
+                String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
+                String saveJson = callDbService.dbSave(resultFromJson);
+                restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
                 Thread.sleep(sleepMS);
             }
 

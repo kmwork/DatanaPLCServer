@@ -2,7 +2,7 @@
   "datablock_write_enable": false,
   "controllers": [
     {
-      "id": 2,
+      "id": 1,
       "controller_name": "PLC_02",
       "rack": 0,
       "slot": 0,
