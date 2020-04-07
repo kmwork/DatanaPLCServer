@@ -22,6 +22,10 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
 import java.util.Arrays;
 
+/**
+ * PLC Proxy Client -- клиент для работы со шлюзом датчиков
+ * Тех задание: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Client
+ */
 @Slf4j
 @SpringBootApplication(
         exclude = {

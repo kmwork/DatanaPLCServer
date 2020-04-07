@@ -11,27 +11,42 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Утилитый класс по работе с JSON`
+ */
 public class DatanaJsonHelper {
 
     @Getter
     private final static DatanaJsonHelper instance = new DatanaJsonHelper();
-    private int requestCount = 0;
+
+    /**
+     * Счетчик ответов для формирование ID ответов
+     */
     private int responseCount = 0;
 
     private DatanaJsonHelper() {
 
     }
 
-    public String genRequestId(String prefix) {
-        requestCount++;
-        return "Request[" + prefix + "]:" + System.nanoTime() + ":Req-Index:" + requestCount;
-    }
 
+    /**
+     * Генератор ID
+     *
+     * @param prefix
+     * @return
+     */
     public String genResponseId(String prefix) {
         responseCount++;
         return "Response[" + prefix + "]:" + System.nanoTime() + ":Res-Index:" + responseCount;
     }
 
+    /**
+     * Сформировать JSON по ошибке
+     *
+     * @param request JSON-запрос по которому произошла ошибка
+     * @param e       объект ошибки (Exception)
+     * @return Json объект для отдачи в REST ответ
+     */
     public JsonSensorResponse createJsonRequestWithError(JsonSensorSingleRequest request, Exception e) {
         JsonSensorResponse jsonResult = createJsonRequest(null, AppConst.JSON_ERROR_CODE);
         JsonSensorError jsonError = new JsonSensorError();
@@ -51,6 +66,13 @@ public class DatanaJsonHelper {
         return jsonResult;
     }
 
+    /**
+     * Сформировать Json с данными под запрос
+     *
+     * @param value  значение датчика - цель запроса
+     * @param status статус запроса (1 - ок, 0 - ошибка)
+     * @return json ответа
+     */
     public JsonSensorResponse createJsonRequest(BigDecimal value, int status) {
         JsonSensorResponse response = new JsonSensorResponse();
         response.setControllerDatetime(getCurrentTime());

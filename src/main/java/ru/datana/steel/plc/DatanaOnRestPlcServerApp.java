@@ -13,6 +13,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
+/**
+ * Шлюз - сервисы RESTfull WebServices
+ * Тех задание: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
+ */
 @EnableWebMvc
 @SpringBootApplication(exclude = {
         DataSourceAutoConfiguration.class,

@@ -11,9 +11,23 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Getter
 public class AppException extends Exception {
+    /**
+     * Строка аргументов
+     */
     private final String strArgs;
+
+    /**
+     * Описание ошибки для пользователя
+     */
     private final String msg;
+    /**
+     * Тип ошибки
+     */
     private final TypeException type;
+
+    /**
+     * Перво-причина ошибки
+     */
     private final Exception mainEx;
 
     public AppException(TypeException type, String msg, String strArgs, Exception ex) {

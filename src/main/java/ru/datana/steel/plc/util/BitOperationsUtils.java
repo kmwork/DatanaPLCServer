@@ -15,13 +15,26 @@ public class BitOperationsUtils {
 
     private static String PREFIX_LOG = "[Приведение к типу] ";
 
+    /**
+     * Унификация типов данных к одному типу BigDecimal
+     *
+     * @param data           массив байт предасвляющие число (мы читаем блоками для экономии а потом вырезаем из массива)
+     * @param bytesOffset    смещение где число размещено
+     * @param type           тип числа
+     * @param intBitPosition если это бит то его позиция в байте
+     * @return число уницицированное под Numeric по PostgreSQL
+     * @throws AppException
+     */
     public static BigDecimal doBitsOperations(byte[] data, int bytesOffset, EnumSiemensDataType type, int intBitPosition) throws AppException {
 
+        //проверка на пустые данные
         if (data == null || data.length <= bytesOffset) {
             log.info(PREFIX_LOG + " Пустые данные");
             return null;
         }
 
+
+        // преобразования согласно типу данных
         BigDecimal result;
         if (type == EnumSiemensDataType.TYPE_BIT) {
             boolean bitBoolean = S7.GetBitAt(data, bytesOffset, intBitPosition);
