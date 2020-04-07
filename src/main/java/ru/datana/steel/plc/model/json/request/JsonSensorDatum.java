@@ -22,7 +22,7 @@ public class JsonSensorDatum {
      */
     @JsonProperty("data-block")
     @NotNull
-    protected String dataBlock;
+    protected Integer dataBlock;
     /**
      * (Required)
      */

@@ -240,7 +240,7 @@ public class S7GithubExecutor implements Closeable {
      */
     private List<JsonSensorResponse> readBlockFromS7(JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
         //читаем данные
-        int intS7DBNumber = ValueParser.parseInt(datum.getDataBlock().substring(2), "Json:DataBlock");
+        int intS7DBNumber = datum.getDataBlock();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         int minOffset = Integer.MAX_VALUE;
         int maxOffset = Integer.MIN_VALUE;
