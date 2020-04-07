@@ -110,7 +110,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         LocalDateTime time = LocalDateTime.now();
         rootJson.setRequestId(uuid);
         rootJson.setRequestDatetime(time);
-        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = ", step, uuid, time);
+        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = {0}", step, uuid, time);
         log.info("[Запрос] rootJson = " + rootJson);
     }
 
