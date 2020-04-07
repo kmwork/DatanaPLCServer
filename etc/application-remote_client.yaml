@@ -4,6 +4,7 @@ datana:
     appVersion: 2020-04-07_PLC_CLIENT
     debug: true
     log:
+      # уровень вывода логов
       level: INFO
     beauty-json: true
   plc-server:

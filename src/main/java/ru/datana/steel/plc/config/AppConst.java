@@ -8,6 +8,7 @@ public class AppConst {
     public static final String CONF_FILE_NAME = "datana_siemens.properties";
     public static final String SYS_DIR_PROP = "app.dir";
     public static final String ENCODING = "UTF8";
+    public final static String FILE_YAML_PROP = "app.config.file";
 
 
     public static final String SUCCESS_LOG_PREFIX = "[App-Успешно] ";
@@ -19,7 +20,6 @@ public class AppConst {
     public static final long S7_SLEEP_MS = 500;
     public static final Integer JSON_SUCCESS_CODE = 1;
     public static final Integer JSON_ERROR_CODE = 0;
-
 
     public final static String EXT_SERVER_YAML = "application-server.yaml";
     public final static String EXT_LOCAL_CLIENT_YAML = "application-dev_client.yaml";

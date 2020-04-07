@@ -33,4 +33,14 @@ public class ExtSpringProfileUtil {
         }
     }
 
+    public static void extConfigurClient(String springProfile) {
+        String configLocation = System.getProperty(AppConst.SYS_DIR_PROP); //get the default config directory location
+        if (StringUtils.isEmpty(AppConst.SYS_DIR_PROP)) {
+            log.error(AppConst.APP_LOG_PREFIX + "Путь к настройкам не указан по java.options по имени свойства =  " + AppConst.SYS_DIR_PROP);
+            System.exit(-100);
+        }
+
+        File configPath = new File(configLocation, springFile);
+        app.config.file
+    }
 }

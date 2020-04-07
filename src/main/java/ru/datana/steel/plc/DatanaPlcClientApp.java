@@ -2,6 +2,7 @@ package ru.datana.steel.plc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
@@ -51,7 +52,12 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     protected Integer loopCount;
 
     public static void main(String[] args) throws Exception {
-        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, AppConst.EXT_REMOTE_CLIENT_YAML);
+        String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
+        if (StringUtils.isEmpty(fileName)) {
+            log.error(AppConst.APP_LOG_PREFIX + "Профиль клиента не указан по свойству =  " + AppConst.FILE_YAML_PROP);
+            System.exit(-110);
+        }
+        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, fileName);
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
