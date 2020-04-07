@@ -12,7 +12,14 @@ import java.util.Arrays;
 @Slf4j
 public class FormatUtils {
 
-
+    /**
+     * вывод массив байт в лог
+     *
+     * @param methodName имя метода для пояснения от куда пришли байты
+     * @param buffer     массив байт с контроллера
+     * @param typeFormat тип как форматировать в логе - в hex или десятичными числами
+     * @throws AppException
+     */
     public static void formatBytes(String methodName, byte[] buffer, EnumFormatBytesType typeFormat) throws AppException {
         String prefixLog = "[DUMP] [Источник:" + methodName + "] ";
 

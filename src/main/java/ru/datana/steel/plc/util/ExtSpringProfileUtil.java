@@ -10,7 +10,15 @@ import java.util.Properties;
 @Slf4j
 public class ExtSpringProfileUtil {
 
+    /**
+     * Настройка Spring-приложение из вышесенных во внешнюю папку etc настроек спринга
+     *
+     * @param springProfile имя профиля
+     * @param springFile    файл для YAML настроек
+     */
     public static void extConfigure(String springProfile, String springFile) {
+
+        // проверка что указано свойсто app.dir
         String configLocation = System.getProperty(AppConst.SYS_DIR_PROP); //get the default config directory location
         if (StringUtils.isEmpty(configLocation)) {
             log.error(AppConst.APP_LOG_PREFIX + "Путь к настройкам не указан по java.options по имени свойства =  " + AppConst.SYS_DIR_PROP);
@@ -21,6 +29,8 @@ public class ExtSpringProfileUtil {
         log.info(AppConst.APP_LOG_PREFIX + "[Config]: configPath = " + configPath);
         log.info(AppConst.APP_LOG_PREFIX + "Настройка приложения");
 
+
+        //настройка констант
         if (configPath.exists()) {
             Properties props = System.getProperties();
             props.setProperty("spring.config.location", configPath.getAbsolutePath()); //set the config file to use

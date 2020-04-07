@@ -12,13 +12,28 @@ import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Парсер мета информации о контроллерах
+ */
 @Slf4j
 public class JsonParserUtil {
     @Getter
     private final static JsonParserUtil instance = new JsonParserUtil();
 
+    /**
+     * дживок по работе Json
+     */
     private final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * Путь где лежит файл
+     */
     private String dir = System.getProperty(AppConst.SYS_DIR_PROP);
+
+    /**
+     * Время изменения файла, который вы прочитали в кеш
+     * нужно это чтобы читать по мере изменения файла при работе сервера
+     */
     private long prevLastModified = 0;
     private JsonMetaRootController prevJsonRootMetaResponse = null;
 
@@ -37,6 +52,8 @@ public class JsonParserUtil {
         try {
 
             JsonMetaRootController result;
+
+            //проверка - нужно ли перечитать файл если он изменился со временем запуска сервера
             if (prevLastModified < f.lastModified() || prevJsonRootMetaResponse == null) {
                 log.info("[JSON-Parser:Load-Meta] Чтение файла = " + f.getAbsoluteFile());
                 result = mapper.readValue(f, JsonMetaRootController.class);
@@ -45,12 +62,13 @@ public class JsonParserUtil {
             } else
                 result = prevJsonRootMetaResponse;
             log.info("[JSON-Parser:Load-Meta] result = " + result);
-            //log.info(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonRootResponse));
+            log.info("[From file:MetaInfo] " + mapper.writeValueAsString(result));
             return result;
         } catch (IOException ex) {
-            log.error("Ошибка в программе: ", ex);
+            String msg = "Ошибка в программе при чтении файла";
+            log.error(msg, ex);
             String strArgs = "File: " + f.getAbsoluteFile();
-            throw new AppException(TypeException.INVALID_USER_INPUT_META_FILE, "Файл не смог прочитать", strArgs, ex);
+            throw new AppException(TypeException.INVALID_USER_INPUT_META_FILE, msg, strArgs, ex);
         }
 
     }
