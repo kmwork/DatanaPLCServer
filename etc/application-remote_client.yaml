@@ -1,3 +1,4 @@
+##### Configuration for PLC Client with Postgres, installed on REMOTE Computer #####
 datana:
   global:
     ## просьба версию не менять
