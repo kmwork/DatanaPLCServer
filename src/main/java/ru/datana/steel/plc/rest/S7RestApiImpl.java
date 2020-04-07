@@ -1,6 +1,5 @@
 package ru.datana.steel.plc.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -43,7 +42,7 @@ public class S7RestApiImpl implements S7RestApi {
     @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Override
-    public String getData(@RequestBody JsonRootSensorRequest fromJson) throws JsonProcessingException {
+    public String getData(@RequestBody JsonRootSensorRequest fromJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
         try (S7GithubExecutor s7 = new S7GithubExecutor()) {
