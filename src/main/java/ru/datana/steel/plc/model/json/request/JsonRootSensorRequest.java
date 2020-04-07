@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,8 @@ import java.util.List;
         "request_id",
         "task_id",
         "request-datetime",
-        "request"
+        "request",
+        "status"
 })
 @Data
 public class JsonRootSensorRequest {
@@ -45,5 +47,15 @@ public class JsonRootSensorRequest {
     @Valid
     @NotNull
     protected List<JsonSensorSingleRequest> request = null;
+
+
+    @JsonProperty("status")
+    @Null
+    protected Integer status;
+
+
+    @JsonProperty("timeout")
+    @Null
+    protected Long timeout;
 
 }

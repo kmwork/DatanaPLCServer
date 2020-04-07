@@ -103,4 +103,18 @@ public class RestSpringConfig implements WebMvcConfigurer {
             throw new AppException(TypeException.INVALID_FORMAT_JSON, msg, strArg, ex);
         }
     }
+
+    public String toJson(String prefixLog, Object rootJson) throws AppException {
+        try {
+            String jsonAsString = objectMapper.writeValueAsString(rootJson);
+            log.info(prefixLog + "format jsonAsString = " + jsonAsString);
+            return jsonAsString;
+        } catch (JsonProcessingException ex) {
+            String strArg = "prefixLog" + prefixLog + ", rootJson = '" + rootJson;
+            String msg = "Ошибка формирование строки из java объекта";
+            log.error(AppConst.ERROR_LOG_PREFIX, msg + ": " + strArg, ex);
+            throw new AppException(TypeException.INVALID_CONVERT_TO_JSON, msg, strArg, ex);
+        }
+
+    }
 }

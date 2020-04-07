@@ -78,8 +78,12 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
             String serverVersion = clientWebService.getVersion();
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
-            String fromJson = callDbService.dbGet();
-            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(fromJson, JsonRootSensorRequest.class);
+            String fromJsonеTemp = callDbService.dbGet();
+            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(fromJsonеTemp, JsonRootSensorRequest.class);
+
+            if (rootJson.getTimeout() != null)
+                sleepMS = rootJson.getTimeout();
+
             boolean infinityLoop = loopCount < 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
                 long step = index + 1;
@@ -87,7 +91,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 log.info(prefixLog);
                 changeIDCodes(step, rootJson);
 
-                String formattedFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Request] ", fromJson);
+                String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
                 String toJson = clientWebService.getData(formattedFromJson);
                 String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
                 String saveJson = callDbService.dbSave(resultFromJson);
