@@ -92,5 +92,15 @@ public class RestSpringConfig implements WebMvcConfigurer {
         }
     }
 
-
+    public <T> T parseValue(String fromJson, Class<T> valueType) throws AppException {
+        try {
+            T jsonObject = objectMapper.readValue(fromJson, valueType);
+            return jsonObject;
+        } catch (JsonProcessingException ex) {
+            String strArg = "fromJson = '" + fromJson + "' as valueType = " + valueType.getName();
+            String msg = "Ошибка разбор строки json в объект java";
+            log.error(AppConst.ERROR_LOG_PREFIX, msg + ": " + strArg, ex);
+            throw new AppException(TypeException.INVALID_FORMAT_JSON, msg, strArg, ex);
+        }
+    }
 }

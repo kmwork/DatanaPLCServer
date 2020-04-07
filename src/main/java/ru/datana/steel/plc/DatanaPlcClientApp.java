@@ -17,10 +17,13 @@ import org.springframework.context.support.GenericApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.UUID;
 
 /**
  * PLC Proxy Client -- клиент для работы со шлюзом датчиков
@@ -53,7 +56,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     protected Long sleepMS;
 
     @Value("${datana.plc-server.loop-count}")
-    protected Integer loopCount;
+    protected Long loopCount;
 
     public static void main(String[] args) throws Exception {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -75,12 +78,15 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
             String serverVersion = clientWebService.getVersion();
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
-
-            for (int index = 0; index < loopCount; index++) {
-                int step = index + 1;
+            String fromJson = callDbService.dbGet();
+            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(fromJson, JsonRootSensorRequest.class);
+            boolean infinityLoop = loopCount < 0;
+            for (long index = 0; index < loopCount || infinityLoop; index++) {
+                long step = index + 1;
                 String prefixLog = "[Шаг: " + step + "]";
                 log.info(prefixLog);
-                String fromJson = callDbService.dbGet();
+                changeIDCodes(step, rootJson);
+
                 String formattedFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Request] ", fromJson);
                 String toJson = clientWebService.getData(formattedFromJson);
                 String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
@@ -93,6 +99,15 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             log.error(AppConst.ERROR_LOG_PREFIX + " Ошибка в программе", ex);
         }
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
+    }
+
+    private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {
+        String uuid = UUID.randomUUID().toString();
+        LocalDateTime time = LocalDateTime.now();
+        rootJson.setRequestId(uuid);
+        rootJson.setRequestDatetime(time);
+        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = ", step, uuid, time);
+        log.info("[Запрос] rootJson = " + rootJson);
     }
 
 
