@@ -1,5 +1,6 @@
 package ru.datana.steel.plc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.GenericApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
@@ -35,6 +37,12 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Autowired
     protected RestClientWebService clientWebService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private RestSpringConfig restSpringConfig;
 
     @Value("${datana.plc-server.sleep-ms}")
     protected Long sleepMS;
@@ -59,10 +67,14 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
 
             for (int index = 0; index < loopCount; index++) {
-                log.info("[Шаг] step = " + (index + 1));
+                int step = index + 1;
+                String prefixLog = "[Шаг: " + step + "]";
+                log.info(prefixLog);
                 String fromJson = callDbService.dbGet();
-                String toJson = clientWebService.getData(fromJson);
-                callDbService.dbSave(toJson);
+                String formattedFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Request] ", fromJson);
+                String toJson = clientWebService.getData(formattedFromJson);
+                String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", fromJson);
+                callDbService.dbSave(resultFromJson);
                 Thread.sleep(sleepMS);
             }
 

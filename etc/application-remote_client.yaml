@@ -1,16 +1,16 @@
 datana:
   global:
     ## просьба версию не менять
-    appVersion: 2020-04-06_PLC_CLIENT
+    appVersion: 2020-04-07_PLC_CLIENT
     debug: true
     log:
-      # уровень вывода логов
       level: INFO
+    beauty-json: true
   plc-server:
     # адрес PLC Сервера
     url-server: http://localhost:8080/
     # колличество опросов сервера а потом завершить работу
-    loop-count: 10
+    loop-count: 1
     # ожидание после кажного цикла в миллисекундах
     sleep-ms: 500
   database-options:
@@ -25,7 +25,6 @@ datana:
       schema: datalake
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
-
 spring:
   main:
     web-application-type: none

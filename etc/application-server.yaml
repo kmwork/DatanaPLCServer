@@ -1,12 +1,11 @@
 datana:
   global:
     ## просьба версию не менять
-    appVersion: 2020-04-06_PLC_SERVER
+    appVersion: 2020-04-07_PLC_SERVER
     debug: true
     log:
       level: INFO
-  database-options:
-
+    beauty-json: true
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
 spring:
