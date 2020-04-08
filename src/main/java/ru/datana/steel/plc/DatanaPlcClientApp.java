@@ -84,10 +84,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             do {
                 try {
                     serverVersion = clientWebService.getVersion();
-                    if (serverVersion == null)
-                        doSleep();
                 } catch (FeignException ex) {
                     log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage());
+                    doSleep(sleepOnFatalError, "Ожидание запуска сервера: PLC-Шлюза");
                 }
             } while (serverVersion == null);
 
@@ -97,15 +96,15 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            boolean doSleep = false;
+            boolean makeSleepSQL = false;
             boolean success = false;
             JsonRootSensorRequest rootJson = null;
             do {
                 try {
-                    if (doSleep) {
-                        doSleep();
+                    if (makeSleepSQL) {
+                        doSleep(sleepOnFatalError, "Ждем пока починят хранимку GET");
                     } else
-                        doSleep = true;
+                        makeSleepSQL = true;
                     String tempJms = callDbService.dbGet();
                     rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
                     success = rootJson != null && rootJson.getStatus() == 1;
@@ -133,7 +132,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
                 String saveJson = callDbService.dbSave(resultFromJson);
                 restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
-                Thread.sleep(sleepMS);
+                doSleep(sleepMS, "Перекур на цикл");
             }
 
         } catch (Exception ex) {
@@ -142,8 +141,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
     }
 
-    private void doSleep() throws InterruptedException {
-        log.warn("Сон на {} ms из-за ошибок", sleepOnFatalError);
+    private void doSleep(long time, String msg) throws InterruptedException {
+        time = Math.min(time, 100);
+        log.warn(msg + ", на время = "sleepOnFatalError);
         Thread.sleep(sleepOnFatalError);
     }
 
