@@ -138,10 +138,7 @@ public class S7GithubExecutor implements Closeable {
                     String strArg = "controllerId = " + req.getControllerId();
                     String msg = "Мета информация о контролере S7 = " + req.getControllerId() + " не найдена, есть информация только по ID = " + metaByControllerId.keySet();
                     Exception ex = new AppException(TypeException.S7CONTROLLER__INVALID_NOT_FOUND, msg, strArg, null);
-                    log.warn(AppConst.ERROR_LOG_PREFIX +
-                                    "Мета информация о контролере S7 = {} не найдена, есть информация только по ID = {}",
-                            req.getControllerId(), metaByControllerId.keySet());
-
+                    log.warn(AppConst.ERROR_LOG_PREFIX + msg);
                     JsonSensorResponse response = jsonHelper.createJsonRequestWithError(rootRequest, req, ex);
                     jsonResponseList.add(response);
                 }
