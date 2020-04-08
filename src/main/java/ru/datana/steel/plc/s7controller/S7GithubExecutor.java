@@ -170,7 +170,7 @@ public class S7GithubExecutor implements Closeable {
         jsonResult.setResponse(jsonResponseList);
         long endTime = System.nanoTime();
         long deltaNano = endTime - startTime;
-        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {} sec, из них время на чтение {}, вычитано {} байт", Duration.ofSeconds(deltaNano), totalReadTimeNano, totalDataSize);
+        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {} sec, из них время на чтение {}, вычитано {} байт", Duration.ofNanos(deltaNano), totalReadTimeNano, totalDataSize);
         return jsonResult;
     }
 
@@ -241,7 +241,7 @@ public class S7GithubExecutor implements Closeable {
         totalReadTimeNano += deltaNano;
         totalDataSize += dataBytes.length;
 
-        log.debug("Затрачено время = {} mili-sec на {} байт данных", Duration.ofMillis(deltaNano), dataBytes.length);
+        log.debug("Затрачено время = {} mili-sec на {} байт данных", Duration.ofNanos(deltaNano), dataBytes.length);
         return dataBytes;
     }
 
