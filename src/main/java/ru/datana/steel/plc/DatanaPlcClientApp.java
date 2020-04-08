@@ -23,6 +23,7 @@ import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -122,6 +123,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
             boolean infinityLoop = loopCount < 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
+                long statTime = System.nanoTime();
                 long step = index + 1;
                 String prefixLog = "[Шаг: " + step + "]";
                 log.info(prefixLog);
@@ -132,6 +134,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
                 String saveJson = callDbService.dbSave(resultFromJson);
                 restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+                long endTime = System.nanoTime();
+                long delta = endTime - statTime;
+                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за однин запрос = {}", Duration.ofNanos(delta));
                 doSleep(sleepMS, "Перекур на цикл");
             }
 
@@ -143,7 +148,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     private void doSleep(long time, String msg) throws InterruptedException {
         if (time < 100)
-            log.warn("Запещено ставить меньше задержки min = ", AppConst.MIN_SLEEP_MS);
+            log.warn("Запещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
         time = Math.max(time, AppConst.MIN_SLEEP_MS);
         log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
         Thread.sleep(time);
