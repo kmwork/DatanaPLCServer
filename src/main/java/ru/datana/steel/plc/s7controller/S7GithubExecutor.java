@@ -21,7 +21,6 @@ import ru.datana.steel.plc.util.*;
 import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -170,7 +169,7 @@ public class S7GithubExecutor implements Closeable {
         jsonResult.setResponse(jsonResponseList);
         long endTime = System.nanoTime();
         long deltaNano = endTime - startTime;
-        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {}, из них время на чтение {}, вычитано {} байт", Duration.ofNanos(deltaNano), Duration.ofNanos(totalReadTimeNano), totalDataSize);
+        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {}, из них время на чтение {}, вычитано {} байт", TimeUtil.formatTimeAsNano(deltaNano), TimeUtil.formatTimeAsNano(totalReadTimeNano), totalDataSize);
         return jsonResult;
     }
 
@@ -241,7 +240,7 @@ public class S7GithubExecutor implements Closeable {
         totalReadTimeNano += deltaNano;
         totalDataSize += dataBytes.length;
 
-        log.debug("Затрачено время = {} на {} байт данных", Duration.ofNanos(deltaNano), dataBytes.length);
+        log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), dataBytes.length);
         return dataBytes;
     }
 

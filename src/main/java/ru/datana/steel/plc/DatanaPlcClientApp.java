@@ -22,8 +22,8 @@ import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
+import ru.datana.steel.plc.util.TimeUtil;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -135,8 +135,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 String saveJson = callDbService.dbSave(resultFromJson);
                 restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
                 long endTime = System.nanoTime();
-                long delta = endTime - statTime;
-                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", Duration.ofNanos(delta));
+                long deltaNano = endTime - statTime;
+                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
                 doSleep(sleepMS, "Перекур на цикл");
             }
 
