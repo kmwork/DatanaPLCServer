@@ -1,26 +1,38 @@
 package ru.datana.steel.plc.util;
 
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.Duration;
 
+@Slf4j
 public class TimeUtil {
 
+
     public static String formatTimeAsNano(long timeNano) {
+        String result = "";
+        if (timeNano < 0) {
+            log.warn("[Время меньше нуля] timeNano =" + timeNano);
+            result = "минус ";
+        }
+        timeNano = Math.abs(timeNano);
         Duration duration = Duration.ofNanos(timeNano);
         long seconds = duration.getSeconds();
-        long absSeconds = Math.abs(seconds);
-        if (absSeconds == 0) {
-            if (timeNano > 10000)
-                return "Время доли секунд mili-seconds = " + timeNano / 1000;
-            else
-                return "Время меньше секунды, timeNano = " + timeNano;
+        if (seconds == 0) {
+            if ((timeNano) > 10000) {
+                long ms = timeNano / 1000;
+                result += ms + "(ms)";
+            } else
+                result += timeNano + "(nano)";
+        } else {
+            String positive = String.format(
+                    "%d:%02d:%02d",
+                    seconds / 3600,
+                    (seconds % 3600) / 60,
+                    seconds % 60);
+            result += positive + "(часы:минуты:секунды)";
         }
-        String positive = String.format(
-                "%d:%02d:%02d",
-                absSeconds / 3600,
-                (absSeconds % 3600) / 60,
-                absSeconds % 60);
-        String result = seconds < 0 ? "-" + positive : positive;
-        return "Время = " + result + ", как ms = " + (timeNano / 1000);
+
+        return result;
     }
 }
