@@ -1,5 +1,6 @@
 package ru.datana.steel.plc.rest;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -18,7 +19,6 @@ import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.DatanaJsonHelper;
 import ru.datana.steel.plc.util.JsonParserUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,7 +43,7 @@ public class S7RestApiImpl implements S7RestApi {
     @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Override
-    public String getData(@RequestBody JsonRootSensorRequest rootJson) throws AppException {
+    public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
         try (S7GithubExecutor s7 = new S7GithubExecutor()) {
@@ -53,9 +53,7 @@ public class S7RestApiImpl implements S7RestApi {
         } catch (AppException ex) {
             log.error("Ошибка в программе: ", ex);
             result = new JsonRootSensorResponse();
-            JsonSensorResponse jsonError = DatanaJsonHelper.getInstance().createJsonRequestWithError(rootJson, null, ex);
-            List<JsonSensorResponse> responseList = new ArrayList<>();
-            responseList.add(jsonError);
+            List<JsonSensorResponse> responseList = DatanaJsonHelper.getInstance().createJsonRequestWithErrorGlobal(rootJson, ex);
             result.setResponse(responseList);
         }
         return restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);

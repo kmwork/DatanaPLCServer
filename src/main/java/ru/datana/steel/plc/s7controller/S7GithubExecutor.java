@@ -139,8 +139,8 @@ public class S7GithubExecutor implements Closeable {
                     String msg = "Мета информация о контролере S7 = " + req.getControllerId() + " не найдена, есть информация только по ID = " + metaByControllerId.keySet();
                     Exception ex = new AppException(TypeException.S7CONTROLLER__INVALID_NOT_FOUND, msg, strArg, null);
                     log.warn(AppConst.ERROR_LOG_PREFIX + msg);
-                    JsonSensorResponse response = jsonHelper.createJsonRequestWithError(rootRequest, req, ex);
-                    jsonResponseList.add(response);
+                    List<JsonSensorResponse> errorResponseList = jsonHelper.createJsonRequestWithError(rootRequest, req, null, ex);
+                    jsonResponseList.addAll(errorResponseList);
                 }
             }
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
@@ -168,15 +168,17 @@ public class S7GithubExecutor implements Closeable {
                 List<JsonSensorResponse> responsesByOneRequest = readBlockFromS7(rootRequest, request, datum);
                 responseList.addAll(responsesByOneRequest);
             }
-        } catch (Exception ex) {
-            JsonSensorResponse response = jsonHelper.createJsonRequestWithError(rootRequest, request, ex);
-            responseList.add(response);
+        } catch (AppException ex) {
             log.error(AppConst.ERROR_LOG_PREFIX + "Ошибка при чтении S7 для request = " + request, ex);
+            List<JsonSensorResponse> response = jsonHelper.createJsonRequestWithError(rootRequest, request, null, ex);
+
+            return response;
         } finally {
             boolean doDisconnect = !metaByControllerId.get(request.getControllerId()).getPermanentConnection();
             if (doDisconnect)
                 closeS7Connect(request.getControllerId());
         }
+
         return responseList;
     }
 
@@ -263,6 +265,7 @@ public class S7GithubExecutor implements Closeable {
             maxOffset = Math.max(maxOffset, offset + sizeBytes);
         }
         int length = maxOffset - minOffset;
+        Set<Integer> lastSuccessDataValIds = new HashSet<>();
         try {
             LocalDateTime s7StartTime = LocalDateTime.now();
 
@@ -284,17 +287,19 @@ public class S7GithubExecutor implements Closeable {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
                 BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
-                JsonSensorResponse response = jsonHelper.createJsonRequest(result, AppConst.JSON_SUCCESS_CODE, dataVal.getId().toString());
+                JsonSensorResponse response = jsonHelper.createJsonRequestForData(result, AppConst.JSON_SUCCESS_CODE, dataVal);
 
                 //время запросов
                 response.setS7StartTime(s7StartTime);
                 response.setS7EndTime(s7EndTime);
                 response.setDeltaNano(deltaNano);
                 jsonResponseList.add(response);
+
+                lastSuccessDataValIds.add(dataVal.getId());
             }
         } catch (Exception ex) {
-            JsonSensorResponse jsonResponse = jsonHelper.createJsonRequestWithError(rootRequest, jsonRequest, ex);
-            jsonResponseList.add(jsonResponse);
+            List<JsonSensorResponse> errorJsonResponse = jsonHelper.createJsonRequestWithError(rootRequest, jsonRequest, lastSuccessDataValIds, ex);
+            jsonResponseList.addAll(errorJsonResponse);
         }
         return jsonResponseList;
     }
