@@ -126,7 +126,7 @@ public class S7GithubExecutor implements Closeable {
      * @return
      */
     public JsonRootSensorResponse run(JsonRootSensorRequest rootRequest) {
-        //LocalDateTime proxyTime = jsonHelper.getCurrentTime();
+        LocalDateTime proxyTime = jsonHelper.getCurrentTime();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         List<JsonSensorSingleRequest> list = rootRequest.getRequest();
         if (list != null)
@@ -145,7 +145,7 @@ public class S7GithubExecutor implements Closeable {
             }
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
         jsonResult.setRequestDatetime(rootRequest.getRequestDatetime());
-        jsonResult.setRequestDatetimeProxy(null/*proxyTime*/);
+        jsonResult.setRequestDatetimeProxy(proxyTime);
         jsonResult.setResponseDatetime(jsonHelper.getCurrentTime());
         jsonResult.setRequestId(rootRequest.getRequestId());
         jsonResult.setTaskId(rootRequest.getTaskId());
@@ -241,7 +241,7 @@ public class S7GithubExecutor implements Closeable {
      * @throws AppException
      * @throws InterruptedException
      */
-    private List<JsonSensorResponse> readBlockFromS7(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
+    private List<JsonSensorResponse> readBlockFromS7(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException {
         //читаем данные
         int intS7DBNumber = datum.getDataBlock();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();

@@ -28,7 +28,7 @@ public class JsonParserUtil {
     /**
      * Путь где лежит файл
      */
-    private String dir = System.getProperty(AppConst.SYS_DIR_PROP);
+    private final String dir = System.getProperty(AppConst.SYS_DIR_PROP);
 
     /**
      * Время изменения файла, который вы прочитали в кеш

@@ -59,7 +59,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     @Value("${datana.plc-server.loop-count}")
     protected Long loopCount;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
         if (StringUtils.isEmpty(fileName)) {
             log.error(AppConst.APP_LOG_PREFIX + "Профиль клиента не указан по свойству =  " + AppConst.FILE_YAML_PROP);

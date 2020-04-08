@@ -23,5 +23,5 @@ public interface S7RestApi {
      * @throws JsonProcessingException
      * @throws AppException
      */
-    String getData(JsonRootSensorRequest fromJson) throws JsonProcessingException, AppException;
+    String getData(JsonRootSensorRequest fromJson) throws AppException;
 }

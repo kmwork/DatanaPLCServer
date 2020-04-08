@@ -27,7 +27,7 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 @Profile(AppConst.SERVER_PROFILE)
 public class DatanaOnRestPlcServerApp {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         ExtSpringProfileUtil.extConfigure(AppConst.SERVER_PROFILE, AppConst.EXT_SERVER_YAML);
         ConfigurableApplicationContext context = SpringApplication.run(DatanaOnRestPlcServerApp.class, args);
     }

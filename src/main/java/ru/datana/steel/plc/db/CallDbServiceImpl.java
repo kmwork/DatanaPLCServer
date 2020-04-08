@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -46,18 +45,18 @@ public class CallDbServiceImpl implements CallDbService {
 
 
     @Override
-    public String dbGet() throws SQLException {
-        log.trace("[SQL:Get] старт");
+    public String dbGet() {
+        log.debug("[SQL:Get] старт");
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        log.trace("[SQL:Get] результат = " + toJson);
+        log.debug("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 
     @Override
-    public String dbSave(String fromJson) throws SQLException {
-        log.trace("[SQL:Save] data = " + fromJson);
+    public String dbSave(String fromJson) {
+        log.debug("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         String toJson = funcSave.getResultList().get(0).toString();

@@ -58,7 +58,6 @@ public class S7RestApiImpl implements S7RestApi {
             responseList.add(jsonError);
             result.setResponse(responseList);
         }
-        String strResult = restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);
-        return strResult;
+        return restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);
     }
 }

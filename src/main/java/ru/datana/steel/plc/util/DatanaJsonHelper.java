@@ -68,7 +68,9 @@ public class DatanaJsonHelper {
      */
     public JsonSensorResponse createJsonRequest(BigDecimal value, int status, String requestId) {
         JsonSensorResponse response = new JsonSensorResponse();
-        response.setControllerDatetime(getCurrentTime());
+
+        //нет времени с контролера
+        response.setControllerDatetime(null/*getCurrentTime()*/);
 
         if (value != null)
             response.setData(value.toString());

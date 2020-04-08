@@ -12,7 +12,7 @@ public interface CallDbService {
      * @return
      * @throws SQLException
      */
-    String dbGet() throws SQLException;
+    String dbGet();
 
     /**
      * Сохранить через передачу JSON строки с данными дачиков в базу данных Postgresql
@@ -21,5 +21,5 @@ public interface CallDbService {
      * @return
      * @throws SQLException
      */
-    String dbSave(String fromJson) throws SQLException;
+    String dbSave(String fromJson);
 }
