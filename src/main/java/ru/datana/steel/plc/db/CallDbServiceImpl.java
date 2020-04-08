@@ -39,8 +39,8 @@ public class CallDbServiceImpl implements CallDbService {
 
     @PostConstruct
     private void init() {
-        log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
-        log.debug("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        log.debug("[SQL:Init:Get] pgNativeGetSQL = " + pgNativeGetSQL);
+        log.debug("[SQL:Init:Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
     }
 
 
