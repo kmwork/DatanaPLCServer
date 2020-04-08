@@ -43,7 +43,8 @@ public class DatanaJsonHelper {
         JsonSensorError jsonError = new JsonSensorError();
         if (e instanceof AppException) {
             AppException appEx = (AppException) e;
-            jsonError.setMsg(appEx.getMsg() + ": " + appEx.getMainEx().getMessage());
+            String eMsg = appEx.getMainEx() == null ? "<Нет вложенной ошибки>" : appEx.getMainEx().getMessage();
+            jsonError.setMsg(appEx.getMsg() + ": " + eMsg);
             jsonError.setStrArgs(appEx.getStrArgs());
             jsonError.setTypeCode(appEx.getType().getCodeError());
         } else {
