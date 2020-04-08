@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,5 +53,18 @@ public class JsonSensorResponse {
     @Valid
     @NotNull
     protected List<JsonSensorError> errors = null;
+
+    @JsonProperty("s7StartTime")
+    @Null
+    private LocalDateTime s7StartTime;
+
+    @JsonProperty("s7EndTime")
+    @Null
+    private LocalDateTime s7EndTime;
+
+
+    @JsonProperty("deltaNano")
+    @Null
+    private Long deltaNano;
 
 }

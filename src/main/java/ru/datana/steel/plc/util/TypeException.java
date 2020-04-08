@@ -16,7 +16,8 @@ public enum TypeException {
     INVALID_FORMAT_JSON(-4, "Ошибка форматирования JSON через пасинг в класс"),
     INVALID_CONVERT_TO_JSON(-5, "Ошибка конвертирования java class в JSON"),
     S7CONTROLLER_ERROR_OF_CONNECTION(1000, "S7:Ошибка связи с контроллером"),
-    S7CONTROLLER_ERROR_OF_READ_DATA(1001, "S7:Ошибка чтения данных с контроллера");
+    S7CONTROLLER_ERROR_OF_READ_DATA(1001, "S7:Ошибка чтения данных с контроллера"),
+    S7CONTROLLER__INVALID_NOT_FOUND(1002, "S7:Не найдет контроллер с таким ID.");
 
     private final int codeError;
     private final String descError;

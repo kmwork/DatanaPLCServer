@@ -127,7 +127,6 @@ public class S7GithubExecutor implements Closeable {
      */
     public JsonRootSensorResponse run(JsonRootSensorRequest rootRequest) {
         //LocalDateTime proxyTime = jsonHelper.getCurrentTime();
-
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         List<JsonSensorSingleRequest> list = rootRequest.getRequest();
         if (list != null)
@@ -136,14 +135,20 @@ public class S7GithubExecutor implements Closeable {
                     List<JsonSensorResponse> rList = doWorkRequest(rootRequest, req);
                     jsonResponseList.addAll(rList);
                 } else {
+                    String strArg = "controllerId = " + req.getControllerId();
+                    String msg = "Мета информация о контролере S7 = " + req.getControllerId() + " не найдена, есть информация только по ID = " + metaByControllerId.keySet();
+                    Exception ex = new AppException(TypeException.S7CONTROLLER__INVALID_NOT_FOUND, msg, strArg, null);
                     log.warn(AppConst.ERROR_LOG_PREFIX +
                                     "Мета информация о контролере S7 = {} не найдена, есть информация только по ID = {}",
                             req.getControllerId(), metaByControllerId.keySet());
+
+                    JsonSensorResponse response = jsonHelper.createJsonRequestWithError(rootRequest, req, ex);
+                    jsonResponseList.add(response);
                 }
             }
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
         jsonResult.setRequestDatetime(rootRequest.getRequestDatetime());
-        jsonResult.setRequestDatetimeProxy(null /* proxyTime */);
+        jsonResult.setRequestDatetimeProxy(null/*proxyTime*/);
         jsonResult.setResponseDatetime(jsonHelper.getCurrentTime());
         jsonResult.setRequestId(rootRequest.getRequestId());
         jsonResult.setTaskId(rootRequest.getTaskId());
@@ -262,7 +267,12 @@ public class S7GithubExecutor implements Closeable {
         }
         int length = maxOffset - minOffset;
         try {
+            LocalDateTime s7StartTime = LocalDateTime.now();
+
+            //чтение данных
             byte[] dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
+            LocalDateTime s7EndTime = LocalDateTime.now();
+            long deltaNano = s7EndTime.getNano() - s7StartTime.getNano();
             FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
 
             LocalDateTime time = LocalDateTime.now();
@@ -278,6 +288,11 @@ public class S7GithubExecutor implements Closeable {
                 }
                 BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
                 JsonSensorResponse response = jsonHelper.createJsonRequest(result, AppConst.JSON_SUCCESS_CODE, dataVal.getId().toString());
+
+                //время запросов
+                response.setS7StartTime(s7StartTime);
+                response.setS7EndTime(s7EndTime);
+                response.setDeltaNano(deltaNano);
                 jsonResponseList.add(response);
             }
         } catch (Exception ex) {
