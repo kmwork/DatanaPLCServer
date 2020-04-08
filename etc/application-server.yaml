@@ -1,8 +1,6 @@
 ##### Configuration for PLC SERVER #####
 datana:
   global:
-    ## просьба версию не менять
-    appVersion: 2020-04-07_PLC_SERVER
     debug: true
     log:
       level: INFO
@@ -11,8 +9,6 @@ datana:
 spring:
   main:
     banner-mode: off
-  application:
-    name: ${datana.global.appVersion}
 ### logging ###
 logging:
   level:

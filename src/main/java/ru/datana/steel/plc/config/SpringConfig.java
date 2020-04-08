@@ -1,7 +1,5 @@
 package ru.datana.steel.plc.config;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +15,10 @@ import javax.annotation.PostConstruct;
 @EnableTransactionManagement
 public class SpringConfig implements WebMvcConfigurer {
 
-    @Getter
-    @Setter
-    protected String appVersion;
 
     @PostConstruct
     protected void postConstruct() {
-        log.info("[SpringConfig] APP VERSION = " + appVersion);
+        log.info("[SpringConfig] APP VERSION = " + AppVersion.getDatanaAppVersion());
     }
 
 }

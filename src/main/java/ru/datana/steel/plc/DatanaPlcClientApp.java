@@ -15,6 +15,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.support.GenericApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
@@ -78,6 +79,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
             String serverVersion = clientWebService.getVersion();
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
+            if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
+                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                log.error("Колизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
+                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
             String fromJsonеTemp = callDbService.dbGet();
             JsonRootSensorRequest rootJson = restSpringConfig.parseValue(fromJsonеTemp, JsonRootSensorRequest.class);
 

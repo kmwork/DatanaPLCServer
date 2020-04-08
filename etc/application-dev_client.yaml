@@ -32,8 +32,6 @@ spring:
   main:
     web-application-type: none
     banner-mode: off
-  application:
-    name: ${datana.global.appVersion}
   datasource:
     driver-class: ${datana.spring.datasource.driver-class}
     driver-class-name: ${datana.spring.datasource.driver-class}

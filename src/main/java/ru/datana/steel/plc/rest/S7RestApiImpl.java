@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.config.SpringConfig;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
@@ -35,7 +36,7 @@ public class S7RestApiImpl implements S7RestApi {
     @ResponseBody
     @Override
     public String getVersion() {
-        return springConfig.getAppVersion();
+        return AppVersion.getDatanaAppVersion();
     }
 
 
