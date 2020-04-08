@@ -241,7 +241,7 @@ public class S7GithubExecutor implements Closeable {
         totalReadTimeNano += deltaNano;
         totalDataSize += dataBytes.length;
 
-        log.debug("Затрачено время = {} mili-sec на {} байт данных", Duration.ofNanos(deltaNano), dataBytes.length);
+        log.debug("Затрачено время = {} на {} байт данных", Duration.ofNanos(deltaNano), dataBytes.length);
         return dataBytes;
     }
 
