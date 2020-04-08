@@ -81,7 +81,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
             if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                log.error("Колизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
+                log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
             String fromJsonеTemp = callDbService.dbGet();
