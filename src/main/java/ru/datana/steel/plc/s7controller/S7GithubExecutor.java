@@ -15,6 +15,7 @@ import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
 import ru.datana.steel.plc.moka7.EnumSiemensDataType;
 import ru.datana.steel.plc.util.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -59,7 +60,7 @@ public class S7GithubExecutor implements Closeable {
      *
      * @param controllerMeta
      */
-    public void init(JsonMetaRootController controllerMeta) {
+    public void init(@NotNull JsonMetaRootController controllerMeta) {
         metaByControllerId.clear();
         connectionByControllerId.clear();
         for (Controller c : controllerMeta.getControllers()) {
@@ -74,7 +75,7 @@ public class S7GithubExecutor implements Closeable {
      * @param controllerId
      * @return
      */
-    private boolean closeS7Connect(Integer controllerId) {
+    private boolean closeS7Connect(@NotNull Integer controllerId) {
 
         log.info(PREFIX_LOG + " Завершение сессии для controllerId = {}", controllerId);
         connectionByControllerId.remove(controllerId);
@@ -93,7 +94,7 @@ public class S7GithubExecutor implements Closeable {
      * @param controllerId
      * @throws AppException
      */
-    private void initS7Connection(Integer controllerId) throws AppException {
+    private void initS7Connection(@NotNull Integer controllerId) throws AppException {
         Controller c = metaByControllerId.get(controllerId);
         String host = c.getIp();
         int rack = c.getRack();
@@ -125,7 +126,7 @@ public class S7GithubExecutor implements Closeable {
      * @param rootRequest все запросы на контроллеры для один сеанс сканироавания датчиков
      * @return
      */
-    public JsonRootSensorResponse run(JsonRootSensorRequest rootRequest) {
+    public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) {
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         List<JsonSensorSingleRequest> list = rootRequest.getRequest();
@@ -159,7 +160,8 @@ public class S7GithubExecutor implements Closeable {
      * @param request
      * @return
      */
-    private List<JsonSensorResponse> doWorkRequest(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest request) {
+    private List<JsonSensorResponse> doWorkRequest(@NotNull JsonRootSensorRequest rootRequest,
+                                                   @NotNull JsonSensorSingleRequest request) {
         List<JsonSensorResponse> responseList = new ArrayList<>();
         try {
 
@@ -193,7 +195,9 @@ public class S7GithubExecutor implements Closeable {
      * @return
      * @throws AppException
      */
-    private byte[] tryRead(JsonSensorSingleRequest jsonRequest, int intS7DBNumber, int length, int offset) throws AppException {
+    private byte[] tryRead(@NotNull JsonSensorSingleRequest jsonRequest,
+                           @NotNull int intS7DBNumber,
+                           int length, int offset) throws AppException {
         byte[] dataBytes = null;
         for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
             try {
@@ -243,7 +247,9 @@ public class S7GithubExecutor implements Closeable {
      * @throws AppException
      * @throws InterruptedException
      */
-    private List<JsonSensorResponse> readBlockFromS7(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException {
+    private List<JsonSensorResponse> readBlockFromS7(@NotNull JsonRootSensorRequest rootRequest,
+                                                     @NotNull JsonSensorSingleRequest jsonRequest,
+                                                     @NotNull JsonSensorDatum datum) throws AppException {
         //читаем данные
         int intS7DBNumber = datum.getDataBlock();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
