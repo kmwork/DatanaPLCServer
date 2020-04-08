@@ -39,8 +39,8 @@ public class CallDbServiceImpl implements CallDbService {
 
     @PostConstruct
     private void init() {
-        log.trace("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
-        log.trace("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        log.debug("[SQL: Get] pgNativeGetSQL = " + pgNativeGetSQL);
+        log.debug("[SQL: Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
     }
 
 
@@ -50,7 +50,7 @@ public class CallDbServiceImpl implements CallDbService {
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        log.debug("[SQL:Get] результат = " + toJson);
+        log.info("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 
@@ -60,7 +60,7 @@ public class CallDbServiceImpl implements CallDbService {
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         String toJson = funcSave.getResultList().get(0).toString();
-        log.trace("[SQL:Save] результат = " + toJson);
+        log.info("[SQL:Save] результат = " + toJson);
         return toJson;
     }
 }
