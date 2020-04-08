@@ -9,6 +9,12 @@ public class TimeUtil {
         Duration duration = Duration.ofNanos(timeNano);
         long seconds = duration.getSeconds();
         long absSeconds = Math.abs(seconds);
+        if (absSeconds == 0) {
+            if (timeNano > 10000)
+                return "Время доли секунд mili-seconds = " + timeNano / 1000;
+            else
+                return "Время меньше секунды, timeNano = " + timeNano;
+        }
         String positive = String.format(
                 "%d:%02d:%02d",
                 absSeconds / 3600,
