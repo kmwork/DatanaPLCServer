@@ -42,17 +42,17 @@ public class S7RestApiImpl implements S7RestApi {
     @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Override
-    public String getData(@RequestBody JsonRootSensorRequest fromJson) throws AppException {
+    public String getData(@RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
         try (S7GithubExecutor s7 = new S7GithubExecutor()) {
             JsonMetaRootController jsonMeta = parserUtil.loadJsonMetaRootController();
             s7.init(jsonMeta);
-            result = s7.run(fromJson);
+            result = s7.run(rootJson);
         } catch (AppException ex) {
             log.error("Ошибка в программе: ", ex);
             result = new JsonRootSensorResponse();
-            JsonSensorResponse jsonError = DatanaJsonHelper.getInstance().createJsonRequestWithError(fromJson.getRequest().get(0), ex);
+            JsonSensorResponse jsonError = DatanaJsonHelper.getInstance().createJsonRequestWithError(rootJson, null, ex);
             List<JsonSensorResponse> responseList = new ArrayList<>();
             responseList.add(jsonError);
             result.setResponse(responseList);

@@ -122,18 +122,18 @@ public class S7GithubExecutor implements Closeable {
     /**
      * Выполнить запрос клиента по снянию датчиков с нескольких контроллеров
      *
-     * @param request все запросы на контроллеры для один сеанс сканироавания датчиков
+     * @param rootRequest все запросы на контроллеры для один сеанс сканироавания датчиков
      * @return
      */
-    public JsonRootSensorResponse run(JsonRootSensorRequest request) {
-        LocalDateTime proxyTime = jsonHelper.getCurrentTime();
+    public JsonRootSensorResponse run(JsonRootSensorRequest rootRequest) {
+        //LocalDateTime proxyTime = jsonHelper.getCurrentTime();
 
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
-        List<JsonSensorSingleRequest> list = request.getRequest();
+        List<JsonSensorSingleRequest> list = rootRequest.getRequest();
         if (list != null)
             for (JsonSensorSingleRequest req : list) {
                 if (metaByControllerId.containsKey(req.getControllerId())) {
-                    List<JsonSensorResponse> rList = doWorkRequest(req);
+                    List<JsonSensorResponse> rList = doWorkRequest(rootRequest, req);
                     jsonResponseList.addAll(rList);
                 } else {
                     log.warn(AppConst.ERROR_LOG_PREFIX +
@@ -142,11 +142,11 @@ public class S7GithubExecutor implements Closeable {
                 }
             }
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
-        jsonResult.setRequestDatetime(request.getRequestDatetime());
-        jsonResult.setRequestDatetimeProxy(proxyTime);
+        jsonResult.setRequestDatetime(rootRequest.getRequestDatetime());
+        jsonResult.setRequestDatetimeProxy(null /* proxyTime */);
         jsonResult.setResponseDatetime(jsonHelper.getCurrentTime());
-        jsonResult.setRequestId(request.getRequestId());
-        jsonResult.setTaskId(request.getTaskId());
+        jsonResult.setRequestId(rootRequest.getRequestId());
+        jsonResult.setTaskId(rootRequest.getTaskId());
         jsonResult.setResponse(jsonResponseList);
         return jsonResult;
     }
@@ -157,17 +157,17 @@ public class S7GithubExecutor implements Closeable {
      * @param request
      * @return
      */
-    private List<JsonSensorResponse> doWorkRequest(JsonSensorSingleRequest request) {
+    private List<JsonSensorResponse> doWorkRequest(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest request) {
         List<JsonSensorResponse> responseList = new ArrayList<>();
         try {
 
             initS7Connection(request.getControllerId());
             for (JsonSensorDatum datum : request.getData()) {
-                List<JsonSensorResponse> responsesByOneRequest = readBlockFromS7(request, datum);
+                List<JsonSensorResponse> responsesByOneRequest = readBlockFromS7(rootRequest, request, datum);
                 responseList.addAll(responsesByOneRequest);
             }
         } catch (Exception ex) {
-            JsonSensorResponse response = jsonHelper.createJsonRequestWithError(request, ex);
+            JsonSensorResponse response = jsonHelper.createJsonRequestWithError(rootRequest, request, ex);
             responseList.add(response);
             log.error(AppConst.ERROR_LOG_PREFIX + "Ошибка при чтении S7 для request = " + request, ex);
         } finally {
@@ -234,11 +234,12 @@ public class S7GithubExecutor implements Closeable {
      *
      * @param jsonRequest
      * @param datum
+     * @param rootRequest
      * @return
      * @throws AppException
      * @throws InterruptedException
      */
-    private List<JsonSensorResponse> readBlockFromS7(JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
+    private List<JsonSensorResponse> readBlockFromS7(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest jsonRequest, JsonSensorDatum datum) throws AppException, InterruptedException {
         //читаем данные
         int intS7DBNumber = datum.getDataBlock();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
@@ -276,11 +277,11 @@ public class S7GithubExecutor implements Closeable {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
                 BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
-                JsonSensorResponse response = jsonHelper.createJsonRequest(result, AppConst.JSON_SUCCESS_CODE);
+                JsonSensorResponse response = jsonHelper.createJsonRequest(result, AppConst.JSON_SUCCESS_CODE, dataVal.getId().toString());
                 jsonResponseList.add(response);
             }
         } catch (Exception ex) {
-            JsonSensorResponse jsonResponse = jsonHelper.createJsonRequestWithError(jsonRequest, ex);
+            JsonSensorResponse jsonResponse = jsonHelper.createJsonRequestWithError(rootRequest, jsonRequest, ex);
             jsonResponseList.add(jsonResponse);
         }
         return jsonResponseList;

@@ -2,6 +2,7 @@ package ru.datana.steel.plc.util;
 
 import lombok.Getter;
 import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.model.json.request.JsonSensorSingleRequest;
 import ru.datana.steel.plc.model.json.response.JsonSensorError;
 import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
@@ -30,25 +31,15 @@ public class DatanaJsonHelper {
 
 
     /**
-     * Генератор ID
-     *
-     * @param prefix
-     * @return
-     */
-    public String genResponseId(String prefix) {
-        responseCount++;
-        return "Response[" + prefix + "]:" + System.nanoTime() + ":Res-Index:" + responseCount;
-    }
-
-    /**
      * Сформировать JSON по ошибке
      *
-     * @param request JSON-запрос по которому произошла ошибка
-     * @param e       объект ошибки (Exception)
+     * @param rootRequest   произошла ошибка
+     * @param singleRequest подзапрос по которому произошла ошибка
+     * @param e             объект ошибки (Exception)
      * @return Json объект для отдачи в REST ответ
      */
-    public JsonSensorResponse createJsonRequestWithError(JsonSensorSingleRequest request, Exception e) {
-        JsonSensorResponse jsonResult = createJsonRequest(null, AppConst.JSON_ERROR_CODE);
+    public JsonSensorResponse createJsonRequestWithError(JsonRootSensorRequest rootRequest, JsonSensorSingleRequest singleRequest, Exception e) {
+        JsonSensorResponse jsonResult = createJsonRequest(null, AppConst.JSON_ERROR_CODE, rootRequest.getRequestId());
         JsonSensorError jsonError = new JsonSensorError();
         if (e instanceof AppException) {
             AppException appEx = (AppException) e;
@@ -56,7 +47,8 @@ public class DatanaJsonHelper {
             jsonError.setStrArgs(appEx.getStrArgs());
             jsonError.setTypeCode(appEx.getType().getCodeError());
         } else {
-            jsonError.setStrArgs("request.ControllerId = " + request.getControllerId());
+            String strController = singleRequest == null ? "<нет ControllerId>" : "ControllerId = " + singleRequest.getControllerId();
+            jsonError.setStrArgs("rootRequestUUID = " + rootRequest.getRequestId() + ", " + strController);
             jsonError.setMsg("Ошибка при работе S7 контроллера: " + e.getMessage());
             jsonError.setTypeCode(TypeException.SYSTEM_ERROR.getCodeError());
         }
@@ -73,14 +65,14 @@ public class DatanaJsonHelper {
      * @param status статус запроса (1 - ок, 0 - ошибка)
      * @return json ответа
      */
-    public JsonSensorResponse createJsonRequest(BigDecimal value, int status) {
+    public JsonSensorResponse createJsonRequest(BigDecimal value, int status, String requestId) {
         JsonSensorResponse response = new JsonSensorResponse();
         response.setControllerDatetime(getCurrentTime());
 
         if (value != null)
             response.setData(value.toString());
 
-        response.setId(genResponseId(AppConst.JSON_PREFIX_SENSOR));
+        response.setId(requestId);
         response.setStatus(status);
         return response;
     }

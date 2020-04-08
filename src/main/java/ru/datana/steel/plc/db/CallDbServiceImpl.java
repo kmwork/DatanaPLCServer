@@ -61,7 +61,7 @@ public class CallDbServiceImpl implements CallDbService {
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         String toJson = funcSave.getResultList().get(0).toString();
-        log.trace("[SQL:Get] результат = " + toJson);
+        log.trace("[SQL:Save] результат = " + toJson);
         return toJson;
     }
 }
