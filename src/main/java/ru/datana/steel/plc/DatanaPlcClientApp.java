@@ -1,6 +1,7 @@
 package ru.datana.steel.plc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     @Value("${datana.plc-server.loop-count}")
     private Long loopCount;
 
+    @Value("${datana.plc-server.sleep-on-fatal-error}")
+    private long sleepOnFatalError;
+
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
         if (StringUtils.isEmpty(fileName)) {
@@ -77,7 +81,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
 
-            String serverVersion = clientWebService.getVersion();
+            try {
+                String serverVersion = clientWebService.getVersion();
+            } catch (FeignException ex) {
+                log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage())
+            }
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
             if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -90,8 +98,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             do {
                 try {
                     if (doSleep) {
-                        log.warn("Сон на 5 минуту из-за ошибок");
-                        Thread.sleep(5 * 60 * 1000);
+                        doSleep();
                     } else
                         doSleep = true;
                     String tempJms = callDbService.dbGet();
@@ -128,6 +135,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             log.error(AppConst.ERROR_LOG_PREFIX + " Ошибка в программе", ex);
         }
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
+    }
+
+    private void doSleep() {
+        log.warn("Сон на {} ms из-за ошибок", sleepOnFatalError);
+        Thread.sleep(sleepOnFatalError);
     }
 
     private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {

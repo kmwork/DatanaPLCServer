@@ -8,6 +8,7 @@ datana:
       level: INFO
     beauty-json: true
   plc-server:
+    sleep-on-fatal-error: 30000
     # адрес PLC Сервера
     url-server: http://localhost:8080/
     # колличество опросов сервера а потом завершить работу
