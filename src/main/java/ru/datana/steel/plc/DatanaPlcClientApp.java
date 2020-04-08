@@ -136,7 +136,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
                 long endTime = System.nanoTime();
                 long delta = endTime - statTime;
-                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за однин запрос = {}", Duration.ofNanos(delta));
+                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", Duration.ofNanos(delta));
                 doSleep(sleepMS, "Перекур на цикл");
             }
 
