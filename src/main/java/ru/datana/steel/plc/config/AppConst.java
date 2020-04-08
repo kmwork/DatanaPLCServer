@@ -8,6 +8,7 @@ public class AppConst {
     public final static String FILE_YAML_PROP = "app.config.file";
     public final static String RESOURCE_FILE_NAME = "/danata-version.properties";
     public static final String ERROR_LOG_PREFIX = "[App-Ошибка] ";
+    public static final String RESUME_LOG_PREFIX = "[App-Итог] ";
     public static final String APP_LOG_PREFIX = "[App-Danata] ";
     public static final int S7CONNECTOR_PORT_DEFAULT = 102;
     public static final int TRY_S7CONTROLLER_READ_OF_COUNT = 3;

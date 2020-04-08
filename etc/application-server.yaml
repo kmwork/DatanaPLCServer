@@ -5,6 +5,8 @@ datana:
     log:
       level: INFO
     beauty-json: true
+    experimental-s7-algorithm: true
+
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
 spring:
   main:

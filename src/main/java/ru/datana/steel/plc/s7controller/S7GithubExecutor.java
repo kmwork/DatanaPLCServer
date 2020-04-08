@@ -3,6 +3,9 @@ package ru.datana.steel.plc.s7controller;
 import com.github.s7connector.api.DaveArea;
 import com.github.s7connector.impl.S7TCPConnection;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.Controller;
 import ru.datana.steel.plc.model.json.meta.JsonMetaRootController;
@@ -18,6 +21,7 @@ import ru.datana.steel.plc.util.*;
 import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,6 +32,8 @@ import java.util.*;
  * https://github.com/s7connector/s7connector
  */
 @Slf4j
+@Component("s7Executor")
+@Profile(AppConst.SERVER_PROFILE)
 public class S7GithubExecutor implements Closeable {
 
     private static final String PREFIX_LOG = "[S7 Контроллер] ";
@@ -54,6 +60,12 @@ public class S7GithubExecutor implements Closeable {
      */
     private final DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
 
+
+    private long totalReadTimeNano = 0;
+    private int totalDataSize = 0;
+
+    @Value("${datana.global.experimental-s7-algorithm}")
+    private boolean isExperimentalS7;
 
     /**
      * настройка сервиса чтения Siemens котроллеров
@@ -127,6 +139,11 @@ public class S7GithubExecutor implements Closeable {
      * @return
      */
     public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) {
+
+
+        totalReadTimeNano = 0;
+        totalDataSize = 0;
+        long startTime = System.nanoTime();
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         List<JsonSensorSingleRequest> list = rootRequest.getRequest();
@@ -151,6 +168,9 @@ public class S7GithubExecutor implements Closeable {
         jsonResult.setRequestId(rootRequest.getRequestId());
         jsonResult.setTaskId(rootRequest.getTaskId());
         jsonResult.setResponse(jsonResponseList);
+        long endTime = System.nanoTime();
+        long deltaNano = endTime - startTime;
+        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {} sec, из них время на чтение {}, вычитано {} байт", Duration.ofSeconds(deltaNano), totalReadTimeNano, totalDataSize);
         return jsonResult;
     }
 
@@ -199,6 +219,7 @@ public class S7GithubExecutor implements Closeable {
                            @NotNull int intS7DBNumber,
                            int length, int offset) throws AppException {
         byte[] dataBytes = null;
+        long startTime = System.nanoTime();
         for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
             try {
                 Thread.sleep(AppConst.S7_SLEEP_MS);
@@ -215,6 +236,12 @@ public class S7GithubExecutor implements Closeable {
                 initS7Connection(jsonRequest.getControllerId());
             }
         }
+        long endTime = System.nanoTime();
+        long deltaNano = endTime - startTime;
+        totalReadTimeNano += deltaNano;
+        totalDataSize += dataBytes.length;
+
+        log.debug("Затрачено время = {} mili-sec на {} байт данных", Duration.ofMillis(deltaNano), dataBytes.length);
         return dataBytes;
     }
 
@@ -262,7 +289,7 @@ public class S7GithubExecutor implements Closeable {
 
             // нужно прочитать кратно байтам, если бит то округляем до 1 байта
             EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
-            int sizeBytes = (type.getBitCount() + 7) / 8;
+            int sizeBytes = Math.min(type.getBitCount() / 8, 1);
 
             //опередяем крайнее датчики по их смещению offset
             minOffset = Math.min(minOffset, offset);
@@ -273,13 +300,8 @@ public class S7GithubExecutor implements Closeable {
         int length = maxOffset - minOffset;
         Set<Integer> lastSuccessDataValIds = new HashSet<>();
         try {
-            LocalDateTime s7StartTime = LocalDateTime.now();
 
-            //чтение данных
-            byte[] dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
-            LocalDateTime s7EndTime = LocalDateTime.now();
-            long deltaNano = s7EndTime.getNano() - s7StartTime.getNano();
-            FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
+            byte[] dataBytes = null;
 
             for (JsonSensorDataVal dataVal : datum.getDataVals()) {
                 int bytesOffset = dataVal.getOffset() - minOffset;
@@ -291,13 +313,23 @@ public class S7GithubExecutor implements Closeable {
                 if (type == EnumSiemensDataType.TYPE_BIT) {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
                 }
-                BigDecimal result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
+
+                BigDecimal result = null;
+                if (isExperimentalS7) {
+                    log.info("isExperimentalS7 = true");
+                    int sizeBytes = Math.min(type.getBitCount() / 8, 1);
+                    dataBytes = tryRead(jsonRequest, intS7DBNumber, sizeBytes, dataVal.getOffset());
+                    result = BitOperationsUtils.doBitsOperations(dataBytes, 0, type, intBitPosition);
+                } else {
+                    if (dataBytes == null) {
+                        dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
+                        FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
+                    }
+                    result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
+                }
                 JsonSensorResponse response = jsonHelper.createJsonRequestForData(result, AppConst.JSON_SUCCESS_CODE, dataVal);
 
-                //время запросов
-                response.setDeltaNano(deltaNano);
 
-                log.debug("Затрачено время в nano-seconds = {}, начало чтения = {}, конец чтения = {}", deltaNano, s7StartTime, s7EndTime);
                 jsonResponseList.add(response);
 
                 lastSuccessDataValIds.add(dataVal.getId());

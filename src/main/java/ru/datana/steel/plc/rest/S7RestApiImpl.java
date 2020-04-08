@@ -31,6 +31,8 @@ public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private RestSpringConfig restSpringConfig;
 
+    @Autowired
+    private S7GithubExecutor s7Executor;
 
     @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
@@ -46,15 +48,17 @@ public class S7RestApiImpl implements S7RestApi {
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
-        try (S7GithubExecutor s7 = new S7GithubExecutor()) {
+        try {
             JsonMetaRootController jsonMeta = parserUtil.loadJsonMetaRootController();
-            s7.init(jsonMeta);
-            result = s7.run(rootJson);
+            s7Executor.init(jsonMeta);
+            result = s7Executor.run(rootJson);
         } catch (AppException ex) {
             log.error("Ошибка в программе: ", ex);
             result = new JsonRootSensorResponse();
             List<JsonSensorResponse> responseList = DatanaJsonHelper.getInstance().createJsonRequestWithErrorGlobal(rootJson, ex);
             result.setResponse(responseList);
+        } finally {
+            s7Executor.close();
         }
         return restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);
     }

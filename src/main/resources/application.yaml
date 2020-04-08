@@ -2,6 +2,7 @@
 datana:
   global:
     ## просьба версию не менять
+    appVersion: 2020-04-07_PLC_CLIENT_LOCAL
     debug: true
     log:
       # уровень вывода логов
@@ -21,7 +22,7 @@ datana:
   spring:
     datasource:
       driver-class: org.postgresql.Driver
-      jdbcUrl: "jdbc:postgresql://localhost:5432/datana"
+      jdbcUrl: jdbc:postgresql://localhost:5432/datana
       username: postgres
       password: 1
       schema: datalake
@@ -39,7 +40,6 @@ spring:
       connection-timeout: 60000
       maximum-pool-size: 5
       schema: ${datana.spring.datasource.schema}
-
     password: ${datana.spring.datasource.password}
     testWhileIdle: true
     url: ${datana.spring.datasource.jdbcUrl}

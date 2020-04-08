@@ -84,8 +84,24 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            String tempJms = callDbService.dbGet();
-            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
+            boolean doSleep = false;
+            boolean success = false;
+            JsonRootSensorRequest rootJson = null;
+            do {
+                try {
+                    if (doSleep) {
+                        log.warn("Сон на 5 минуту из-за ошибок");
+                        Thread.sleep(5 * 60 * 1000);
+                    } else
+                        doSleep = true;
+                    String tempJms = callDbService.dbGet();
+                    rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
+                    success = rootJson != null && rootJson.getStatus() == 1;
+                } catch (Exception e) {
+                    log.error(AppConst.ERROR_LOG_PREFIX + "ошибка при работе хранимки get", e);
+
+                }
+            } while (!success);
 
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
