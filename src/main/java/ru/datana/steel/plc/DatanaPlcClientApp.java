@@ -39,13 +39,13 @@ import java.util.UUID;
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
     @Autowired
-    protected GenericApplicationContext context;
+    private GenericApplicationContext context;
 
     @Autowired
-    protected CallDbService callDbService;
+    private CallDbService callDbService;
 
     @Autowired
-    protected RestClientWebService clientWebService;
+    private RestClientWebService clientWebService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -54,10 +54,10 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     private RestSpringConfig restSpringConfig;
 
     @Value("${datana.plc-server.sleep-ms}")
-    protected Long sleepMS;
+    private Long sleepMS;
 
     @Value("${datana.plc-server.loop-count}")
-    protected Long loopCount;
+    private Long loopCount;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -84,8 +84,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-            String fromJsonеTemp = callDbService.dbGet();
-            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(fromJsonеTemp, JsonRootSensorRequest.class);
+            String tempJms = callDbService.dbGet();
+            JsonRootSensorRequest rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
 
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
@@ -119,7 +119,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         LocalDateTime time = LocalDateTime.now();
         rootJson.setRequestId(uuid);
         rootJson.setRequestDatetime(time);
-        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = {0}", step, uuid, time);
+        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = {}", step, uuid, time);
         log.info("[Запрос] rootJson = " + rootJson);
     }
 

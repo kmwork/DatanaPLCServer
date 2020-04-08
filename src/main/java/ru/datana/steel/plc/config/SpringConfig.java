@@ -17,7 +17,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
 
     @PostConstruct
-    protected void postConstruct() {
+    private void postConstruct() {
         log.info("[SpringConfig] APP VERSION = " + AppVersion.getDatanaAppVersion());
     }
 

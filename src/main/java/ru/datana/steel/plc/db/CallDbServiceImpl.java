@@ -20,7 +20,7 @@ import java.util.List;
 public class CallDbServiceImpl implements CallDbService {
 
     @PersistenceContext
-    protected EntityManager entityManager;
+    private EntityManager entityManager;
 
     /**
      * Хранимка генерации запросов на сервер

@@ -16,9 +16,9 @@ import javax.validation.Valid;
 public class JsonHello {
 
     @JsonProperty("action")
-    public String action = "get_plc_proxy_config";
+    private String action = "get_plc_proxy_config";
     @JsonProperty("params")
     @Valid
-    public JsonHelloParams params;
+    private JsonHelloParams params;
 
 }

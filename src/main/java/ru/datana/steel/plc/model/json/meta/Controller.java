@@ -24,37 +24,37 @@ public class Controller {
 
     @JsonProperty("id")
     @NotNull
-    protected Integer id;
+    private Integer id;
 
     @JsonProperty("controller_name")
     @NotNull
-    protected String controllerName;
+    private String controllerName;
 
     @JsonProperty("rack")
     @NotNull
-    protected Integer rack;
+    private Integer rack;
 
     @JsonProperty("slot")
     @NotNull
-    protected Integer slot;
+    private Integer slot;
 
     @JsonProperty("ip")
     @NotNull
-    protected String ip;
+    private String ip;
 
     @JsonProperty("port")
-    protected Integer port;
+    private Integer port;
 
     @JsonProperty("write_enable")
     @NotNull
-    protected Boolean writeEnable;
+    private Boolean writeEnable;
 
     @JsonProperty("permanent_connection")
     @NotNull
-    protected Boolean permanentConnection;
+    private Boolean permanentConnection;
 
     @JsonProperty("timeout")
     @NotNull
-    protected Integer timeout;
+    private Integer timeout;
 
 }

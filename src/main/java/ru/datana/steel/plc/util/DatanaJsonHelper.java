@@ -25,11 +25,6 @@ public class DatanaJsonHelper {
     @Getter
     private final static DatanaJsonHelper instance = new DatanaJsonHelper();
 
-    /**
-     * Счетчик ответов для формирование ID ответов
-     */
-    private int responseCount = 0;
-
     private DatanaJsonHelper() {
 
     }

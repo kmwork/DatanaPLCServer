@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Slf4j
 public class BitOperationsUtils {
 
-    private static String PREFIX_LOG = "[Приведение к типу] ";
+    private static final String PREFIX_LOG = "[Приведение к типу] ";
 
     /**
      * Унификация типов данных к одному типу BigDecimal

@@ -27,35 +27,35 @@ public class JsonRootSensorRequest {
      */
     @JsonProperty("request_id")
     @NotNull
-    protected String requestId;
+    private String requestId;
     /**
      * (Required)
      */
     @JsonProperty("task_id")
     @NotNull
-    protected Integer taskId;
+    private Integer taskId;
     /**
      * (Required)
      */
     @JsonProperty("request-datetime")
     @NotNull
-    protected LocalDateTime requestDatetime;
+    private LocalDateTime requestDatetime;
     /**
      * (Required)
      */
     @JsonProperty("request")
     @Valid
     @NotNull
-    protected List<JsonSensorSingleRequest> request = null;
+    private List<JsonSensorSingleRequest> request = null;
 
 
     @JsonProperty("status")
     @Null
-    protected Integer status;
+    private Integer status;
 
 
     @JsonProperty("timeout")
     @Null
-    protected Long timeout;
+    private Long timeout;
 
 }

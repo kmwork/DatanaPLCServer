@@ -27,37 +27,37 @@ public class JsonRootSensorResponse {
      */
     @JsonProperty("request-datetime")
     @NotNull
-    protected LocalDateTime requestDatetime;
+    private LocalDateTime requestDatetime;
     /**
      * (Required)
      */
     @JsonProperty("request-datetime-proxy")
     @NotNull
-    protected LocalDateTime requestDatetimeProxy;
+    private LocalDateTime requestDatetimeProxy;
     /**
      * (Required)
      */
     @JsonProperty("response-datetime")
     @NotNull
-    protected LocalDateTime responseDatetime;
+    private LocalDateTime responseDatetime;
     /**
      * (Required)
      */
     @JsonProperty("request_id")
     @NotNull
-    protected String requestId;
+    private String requestId;
     /**
      * (Required)
      */
     @JsonProperty("task_id")
     @NotNull
-    protected Integer taskId;
+    private Integer taskId;
     /**
      * (Required)
      */
     @JsonProperty("response")
     @Valid
     @NotNull
-    protected List<JsonSensorResponse> response = null;
+    private List<JsonSensorResponse> response = null;
 
 }

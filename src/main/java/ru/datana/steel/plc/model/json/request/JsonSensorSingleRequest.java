@@ -22,13 +22,13 @@ public class JsonSensorSingleRequest {
      */
     @JsonProperty("controller_id")
     @NotNull
-    protected Integer controllerId;
+    private Integer controllerId;
     /**
      * (Required)
      */
     @JsonProperty("data")
     @Valid
     @NotNull
-    protected List<JsonSensorDatum> data = null;
+    private List<JsonSensorDatum> data = null;
 
 }

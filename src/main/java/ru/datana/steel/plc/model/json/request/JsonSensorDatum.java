@@ -22,13 +22,13 @@ public class JsonSensorDatum {
      */
     @JsonProperty("data-block")
     @NotNull
-    protected Integer dataBlock;
+    private Integer dataBlock;
     /**
      * (Required)
      */
     @JsonProperty("data-vals")
     @Valid
     @NotNull
-    protected List<JsonSensorDataVal> dataVals = null;
+    private List<JsonSensorDataVal> dataVals = null;
 
 }

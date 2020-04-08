@@ -36,13 +36,13 @@ public class S7GithubExecutor implements Closeable {
      * Коннекты
      * ключ - наш ID в базе данных, значение - коннект Socket с S7
      */
-    private Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
+    private final Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
 
     /**
      * Описание котроллеров по ID
      * ключ - наш ID в базе данных, значение - описание контроллера
      */
-    private Map<Integer, Controller> metaByControllerId = new HashMap<>();
+    private final Map<Integer, Controller> metaByControllerId = new HashMap<>();
 
     /**
      * Текущий коннект S7
@@ -52,7 +52,7 @@ public class S7GithubExecutor implements Closeable {
     /**
      * Утилита по работе Json
      */
-    private DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
+    private final DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
 
 
     /**
@@ -66,7 +66,7 @@ public class S7GithubExecutor implements Closeable {
         for (Controller c : controllerMeta.getControllers()) {
             metaByControllerId.put(c.getId(), c);
         }
-        log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : ", metaByControllerId.size(), metaByControllerId.keySet());
+        log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
     /**
@@ -172,9 +172,9 @@ public class S7GithubExecutor implements Closeable {
             }
         } catch (AppException ex) {
             log.error(AppConst.ERROR_LOG_PREFIX + "Ошибка при чтении S7 для request = " + request, ex);
-            List<JsonSensorResponse> response = jsonHelper.createJsonRequestWithError(rootRequest, request, null, ex);
+            List<JsonSensorResponse> responseError = jsonHelper.createJsonRequestWithError(rootRequest, request, null, ex);
 
-            return response;
+            responseList.addAll(responseError);
         } finally {
             boolean doDisconnect = !metaByControllerId.get(request.getControllerId()).getPermanentConnection();
             if (doDisconnect)
@@ -231,7 +231,7 @@ public class S7GithubExecutor implements Closeable {
                 if (isSuccess)
                     ids.add(id);
             } catch (Exception ex) {
-                log.warn(AppConst.ERROR_LOG_PREFIX + " Ошибка дисконнекта S7 для id = " + id, " Error: " + ex.getMessage());
+                log.warn(AppConst.ERROR_LOG_PREFIX + " Ошибка дисконнекта S7 для id = {}, Error: {}", id, ex.getMessage());
             }
         }
         log.info(PREFIX_LOG + " Коннекты  весели открытыми с ID = " + ids);
@@ -281,7 +281,6 @@ public class S7GithubExecutor implements Closeable {
             long deltaNano = s7EndTime.getNano() - s7StartTime.getNano();
             FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
 
-            LocalDateTime time = LocalDateTime.now();
             for (JsonSensorDataVal dataVal : datum.getDataVals()) {
                 int bytesOffset = dataVal.getOffset() - minOffset;
                 assert bytesOffset >= 0;
@@ -296,9 +295,9 @@ public class S7GithubExecutor implements Closeable {
                 JsonSensorResponse response = jsonHelper.createJsonRequestForData(result, AppConst.JSON_SUCCESS_CODE, dataVal);
 
                 //время запросов
-                response.setS7StartTime(s7StartTime);
-                response.setS7EndTime(s7EndTime);
                 response.setDeltaNano(deltaNano);
+
+                log.debug("Затрачено время в nano-seconds = {}, начало чтения = {}, конец чтения = {}", deltaNano, s7StartTime, s7EndTime);
                 jsonResponseList.add(response);
 
                 lastSuccessDataValIds.add(dataVal.getId());

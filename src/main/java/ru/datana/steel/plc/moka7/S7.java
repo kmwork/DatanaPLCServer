@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.Date;
 
+@SuppressWarnings("ALL")
 public class S7 {
     // Returns the bit at Pos.Bit
     public static boolean GetBitAt(byte[] Buffer, int Pos, int Bit) {

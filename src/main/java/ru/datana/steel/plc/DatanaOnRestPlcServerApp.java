@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.datana.steel.plc.config.AppConst;
@@ -29,7 +28,7 @@ public class DatanaOnRestPlcServerApp {
 
     public static void main(String[] args) {
         ExtSpringProfileUtil.extConfigure(AppConst.SERVER_PROFILE, AppConst.EXT_SERVER_YAML);
-        ConfigurableApplicationContext context = SpringApplication.run(DatanaOnRestPlcServerApp.class, args);
+        SpringApplication.run(DatanaOnRestPlcServerApp.class, args);
     }
 
 

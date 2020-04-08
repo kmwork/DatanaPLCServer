@@ -22,7 +22,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
 
     @Getter
     @Value("${datana.global.beauty-json}")
-    protected Boolean beautyJson;
+    private Boolean beautyJson;
 
     private ObjectMapper objectMapper;
 
@@ -98,7 +98,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
         } catch (JsonProcessingException ex) {
             String strArg = "fromJson = '" + fromJson + "' as valueType = " + valueType.getName();
             String msg = "Ошибка разбор строки json в объект java";
-            log.error(AppConst.ERROR_LOG_PREFIX, msg + ": " + strArg, ex);
+            log.error(AppConst.ERROR_LOG_PREFIX + msg + ": " + strArg, ex);
             throw new AppException(TypeException.INVALID_FORMAT_JSON, msg, strArg, ex);
         }
     }
@@ -111,7 +111,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
         } catch (JsonProcessingException ex) {
             String strArg = "prefixLog" + prefixLog + ", rootJson = '" + rootJson;
             String msg = "Ошибка формирование строки из java объекта";
-            log.error(AppConst.ERROR_LOG_PREFIX, msg + ": " + strArg, ex);
+            log.error(AppConst.ERROR_LOG_PREFIX + msg + ": " + strArg, ex);
             throw new AppException(TypeException.INVALID_CONVERT_TO_JSON, msg, strArg, ex);
         }
 

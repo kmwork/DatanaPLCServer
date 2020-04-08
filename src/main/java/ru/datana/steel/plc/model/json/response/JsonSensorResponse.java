@@ -27,40 +27,32 @@ public class JsonSensorResponse {
      */
     @JsonProperty("id")
     @NotNull
-    protected Integer id;
+    private Integer id;
     /**
      * (Required)
      */
     @JsonProperty("data")
     @NotNull
-    protected String data;
+    private String data;
     /**
      * (Required)
      */
     @JsonProperty("controller-datetime")
     @NotNull
-    protected LocalDateTime controllerDatetime;
+    private LocalDateTime controllerDatetime;
     /**
      * (Required)
      */
     @JsonProperty("status")
     @NotNull
-    protected Integer status;
+    private Integer status;
     /**
      * (Required)
      */
     @JsonProperty("errors")
     @Valid
     @NotNull
-    protected List<JsonSensorError> errors = null;
-
-    @JsonProperty("s7StartTime")
-    @Null
-    private LocalDateTime s7StartTime;
-
-    @JsonProperty("s7EndTime")
-    @Null
-    private LocalDateTime s7EndTime;
+    private List<JsonSensorError> errors = null;
 
 
     @JsonProperty("deltaNano")

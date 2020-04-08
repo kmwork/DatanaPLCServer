@@ -23,30 +23,30 @@ public class JsonSensorDataVal {
      */
     @JsonProperty("operation")
     @NotNull
-    protected String operation;
+    private String operation;
     /**
      * (Required)
      */
     @JsonProperty("data-type")
     @NotNull
-    protected String dataType;
+    private String dataType;
     /**
      * (Required)
      */
     @JsonProperty("offset")
     @NotNull
-    protected Integer offset;
+    private Integer offset;
     /**
      * (Required)
      */
     @JsonProperty("bitmask")
     @NotNull
-    protected String bitmask;
+    private String bitmask;
     /**
      * (Required)
      */
     @JsonProperty("id")
     @NotNull
-    protected Integer id;
+    private Integer id;
 
 }

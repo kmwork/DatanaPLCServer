@@ -18,10 +18,10 @@ import java.util.List;
 public class JsonMetaRootController {
 
     @JsonProperty("datablock_write_enable")
-    protected Boolean datablockWriteEnable;
+    private Boolean datablockWriteEnable;
     @JsonProperty("controllers")
     @Valid
     @NotNull
-    protected List<Controller> controllers = null;
+    private List<Controller> controllers = null;
 
 }
