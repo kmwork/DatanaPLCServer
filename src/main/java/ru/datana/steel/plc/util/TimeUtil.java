@@ -30,7 +30,7 @@ public class TimeUtil {
                     seconds / 3600,
                     (seconds % 3600) / 60,
                     seconds % 60);
-            result += positive + "(время в часы:минуты:секунды)";
+            result += positive + " (время в часы:минуты:секунды)";
         }
 
         return result;
