@@ -80,12 +80,17 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     public void run(String... args) {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
+            String serverVersion = null;
+            do {
+                try {
+                    serverVersion = clientWebService.getVersion();
+                    if (serverVersion == null)
+                        doSleep();
+                } catch (FeignException ex) {
+                    log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage());
+                }
+            } while (serverVersion == null);
 
-            try {
-                String serverVersion = clientWebService.getVersion();
-            } catch (FeignException ex) {
-                log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage())
-            }
             log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
             if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
                 log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -137,7 +142,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
     }
 
-    private void doSleep() {
+    private void doSleep() throws InterruptedException {
         log.warn("Сон на {} ms из-за ошибок", sleepOnFatalError);
         Thread.sleep(sleepOnFatalError);
     }
