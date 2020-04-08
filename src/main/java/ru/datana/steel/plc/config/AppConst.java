@@ -18,4 +18,5 @@ public class AppConst {
     public final static String EXT_SERVER_YAML = "application-server.yaml";
     public static final String DB_DEV_POSTGRES_PROFILE = "dev_client";
     public static final String SERVER_PROFILE = "server";
+    public static final long MIN_SLEEP_MS = 100;
 }

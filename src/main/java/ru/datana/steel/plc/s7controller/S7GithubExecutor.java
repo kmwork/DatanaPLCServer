@@ -217,12 +217,11 @@ public class S7GithubExecutor implements Closeable {
      */
     private byte[] tryRead(@NotNull JsonSensorSingleRequest jsonRequest,
                            @NotNull int intS7DBNumber,
-                           int length, int offset) throws AppException {
+                           int length, int offset) throws AppException, InterruptedException {
         byte[] dataBytes = null;
         long startTime = System.nanoTime();
         for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
             try {
-                Thread.sleep(AppConst.S7_SLEEP_MS);
                 dataBytes = currentConnector.read(DaveArea.DB, intS7DBNumber, length, offset);
                 break;
             } catch (Exception ex) {
@@ -234,6 +233,7 @@ public class S7GithubExecutor implements Closeable {
                 if (tryCount == AppConst.TRY_S7CONTROLLER_READ_OF_COUNT)
                     throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
                 initS7Connection(jsonRequest.getControllerId());
+                Thread.sleep(AppConst.S7_SLEEP_MS);
             }
         }
         long endTime = System.nanoTime();

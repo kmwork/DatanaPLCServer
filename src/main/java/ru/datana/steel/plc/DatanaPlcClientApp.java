@@ -142,9 +142,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     }
 
     private void doSleep(long time, String msg) throws InterruptedException {
-        time = Math.min(time, 100);
-        log.warn(msg + ", на время = "sleepOnFatalError);
-        Thread.sleep(sleepOnFatalError);
+        if (time < 100)
+            log.warn("Запещено ставить меньше задержки min = ", AppConst.MIN_SLEEP_MS);
+        time = Math.max(time, AppConst.MIN_SLEEP_MS);
+        log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
+        Thread.sleep(time);
     }
 
     private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {

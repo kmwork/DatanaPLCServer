@@ -15,7 +15,7 @@ datana:
     # если меньше нуля тогда вечный цикл
     loop-count: 1
     # ожидание после кажного цикла в миллисекундах
-    sleep-ms: 50000
+    sleep-ms: 5000
   database-options:
     postgresql-get-function: "select cast( datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as json)) as text)"
     postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response( cast(:fromJson as json)) as text)"
