@@ -84,6 +84,9 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
 
+            rootJson.setStatus(null);
+            rootJson.setTimeout(null);
+
             boolean infinityLoop = loopCount < 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
                 long step = index + 1;
