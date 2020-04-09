@@ -1,6 +1,5 @@
 package ru.datana.steel.plc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +13,6 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.support.GenericApplicationContext;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
@@ -46,16 +44,10 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     }
 
     @Autowired
-    private GenericApplicationContext context;
-
-    @Autowired
     private CallDbService callDbService;
 
     @Autowired
     private RestClientWebService clientWebService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Autowired
     private RestSpringConfig restSpringConfig;

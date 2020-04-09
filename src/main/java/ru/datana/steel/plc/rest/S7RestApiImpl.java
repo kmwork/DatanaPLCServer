@@ -3,6 +3,7 @@ package ru.datana.steel.plc.rest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,7 @@ public class S7RestApiImpl implements S7RestApi {
     private RestSpringConfig restSpringConfig;
 
     @Autowired
-    private S7GithubExecutor s7Executor;
+    private ApplicationContext context;
 
     @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
@@ -48,8 +49,10 @@ public class S7RestApiImpl implements S7RestApi {
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
         JsonRootSensorResponse result;
+        S7GithubExecutor s7Executor = null;
         try {
             JsonMetaRootController jsonMeta = parserUtil.loadJsonMetaRootController();
+            s7Executor = context.getBean(S7GithubExecutor.class);
             s7Executor.init(jsonMeta);
             result = s7Executor.run(rootJson);
         } catch (AppException ex) {
@@ -58,8 +61,10 @@ public class S7RestApiImpl implements S7RestApi {
             List<JsonSensorResponse> responseList = DatanaJsonHelper.getInstance().createJsonRequestWithErrorGlobal(rootJson, ex);
             result.setResponse(responseList);
         } finally {
-            s7Executor.close();
+            if (s7Executor != null)
+                s7Executor.close();
         }
         return restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);
     }
+
 }
