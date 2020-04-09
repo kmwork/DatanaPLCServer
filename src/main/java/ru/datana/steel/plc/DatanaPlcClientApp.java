@@ -80,7 +80,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                     serverVersion = clientWebService.getVersion();
                 } catch (FeignException ex) {
                     log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage());
-                    doSleep(sleepOnFatalError, "Ожидание запуска сервера: PLC-Шлюза");
+                    TimeUtil.doSleep(sleepOnFatalError, "Ожидание запуска сервера: PLC-Шлюза");
                 }
             } while (serverVersion == null);
 
@@ -96,7 +96,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             do {
                 try {
                     if (makeSleepSQL) {
-                        doSleep(sleepOnFatalError, "Ждем пока починят хранимку GET");
+                        TimeUtil.doSleep(sleepOnFatalError, "Ждем пока починят хранимку GET");
                     } else
                         makeSleepSQL = true;
                     String tempJms = callDbService.dbGet();
@@ -130,21 +130,13 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                 long endTime = System.nanoTime();
                 long deltaNano = endTime - statTime;
                 log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
-                doSleep(sleepMS, "Перекур на цикл");
+                TimeUtil.doSleep(sleepMS, "Перекур на цикл");
             }
 
         } catch (Exception ex) {
             log.error(AppConst.ERROR_LOG_PREFIX + " Ошибка в программе", ex);
         }
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
-    }
-
-    private void doSleep(long time, String msg) throws InterruptedException {
-        if (time < 100)
-            log.warn("Запрещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
-        time = Math.max(time, AppConst.MIN_SLEEP_MS);
-        log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
-        Thread.sleep(time);
     }
 
     private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {

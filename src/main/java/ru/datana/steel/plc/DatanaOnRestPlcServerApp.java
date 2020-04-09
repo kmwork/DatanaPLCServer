@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
@@ -17,6 +18,7 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
  * Тех задание: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
  */
 @EnableWebMvc
+@EnableAsync
 @SpringBootApplication(exclude = {
         DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class,

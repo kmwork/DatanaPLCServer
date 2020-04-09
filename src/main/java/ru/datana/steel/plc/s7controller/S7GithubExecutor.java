@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.Controller;
@@ -26,6 +28,8 @@ import java.io.Closeable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -71,6 +75,7 @@ public class S7GithubExecutor implements Closeable {
 
     @Value("${datana.global.experimental-s7-algorithm}")
     private boolean isExperimentalS7;
+
 
     @PostConstruct
     private void postConstructor() {
@@ -150,8 +155,7 @@ public class S7GithubExecutor implements Closeable {
      * @param rootRequest все запросы на контроллеры для один сеанс сканирования датчиков
      * @return
      */
-    public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) {
-
+    public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) throws ExecutionException, InterruptedException {
 
         totalReadTimeNano = 0;
         totalDataSize = 0;
@@ -159,11 +163,13 @@ public class S7GithubExecutor implements Closeable {
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
         List<JsonSensorSingleRequest> list = rootRequest.getRequest();
+        List<Future<List<JsonSensorResponse>>> futureList = new ArrayList<>();
         if (list != null)
             for (JsonSensorSingleRequest req : list) {
                 if (metaByControllerId.containsKey(req.getControllerId())) {
-                    List<JsonSensorResponse> rList = doWorkRequest(rootRequest, req);
-                    jsonResponseList.addAll(rList);
+                    Future<List<JsonSensorResponse>> future = doWorkRequest(rootRequest, req);
+                    futureList.add(future);
+
                 } else {
                     String strArg = "controllerId = " + req.getControllerId();
                     String msg = "Мета информация о контролере S7 = " + req.getControllerId() + " не найдена, есть информация только по ID = " + metaByControllerId.keySet();
@@ -173,6 +179,9 @@ public class S7GithubExecutor implements Closeable {
                     jsonResponseList.addAll(errorResponseList);
                 }
             }
+
+        List<JsonSensorResponse> fList = waitFutureList(futureList);
+        jsonResponseList.addAll(fList);
         JsonRootSensorResponse jsonResult = new JsonRootSensorResponse();
         jsonResult.setRequestDatetime(rootRequest.getRequestDatetime());
         jsonResult.setRequestDatetimeProxy(proxyTime);
@@ -186,14 +195,34 @@ public class S7GithubExecutor implements Closeable {
         return jsonResult;
     }
 
+    private List<JsonSensorResponse> waitFutureList(List<Future<List<JsonSensorResponse>>> futureList) throws InterruptedException, ExecutionException {
+        TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании {} штук  future" + futureList.size());
+        List<JsonSensorResponse> result = new ArrayList<>();
+        int index = 0;
+        while (index < futureList.size()) {
+            Future<List<JsonSensorResponse>> f = futureList.get(index);
+            if (f.isDone()) {
+                log.debug("[waitFutureList] isDone");
+                index++;
+                result.addAll(f.get());
+            } else if (f.isCancelled())
+                index++;
+            else
+                TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании {} штук  future" + futureList.size());
+        }
+        return result;
+    }
+
+
     /**
      * Выполнить запрос на один контроллер
      *
      * @param request
      * @return
      */
-    private List<JsonSensorResponse> doWorkRequest(@NotNull JsonRootSensorRequest rootRequest,
-                                                   @NotNull JsonSensorSingleRequest request) {
+    @Async
+    protected Future<List<JsonSensorResponse>> doWorkRequest(@NotNull JsonRootSensorRequest rootRequest,
+                                                             @NotNull JsonSensorSingleRequest request) {
         List<JsonSensorResponse> responseList = new ArrayList<>();
         try {
 
@@ -213,7 +242,7 @@ public class S7GithubExecutor implements Closeable {
                 closeS7Connect(request.getControllerId());
         }
 
-        return responseList;
+        return new AsyncResult<>(responseList);
     }
 
 
@@ -229,32 +258,22 @@ public class S7GithubExecutor implements Closeable {
      */
     private byte[] tryRead(@NotNull JsonSensorSingleRequest jsonRequest,
                            @NotNull int intS7DBNumber,
-                           int length, int offset) throws AppException, InterruptedException {
-        byte[] dataBytes = null;
+                           int length, int offset) throws AppException {
         long startTime = System.nanoTime();
-        for (int i = 0; i < AppConst.TRY_S7CONTROLLER_READ_OF_COUNT; i++) {
-            try {
-                dataBytes = currentConnector.read(DaveArea.DB, intS7DBNumber, length, offset);
-                break;
-            } catch (Exception ex) {
-                int tryCount = i + 1;
-                String msg = "Ошибка чтения S7. было " + tryCount + " попыток.";
-                String strArgs = "controllerId= " + jsonRequest.getControllerId() + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
-                log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs, ex);
-                closeS7Connect(jsonRequest.getControllerId());
-                if (tryCount == AppConst.TRY_S7CONTROLLER_READ_OF_COUNT)
-                    throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
-                initS7Connection(jsonRequest.getControllerId());
-                Thread.sleep(AppConst.S7_SLEEP_MS);
-            }
+        try {
+            return currentConnector.read(DaveArea.DB, intS7DBNumber, length, offset);
+        } catch (Exception ex) {
+            String msg = "Ошибка чтения S7";
+            String strArgs = "controllerId= " + jsonRequest.getControllerId() + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
+            log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs, ex);
+            throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
+        } finally {
+            long endTime = System.nanoTime();
+            long deltaNano = endTime - startTime;
+            totalReadTimeNano += deltaNano;
+            totalDataSize += length;
+            log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), length);
         }
-        long endTime = System.nanoTime();
-        long deltaNano = endTime - startTime;
-        totalReadTimeNano += deltaNano;
-        totalDataSize += dataBytes.length;
-
-        log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), dataBytes.length);
-        return dataBytes;
     }
 
     /**

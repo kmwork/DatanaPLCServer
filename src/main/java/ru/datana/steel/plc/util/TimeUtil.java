@@ -2,6 +2,7 @@ package ru.datana.steel.plc.util;
 
 
 import lombok.extern.slf4j.Slf4j;
+import ru.datana.steel.plc.config.AppConst;
 
 import java.time.Duration;
 
@@ -38,4 +39,13 @@ public class TimeUtil {
 
         return result;
     }
+
+    public static void doSleep(long time, String msg) throws InterruptedException {
+        if (time < 100)
+            log.warn("Запрещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
+        time = Math.max(time, AppConst.MIN_SLEEP_MS);
+        log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
+        Thread.sleep(time);
+    }
+
 }
