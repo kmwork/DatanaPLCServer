@@ -75,8 +75,8 @@ public class S7GithubExecutor implements Closeable {
     @PostConstruct
     private void postConstructor() {
         long id = instanceCount.incrementAndGet();
-        prefixLog += "[InstanceID: " + id + "]";
-        log.info(prefixLog + "инициализация объекта-bean [S7GithubExecutor]");
+        prefixLog += "[InstanceID: " + id + "] ";
+        log.info(prefixLog + "Инициализация объекта-bean [S7GithubExecutor]");
     }
 
     /**
