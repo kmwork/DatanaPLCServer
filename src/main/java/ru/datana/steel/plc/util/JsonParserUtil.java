@@ -65,7 +65,7 @@ public class JsonParserUtil {
             log.info("[From file:MetaInfo] " + mapper.writeValueAsString(result));
             return result;
         } catch (IOException ex) {
-            String msg = "Ошибка в программе при чтении файла";
+            String msg = "Ошибка  в программе при чтении файла";
             log.error(msg, ex);
             String strArgs = "File: " + f.getAbsoluteFile();
             throw new AppException(TypeException.INVALID_USER_INPUT_META_FILE, msg, strArgs, ex);

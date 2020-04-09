@@ -1,7 +1,7 @@
-# PLC Proxy Server (шлюз между котроллером и кафкой)
+# PLC Proxy Server и Client (шлюзы между контроллером и базой данных PostgeSQL)
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
-задача в JIRE: https://jira.dds.lanit.ru/browse/VACUM-23
+задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23
 ## сборка Maven 3 + OpenJDK 13
 ```
 mvn clean compile package spring-boot:repackage -P plcServer
@@ -42,14 +42,13 @@ mvn clean compile package spring-boot:repackage -P plcClient
 #### Для тестирования рекомендация
 желательно использовать Open JDK/JRE 13
 и для RESTfull запросов POSTMEN как плагин к Хрому - 
-    postmen - расшрение к хрому - https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop/related?hl=ru          
+    postmen - расширение к хрому - https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop/related?hl=ru          
     
 ,
 ## техническая документация 
 в папке <this project>/doc-manual
 
 ### Запуск программ
-сначало нужно запустить сервер потом клиента
 #### для Linux
 ```
 run-client-on-linux.sh

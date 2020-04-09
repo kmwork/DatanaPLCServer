@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Движок от GitHub (упрощенное апи - поключил через зависимость мавен)
+ * Движок от GitHub (упрощённое апи - подключил через зависимость мавен)
  * <p>
  * взято из s7connector
  * https://github.com/s7connector/s7connector
@@ -50,7 +50,7 @@ public class S7GithubExecutor implements Closeable {
     private final Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
 
     /**
-     * Описание котроллеров по ID
+     * Описание контроллеров по ID
      * ключ - наш ID в базе данных, значение - описание контроллера
      */
     private final Map<Integer, Controller> metaByControllerId = new HashMap<>();
@@ -80,7 +80,7 @@ public class S7GithubExecutor implements Closeable {
     }
 
     /**
-     * настройка сервиса чтения Siemens котроллеров
+     * настройка сервиса чтения Siemens контроллеров
      *
      * @param controllerMeta
      */
@@ -145,9 +145,9 @@ public class S7GithubExecutor implements Closeable {
     }
 
     /**
-     * Выполнить запрос клиента по снянию датчиков с нескольких контроллеров
+     * Выполнить запрос клиента по снятию датчиков с нескольких контроллеров
      *
-     * @param rootRequest все запросы на контроллеры для один сеанс сканироавания датчиков
+     * @param rootRequest все запросы на контроллеры для один сеанс сканирования датчиков
      * @return
      */
     public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) {
@@ -295,7 +295,7 @@ public class S7GithubExecutor implements Closeable {
         int minOffset = Integer.MAX_VALUE;
         int maxOffset = Integer.MIN_VALUE;
 
-        // опеределяем крайние переменные одного блока (минимум  и максимум для offset) для чтения блока данных
+        // определяем крайние переменные одного блока (минимум  и максимум для offset) для чтения блока данных
         for (JsonSensorDataVal dataVal : datum.getDataVals()) {
             int offset = dataVal.getOffset();
 
@@ -303,7 +303,7 @@ public class S7GithubExecutor implements Closeable {
             EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
             int sizeBytes = Math.min(type.getBitCount() / 8, 1);
 
-            //опередяем крайнее датчики по их смещению offset
+            //определяем крайнее датчики по их смещению offset
             minOffset = Math.min(minOffset, offset);
 
             //нужно прибавить размер переменной датчика что бы его захватить при чтении блока

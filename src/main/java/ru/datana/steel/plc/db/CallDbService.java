@@ -7,7 +7,7 @@ import java.sql.SQLException;
  */
 public interface CallDbService {
     /**
-     * Получить JSON-строку для задачания выборки данных с датчиков
+     * Получить JSON-строку для задания выборки данных с датчиков
      *
      * @return
      * @throws SQLException
@@ -15,7 +15,7 @@ public interface CallDbService {
     String dbGet();
 
     /**
-     * Сохранить через передачу JSON строки с данными дачиков в базу данных Postgresql
+     * Сохранить через передачу JSON строки с данными датчиков в базу данных Postgresql
      *
      * @param fromJson
      * @return

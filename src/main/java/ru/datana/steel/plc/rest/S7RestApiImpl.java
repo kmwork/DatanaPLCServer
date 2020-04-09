@@ -22,6 +22,9 @@ import ru.datana.steel.plc.util.JsonParserUtil;
 
 import java.util.List;
 
+/**
+ * Рест сервера наружу
+ */
 @RestController
 @Slf4j
 @Profile(AppConst.SERVER_PROFILE)

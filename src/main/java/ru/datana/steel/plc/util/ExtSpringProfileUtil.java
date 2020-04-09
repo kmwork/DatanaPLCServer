@@ -11,7 +11,7 @@ import java.util.Properties;
 public class ExtSpringProfileUtil {
 
     /**
-     * Настройка Spring-приложение из вышесенных во внешнюю папку etc настроек спринга
+     * Настройка Spring-приложение из внешних настроек во внешнюю папку etc настроек спринга
      *
      * @param springProfile имя профиля
      * @param springFile    файл для YAML настроек

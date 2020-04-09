@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.datana.steel.plc.config.AppConst;
-import ru.datana.steel.plc.util.DatanaInitLogger;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 
 /**
@@ -26,9 +25,6 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 @Slf4j
 @Profile(AppConst.SERVER_PROFILE)
 public class DatanaOnRestPlcServerApp {
-    static {
-        DatanaInitLogger.initLogger(AppConst.SERVER_LOG_CONFIG);
-    }
 
     public static void main(String[] args) {
         ExtSpringProfileUtil.extConfigure(AppConst.SERVER_PROFILE, AppConst.EXT_SERVER_YAML);

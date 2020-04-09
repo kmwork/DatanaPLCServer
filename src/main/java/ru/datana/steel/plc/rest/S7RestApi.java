@@ -16,7 +16,7 @@ public interface S7RestApi {
     String getVersion();
 
     /**
-     * Передать дачики по Json при POST запросе
+     * Передать датчики по Json при POST запросе
      *
      * @param fromJson
      * @return

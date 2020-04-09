@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Утилитый класс по работе с JSON`
+ * Утилитый класс по работе с JSON
  */
 public class DatanaJsonHelper {
 

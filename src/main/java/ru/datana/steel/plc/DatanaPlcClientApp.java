@@ -19,7 +19,6 @@ import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
-import ru.datana.steel.plc.util.DatanaInitLogger;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
@@ -39,9 +38,6 @@ import java.util.UUID;
 @EnableFeignClients
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
-    static {
-        DatanaInitLogger.initLogger(AppConst.CLIENT_LOG_CONFIG);
-    }
 
     @Autowired
     private CallDbService callDbService;
@@ -145,7 +141,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     private void doSleep(long time, String msg) throws InterruptedException {
         if (time < 100)
-            log.warn("Запещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
+            log.warn("Запрещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
         time = Math.max(time, AppConst.MIN_SLEEP_MS);
         log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
         Thread.sleep(time);
@@ -156,7 +152,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         LocalDateTime time = LocalDateTime.now();
         rootJson.setRequestId(uuid);
         rootJson.setRequestDatetime(time);
-        log.info("[changeIDCodes] [Шаг: {}] Сгенерирован ID = {} с временем = {}", step, uuid, time);
+        log.info("[changeIDCodes] [Шаг: {}] Создан ID = {} с временем = {}", step, uuid, time);
         log.info("[Запрос] rootJson = " + rootJson);
     }
 

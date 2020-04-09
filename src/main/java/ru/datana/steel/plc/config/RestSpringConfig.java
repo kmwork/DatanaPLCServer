@@ -87,7 +87,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
             return json;
         } catch (JsonProcessingException ex) {
             String strArgs = "logPrefix = " + logPrefix + ", jsonObject = " + jsonObject.getClass() + " toString = " + jsonObject;
-            String msg = "Ошибка перобразования в Json";
+            String msg = "Ошибка преобразования в Json";
             throw new AppException(TypeException.INVALID_CONVERT_TO_JSON, msg, strArgs, ex);
         }
     }

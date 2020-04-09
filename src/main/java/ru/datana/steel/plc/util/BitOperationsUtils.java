@@ -18,11 +18,11 @@ public class BitOperationsUtils {
     /**
      * Унификация типов данных к одному типу BigDecimal
      *
-     * @param data           массив байт предасвляющие число (мы читаем блоками для экономии а потом вырезаем из массива)
+     * @param data           массив байт представляющие число (мы читаем блоками для экономии а потом вырезаем из массива)
      * @param bytesOffset    смещение где число размещено
      * @param type           тип числа
      * @param intBitPosition если это бит то его позиция в байте
-     * @return число уницицированное под Numeric по PostgreSQL
+     * @return число унифицированное под Numeric по PostgreSQL
      * @throws AppException
      */
     public static BigDecimal doBitsOperations(byte[] data, int bytesOffset, EnumSiemensDataType type, int intBitPosition) throws AppException {
