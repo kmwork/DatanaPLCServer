@@ -21,6 +21,7 @@ import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
+import ru.datana.steel.plc.util.DatanaInitLogger;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
@@ -40,6 +41,10 @@ import java.util.UUID;
 @EnableFeignClients
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
+    static {
+        DatanaInitLogger.initLogger(AppConst.CLIENT_LOG_CONFIG);
+    }
+
     @Autowired
     private GenericApplicationContext context;
 
