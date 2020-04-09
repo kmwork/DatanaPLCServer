@@ -196,7 +196,6 @@ public class S7GithubExecutor implements Closeable {
     }
 
     private List<JsonSensorResponse> waitFutureList(List<Future<List<JsonSensorResponse>>> futureList) throws InterruptedException, ExecutionException {
-        TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании {} штук  future" + futureList.size());
         List<JsonSensorResponse> result = new ArrayList<>();
         int index = 0;
         while (index < futureList.size()) {
@@ -208,7 +207,7 @@ public class S7GithubExecutor implements Closeable {
             } else if (f.isCancelled())
                 index++;
             else
-                TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании {} штук  future" + futureList.size());
+                TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании " + (futureList.size() - index) + " штук  future. Всего: " + futureList.size());
         }
         return result;
     }

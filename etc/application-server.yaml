@@ -35,7 +35,7 @@ logging:
     max-size: 64 MB
     total-size-cap: 512 MB
   pattern:
-    rolling-file-name:  ${app.dir}/archive-server-logs/plc-server-archive.%d{yyyy-MM-dd}.%i.log
+    rolling-file-name:  ~/apps/archive-server-logs/plc-server-archive.%d{yyyy-MM-dd}.%i.log
 
 
 
