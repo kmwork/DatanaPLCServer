@@ -93,7 +93,7 @@ public class DatanaJsonHelper {
         return LocalDateTime.now();
     }
 
-    public List<JsonSensorResponse> createJsonRequestWithErrorGlobal(@NotNull JsonRootSensorRequest rootRequest, @NotNull AppException ex) {
+    public List<JsonSensorResponse> createJsonRequestWithErrorGlobal(@NotNull JsonRootSensorRequest rootRequest, @NotNull Exception ex) {
         List<JsonSensorResponse> result = new ArrayList<>();
         for (JsonSensorSingleRequest singleRequest : rootRequest.getRequest()) {
             List<JsonSensorResponse> errors = createJsonRequestWithError(rootRequest, singleRequest, null, ex);

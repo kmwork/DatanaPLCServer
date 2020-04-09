@@ -58,7 +58,7 @@ public class S7RestApiImpl implements S7RestApi {
             s7Executor = context.getBean(S7GithubExecutor.class);
             s7Executor.init(jsonMeta);
             result = s7Executor.run(rootJson);
-        } catch (AppException ex) {
+        } catch (Exception ex) {
             log.error("Ошибка в программе: ", ex);
             result = new JsonRootSensorResponse();
             List<JsonSensorResponse> responseList = DatanaJsonHelper.getInstance().createJsonRequestWithErrorGlobal(rootJson, ex);
