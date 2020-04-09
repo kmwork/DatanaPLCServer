@@ -202,12 +202,13 @@ public class S7GithubExecutor implements Closeable {
         while (index < futureList.size()) {
             Future<List<JsonSensorResponse>> f = futureList.get(index);
             if (f.isDone()) {
-                log.debug("[waitFutureList] isDone");
+                log.debug("[waitFutureList] isDone для index = " + index);
                 index++;
                 result.addAll(f.get());
-            } else if (f.isCancelled())
+            } else if (f.isCancelled()) {
+                log.debug("[waitFutureList] isCancelled для index = " + index);
                 index++;
-            else
+            } else
                 TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "[waitFutureList] В ожидании " + (futureList.size() - index) + " штук  future. Всего: " + futureList.size());
         }
         return result;
