@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Движок от GitHub (упрещенное апи - поключил через зависимость мавен)
+ * Движок от GitHub (упрощенное апи - поключил через зависимость мавен)
  * <p>
  * взято из s7connector
  * https://github.com/s7connector/s7connector
