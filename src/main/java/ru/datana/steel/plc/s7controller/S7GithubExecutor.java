@@ -20,11 +20,13 @@ import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
 import ru.datana.steel.plc.moka7.EnumSiemensDataType;
 import ru.datana.steel.plc.util.*;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import java.io.Closeable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Движок от GitHub (упрещенное апи - поключил через зависимость мавен)
@@ -38,8 +40,9 @@ import java.util.*;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class S7GithubExecutor implements Closeable {
 
-    private static final String PREFIX_LOG = "[S7 Контроллер] ";
+    private String prefixLog = "[S7 Контроллер] ";
 
+    private static final AtomicLong instanceCount = new AtomicLong(0);
     /**
      * Коннекты
      * ключ - наш ID в базе данных, значение - коннект Socket с S7
@@ -69,6 +72,12 @@ public class S7GithubExecutor implements Closeable {
     @Value("${datana.global.experimental-s7-algorithm}")
     private boolean isExperimentalS7;
 
+    @PostConstruct
+    private void postConstructor() {
+        long id = instanceCount.incrementAndGet();
+        prefixLog += "[InstanceID: " + id + "]";
+    }
+
     /**
      * настройка сервиса чтения Siemens котроллеров
      *
@@ -80,7 +89,7 @@ public class S7GithubExecutor implements Closeable {
         for (Controller c : controllerMeta.getControllers()) {
             metaByControllerId.put(c.getId(), c);
         }
-        log.debug(PREFIX_LOG + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
+        log.debug(prefixLog + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
     /**
@@ -91,7 +100,7 @@ public class S7GithubExecutor implements Closeable {
      */
     private boolean closeS7Connect(@NotNull Integer controllerId) {
 
-        log.info(PREFIX_LOG + " Завершение сессии для controllerId = {}", controllerId);
+        log.info(prefixLog + " Завершение сессии для controllerId = {}", controllerId);
         connectionByControllerId.remove(controllerId);
         boolean success = false;
         if (currentConnector != null) {
@@ -252,7 +261,7 @@ public class S7GithubExecutor implements Closeable {
      */
     @Override
     public void close() {
-        log.info(PREFIX_LOG + " Закрытие коннектов для ID = " + connectionByControllerId.keySet());
+        log.info(prefixLog + " Закрытие коннектов для ID = " + connectionByControllerId.keySet());
         Set<Integer> ids = new HashSet<>();
         for (Integer id : connectionByControllerId.keySet()) {
             try {
@@ -263,7 +272,7 @@ public class S7GithubExecutor implements Closeable {
                 log.warn(AppConst.ERROR_LOG_PREFIX + " Ошибка дисконнекта S7 для id = {}, Error: {}", id, ex.getMessage());
             }
         }
-        log.info(PREFIX_LOG + " Коннекты  весели открытыми с ID = " + ids);
+        log.info(prefixLog + " Коннекты  весели открытыми с ID = " + ids);
     }
 
     /**
