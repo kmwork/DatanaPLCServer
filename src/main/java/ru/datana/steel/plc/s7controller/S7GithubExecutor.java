@@ -4,7 +4,9 @@ import com.github.s7connector.api.DaveArea;
 import com.github.s7connector.impl.S7TCPConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.model.json.meta.Controller;
@@ -33,6 +35,7 @@ import java.util.*;
 @Slf4j
 @Component("s7Executor")
 @Profile(AppConst.SERVER_PROFILE)
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class S7GithubExecutor implements Closeable {
 
     private static final String PREFIX_LOG = "[S7 Контроллер] ";
