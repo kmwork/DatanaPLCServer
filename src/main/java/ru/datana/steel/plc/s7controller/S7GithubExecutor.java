@@ -196,6 +196,7 @@ public class S7GithubExecutor implements Closeable {
     }
 
     private List<JsonSensorResponse> waitFutureList(List<Future<List<JsonSensorResponse>>> futureList) throws InterruptedException, ExecutionException {
+        log.info(AppConst.RESUME_LOG_PREFIX + "[waitFutureList] В ожидании {} штук  future", futureList.size());
         List<JsonSensorResponse> result = new ArrayList<>();
         int index = 0;
         while (index < futureList.size()) {
