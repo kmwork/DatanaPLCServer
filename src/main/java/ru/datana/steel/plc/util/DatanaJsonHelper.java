@@ -82,7 +82,7 @@ public class DatanaJsonHelper {
         response.setControllerDatetime(null/*getCurrentTime()*/);
 
         if (value != null)
-            response.setData(value.toString());
+            response.setData(value);
 
         response.setId(dataVal.getId());
         response.setStatus(status);

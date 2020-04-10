@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class JsonSensorResponse {
      */
     @JsonProperty("data")
     @NotNull
-    private String data;
+    private BigDecimal data;
     /**
      * (Required)
      */
