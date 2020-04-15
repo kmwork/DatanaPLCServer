@@ -143,6 +143,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     protected void save(String prefixLog, String resultFromJson, int threadIndex) throws AppException {
         int threadNumber = threadIndex + 1;
         prefixLog += "[Поток: " + threadNumber + "] ";
+        log.debug(prefixLog + "save db");
         CallDbService callDbService = context.getBean(CallDbService.class);
         String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
         restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
@@ -161,7 +162,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         String toJson = clientWebService.getData(formattedFromJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
 
-        for (int poolIndex = 0; index < threadCountMax; index++) {
+        threadCount.set(threadCountMax);
+        for (int poolIndex = 0; poolIndex < threadCountMax; poolIndex++) {
             save(prefixLog, resultFromJson, poolIndex);
         }
         while (threadCount.get() > 0)
