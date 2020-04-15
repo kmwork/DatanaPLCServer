@@ -6,6 +6,9 @@ datana:
       # уровень вывода логов
       level: INFO
     beauty-json: true
+
+  plc-client:
+    tread-count-max: 5
   plc-server:
     sleep-on-fatal-error: 30000
     # адрес PLC Сервера

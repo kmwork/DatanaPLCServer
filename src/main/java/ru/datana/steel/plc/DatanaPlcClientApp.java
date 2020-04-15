@@ -12,19 +12,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Async;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.rest.client.RestClientWebService;
+import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * PLC Proxy Client -- клиент для работы со шлюзом датчиков
@@ -40,9 +44,6 @@ import java.util.UUID;
 public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Autowired
-    private CallDbService callDbService;
-
-    @Autowired
     private RestClientWebService clientWebService;
 
     @Autowired
@@ -56,6 +57,14 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Value("${datana.plc-server.sleep-on-fatal-error}")
     private long sleepOnFatalError;
+
+    @Value("${datana.plc-client.tread-count-max}")
+    private int threadCountMax;
+    private final AtomicInteger threadCount = new AtomicInteger();
+
+
+    @Autowired
+    private ApplicationContext context;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -93,6 +102,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             boolean makeSleepSQL = false;
             boolean success = false;
             JsonRootSensorRequest rootJson = null;
+            CallDbService callDbService = context.getBean(CallDbService.class);
             do {
                 try {
                     if (makeSleepSQL) {
@@ -107,6 +117,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
                 }
             } while (!success);
+            callDbService = null;
 
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
@@ -115,28 +126,43 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             rootJson.setTimeout(null);
 
             boolean infinityLoop = loopCount < 0;
+            int reqestCount = 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
-                long statTime = System.nanoTime();
-                long step = index + 1;
-                String prefixLog = "[Шаг: " + step + "]";
-                log.info(prefixLog);
-                changeIDCodes(step, rootJson);
-
-                String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
-                String toJson = clientWebService.getData(formattedFromJson);
-                String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
-                String saveJson = callDbService.dbSave(resultFromJson);
-                restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
-                long endTime = System.nanoTime();
-                long deltaNano = endTime - statTime;
-                log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
-                TimeUtil.doSleep(sleepMS, "Перекур на цикл");
+                threadCount.set(threadCountMax);
+                for (int theadIndex = 0; theadIndex < threadCountMax; theadIndex++) {
+                    doOneRequest(rootJson, theadIndex, reqestCount);
+                    reqestCount++;
+                }
+                while (threadCount.get() > 0)
+                    TimeUtil.doSleep(sleepMS, "Ожидание " + threadCount + " потоков с запросами");
             }
 
         } catch (Exception ex) {
             log.error(AppConst.ERROR_LOG_PREFIX + " Ошибка в программе", ex);
         }
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
+    }
+
+    @Async
+    protected void doOneRequest(JsonRootSensorRequest rootJson, long theadIndex, long requestIndex) throws AppException, InterruptedException {
+        long statTime = System.nanoTime();
+        long step = requestIndex + 1;
+        String prefixLog = "[Шаг: " + step + "]";
+        log.info(prefixLog);
+        changeIDCodes(step, rootJson);
+
+        CallDbService callDbService = context.getBean(CallDbService.class);
+
+        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
+        String toJson = clientWebService.getData(formattedFromJson);
+        String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
+        String saveJson = callDbService.dbSave(resultFromJson);
+        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+        long endTime = System.nanoTime();
+        long deltaNano = endTime - statTime;
+        log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
+        callDbService = null;
+        threadCount.decrementAndGet();
     }
 
     private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {
