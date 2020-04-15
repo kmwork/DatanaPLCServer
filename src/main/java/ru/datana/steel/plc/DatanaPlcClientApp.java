@@ -129,12 +129,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             int requestAllCount = 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
                 threadCount.set(threadCountMax);
-                for (int threadIndex = 0; threadIndex < threadCountMax; threadIndex++) {
-                    doOneRequest(rootJson, threadIndex, requestAllCount);
-                    requestAllCount++;
-                }
-                while (threadCount.get() > 0)
-                    TimeUtil.doSleep(sleepMS, "Ожидание " + threadCount + " потоков с запросами");
+                doOneRequest(rootJson, index);
+
             }
 
         } catch (Exception ex) {
@@ -144,26 +140,36 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     }
 
     @Async
-    protected void doOneRequest(JsonRootSensorRequest rootJson, int threadIndex, long requestAllCount) throws AppException, InterruptedException {
-        long statTime = System.nanoTime();
-        long step = requestAllCount + 1;
+    protected void save(String prefixLog, String resultFromJson, int threadIndex) throws AppException {
         int threadNumber = threadIndex + 1;
-        String prefixLog = "[Шаг: " + step + "] [Поток: " + threadNumber + "] ";
+        prefixLog += "[Поток: " + threadNumber + "] ";
+        CallDbService callDbService = context.getBean(CallDbService.class);
+        String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
+        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+        callDbService = null;
+        threadCount.decrementAndGet();
+    }
+
+    private void doOneRequest(JsonRootSensorRequest rootJson, long index) throws AppException, InterruptedException {
+        long statTime = System.nanoTime();
+        long step = index + 1;
+        String prefixLog = "[Шаг: " + step + "] ";
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
-
-        CallDbService callDbService = context.getBean(CallDbService.class);
 
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
         String toJson = clientWebService.getData(formattedFromJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
-        String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
-        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+
+        for (int poolIndex = 0; index < threadCountMax; index++) {
+            save(prefixLog, resultFromJson, poolIndex);
+        }
+        while (threadCount.get() > 0)
+            TimeUtil.doSleep(sleepMS, "Ожидание потов Async: " + threadCount.get());
+
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
         log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
-        callDbService = null;
-        threadCount.decrementAndGet();
     }
 
     private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {
