@@ -14,7 +14,7 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguratio
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
@@ -40,6 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
                 ServletWebServerFactoryAutoConfiguration.class,
                 WebMvcAutoConfiguration.class})
 @EnableFeignClients
+@EnableAsync
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
 
@@ -139,16 +140,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
     }
 
-    @Async
-    protected void save(String prefixLog, String resultFromJson, int threadIndex) throws AppException {
-        int threadNumber = threadIndex + 1;
-        prefixLog += "[Поток: " + threadNumber + "] ";
-        log.debug(prefixLog + "save db");
-        String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
-        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
-        threadCount.decrementAndGet();
-    }
-
     private void doOneRequest(JsonRootSensorRequest rootJson, long index) throws AppException, InterruptedException {
         long statTime = System.nanoTime();
         long step = index + 1;
@@ -162,7 +153,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
         threadCount.set(threadCountMax);
         for (int poolIndex = 0; poolIndex < threadCountMax; poolIndex++) {
-            save(prefixLog, resultFromJson, poolIndex);
+            callDbService.saveAsync(prefixLog, resultFromJson, poolIndex, threadCountMax, threadCount);
         }
         while (threadCount.get() > 0)
             TimeUtil.doSleep(sleepMS, "Ожидание потов Async: " + threadCount.get());

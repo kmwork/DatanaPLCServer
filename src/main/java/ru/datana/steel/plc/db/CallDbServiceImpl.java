@@ -2,16 +2,21 @@ package ru.datana.steel.plc.db;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.config.RestSpringConfig;
+import ru.datana.steel.plc.util.AppException;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 @Service
@@ -21,6 +26,9 @@ public class CallDbServiceImpl implements CallDbService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private RestSpringConfig restSpringConfig;
 
     /**
      * Хранимка генерации запросов на сервер
@@ -64,5 +72,17 @@ public class CallDbServiceImpl implements CallDbService {
         String toJson = funcSave.getResultList().get(0).toString();
         log.info("[SQL:Save] результат = " + toJson);
         return toJson;
+    }
+
+
+    @Override
+    @Async
+    public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
+        int threadNumber = threadIndex + 1;
+        prefixLog += "[Поток: " + threadNumber + "] ";
+        log.debug(prefixLog + "save db");
+        String saveJson = dbSave(resultFromJson, threadCountMax, threadNumber);
+        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+        threadCount.decrementAndGet();
     }
 }
