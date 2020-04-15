@@ -126,12 +126,12 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             rootJson.setTimeout(null);
 
             boolean infinityLoop = loopCount < 0;
-            int reqestCount = 0;
+            int requestAllCount = 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
                 threadCount.set(threadCountMax);
-                for (int theadIndex = 0; theadIndex < threadCountMax; theadIndex++) {
-                    doOneRequest(rootJson, theadIndex, reqestCount);
-                    reqestCount++;
+                for (int threadIndex = 0; threadIndex < threadCountMax; threadIndex++) {
+                    doOneRequest(rootJson, threadIndex, requestAllCount);
+                    requestAllCount++;
                 }
                 while (threadCount.get() > 0)
                     TimeUtil.doSleep(sleepMS, "Ожидание " + threadCount + " потоков с запросами");
@@ -144,10 +144,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     }
 
     @Async
-    protected void doOneRequest(JsonRootSensorRequest rootJson, long theadIndex, long requestIndex) throws AppException, InterruptedException {
+    protected void doOneRequest(JsonRootSensorRequest rootJson, int threadIndex, long requestAllCount) throws AppException, InterruptedException {
         long statTime = System.nanoTime();
-        long step = requestIndex + 1;
-        String prefixLog = "[Шаг: " + step + "]";
+        long step = requestAllCount + 1;
+        int threadNumber = threadIndex + 1;
+        String prefixLog = "[Шаг: " + step + "] [Поток: " + threadNumber + "] ";
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
 
@@ -156,7 +157,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
         String toJson = clientWebService.getData(formattedFromJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
-        String saveJson = callDbService.dbSave(resultFromJson);
+        String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
         restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;

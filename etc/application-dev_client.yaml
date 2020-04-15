@@ -21,7 +21,7 @@ datana:
     sleep-ms: 500
   database-options:
     postgresql-get-function: "select cast( datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as json)) as text)"
-    postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response( cast(:fromJson as json)) as text)"
+    postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response( cast(:fromJson as json), :threadCountMax, :threadCurrent) as text)"
   spring:
     datasource:
       driver-class: org.postgresql.Driver
@@ -74,7 +74,8 @@ logging:
     sun: INFO
     javax: INFO
   file:
-    name: ${app.dir}/client-logs/plc-client.log
+    ###name: ${app.dir}/client-logs/plc-client.log
+    name: ~/apps/client-logs/plc-client.log
     max-size: 16 MB
     total-size-cap: 128 MB
   pattern:

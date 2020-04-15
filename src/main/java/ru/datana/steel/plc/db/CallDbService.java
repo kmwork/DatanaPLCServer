@@ -18,8 +18,10 @@ public interface CallDbService {
      * Сохранить через передачу JSON строки с данными датчиков в базу данных Postgresql
      *
      * @param fromJson
+     * @param threadCountMax
+     * @param l
      * @return
      * @throws SQLException
      */
-    String dbSave(String fromJson);
+    String dbSave(String fromJson, int threadCountMax, int threadCurrent);
 }
