@@ -60,3 +60,10 @@ run-server-on-linux.sh
 run_client_on_windows.bat
 run_server_on_windows.bat
 ```
+
+#### Demon for Linux
+инфа тут 
+https://computingforgeeks.com/how-to-run-java-jar-application-with-systemd-on-linux/
+
+подложите файл datana7-plc-server.service (путь и юзера нужно изменить) в папку (нужны рут права)
+в /etc/systemd/system

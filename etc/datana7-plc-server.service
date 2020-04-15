@@ -1,0 +1,15 @@
+[Unit]
+Description=datana7-plc-server
+After=syslog.target
+ 
+[Service]
+User=lin
+WorkingDirectory=/home/lin/apps/Datana7/
+Type=forking
+ExecStart=/bin/bash run-server-on-linux.sh
+Type=simple
+Restart=on-failure
+RestartSec=120
+
+[Install] 
+WantedBy=multi-user.target
