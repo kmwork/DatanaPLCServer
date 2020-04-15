@@ -62,6 +62,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     private int threadCountMax;
     private final AtomicInteger threadCount = new AtomicInteger();
 
+    @Autowired
+    private CallDbService callDbService;
 
     @Autowired
     private ApplicationContext context;
@@ -102,7 +104,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             boolean makeSleepSQL = false;
             boolean success = false;
             JsonRootSensorRequest rootJson = null;
-            CallDbService callDbService = context.getBean(CallDbService.class);
             do {
                 try {
                     if (makeSleepSQL) {
@@ -117,7 +118,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
                 }
             } while (!success);
-            callDbService = null;
 
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
@@ -144,10 +144,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         int threadNumber = threadIndex + 1;
         prefixLog += "[Поток: " + threadNumber + "] ";
         log.debug(prefixLog + "save db");
-        CallDbService callDbService = context.getBean(CallDbService.class);
         String saveJson = callDbService.dbSave(resultFromJson, threadCountMax, threadNumber);
         restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
-        callDbService = null;
         threadCount.decrementAndGet();
     }
 
