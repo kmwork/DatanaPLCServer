@@ -66,6 +66,7 @@ public class S7RestApiImpl implements S7RestApi {
         } finally {
             if (s7Executor != null)
                 s7Executor.close();
+
         }
         return restSpringConfig.toJsonFromObject("[Server: Ответ] ", result);
     }
