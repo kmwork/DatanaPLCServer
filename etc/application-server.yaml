@@ -1,7 +1,7 @@
 ##### Configuration for PLC SERVER #####
 datana:
   global:
-    debug: true
+    debug: false
     log:
       # уровень вывода логов
       level: INFO
@@ -28,7 +28,7 @@ logging:
       springframework:
         web: ${datana.global.log.level}
     ru:
-      datana: DEBUG
+      datana: INFO
     sun: INFO
     javax: INFO
   file:

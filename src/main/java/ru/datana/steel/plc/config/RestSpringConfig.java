@@ -46,7 +46,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
         if (beautyJson) {
-            //режим красирого форматирования
+            //режим красивого форматирования
             mapper.enable(SerializationFeature.INDENT_OUTPUT);
         }
 
@@ -64,13 +64,15 @@ public class RestSpringConfig implements WebMvcConfigurer {
      */
     public String formatBeautyJson(String logPrefix, String fromJson) throws AppException {
         if (!beautyJson) {
-            log.info(logPrefix + "не отформатированный json = " + fromJson);
+            if (log.isDebugEnabled())
+                log.debug(logPrefix + "не отформатированный json = " + fromJson);
             return fromJson;
         }
         try {
             Object jsonObject = objectMapper.readValue(fromJson, Object.class);
             String prettyJson = objectMapper.writeValueAsString(jsonObject);
-            log.info(logPrefix + "formatted-json = " + prettyJson);
+            if (log.isDebugEnabled())
+                log.debug(logPrefix + "formatted-json = " + prettyJson);
             return prettyJson;
         } catch (JsonProcessingException ex) {
             String strArgs = "logPrefix = " + logPrefix + ", fromJson = " + fromJson;
@@ -81,9 +83,11 @@ public class RestSpringConfig implements WebMvcConfigurer {
 
     public String toJsonFromObject(String logPrefix, Object jsonObject) throws AppException {
         try {
-            log.debug(logPrefix + "convert to json  for " + jsonObject);
+            if (log.isDebugEnabled())
+                log.debug(logPrefix + "convert to json  for " + jsonObject);
             String json = objectMapper.writeValueAsString(jsonObject);
-            log.info(logPrefix + "json = " + json);
+            if (log.isDebugEnabled())
+                log.debug(logPrefix + "json = " + json);
             return json;
         } catch (JsonProcessingException ex) {
             String strArgs = "logPrefix = " + logPrefix + ", jsonObject = " + jsonObject.getClass() + " toString = " + jsonObject;
@@ -106,7 +110,8 @@ public class RestSpringConfig implements WebMvcConfigurer {
     public String toJson(String prefixLog, Object rootJson) throws AppException {
         try {
             String jsonAsString = objectMapper.writeValueAsString(rootJson);
-            log.info(prefixLog + "format jsonAsString = " + jsonAsString);
+            if (log.isDebugEnabled())
+                log.debug(prefixLog + "format jsonAsString = " + jsonAsString);
             return jsonAsString;
         } catch (JsonProcessingException ex) {
             String strArg = "prefixLog" + prefixLog + ", rootJson = '" + rootJson;

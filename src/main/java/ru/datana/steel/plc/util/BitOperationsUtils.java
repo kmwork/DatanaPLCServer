@@ -55,7 +55,8 @@ public class BitOperationsUtils {
             throw new AppException(TypeException.INVALID_USER_INPUT_DATA, " Не определен тип данных", args, null);
         }
 
-        log.info(PREFIX_LOG + "[Тип: " + type + "] = " + result);
+        if (log.isDebugEnabled())
+            log.debug(PREFIX_LOG + "[Тип: " + type + "] = " + result);
         return result;
     }
 }

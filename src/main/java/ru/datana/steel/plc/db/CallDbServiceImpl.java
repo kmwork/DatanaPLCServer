@@ -47,30 +47,34 @@ public class CallDbServiceImpl implements CallDbService {
 
     @PostConstruct
     private void init() {
-        log.debug("[SQL:Init:Get] pgNativeGetSQL = " + pgNativeGetSQL);
-        log.debug("[SQL:Init:Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        if (log.isDebugEnabled()) {
+            log.debug("[SQL:Init:Get] pgNativeGetSQL = " + pgNativeGetSQL);
+            log.debug("[SQL:Init:Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
+        }
     }
 
 
     @Override
     public String dbGet() {
-        log.debug("[SQL:Get] старт");
+        log.info("[SQL:Get] старт");
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        log.info("[SQL:Get] результат = " + toJson);
+        if (log.isDebugEnabled())
+            log.debug("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 
     @Override
     public String dbSave(String fromJson, int threadCountMax, int threadCurrent) {
-        log.debug("[SQL:Save] data = " + fromJson);
+        log.info("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
         String toJson = funcSave.getResultList().get(0).toString();
-        log.info("[SQL:Save] результат = " + toJson);
+        if (log.isDebugEnabled())
+            log.info("[SQL:Save] результат = " + toJson);
         return toJson;
     }
 

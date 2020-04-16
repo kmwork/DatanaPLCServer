@@ -95,7 +95,7 @@ public class S7GithubExecutor implements Closeable {
         for (Controller c : controllerMeta.getControllers()) {
             metaByControllerId.put(c.getId(), c);
         }
-        log.debug(prefixLog + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
+        log.info(prefixLog + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
     }
 
     /**
@@ -273,7 +273,8 @@ public class S7GithubExecutor implements Closeable {
             long deltaNano = endTime - startTime;
             totalReadTimeNano += deltaNano;
             totalDataSize += length;
-            log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), length);
+            if (log.isDebugEnabled())
+                log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), length);
         }
     }
 

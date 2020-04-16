@@ -127,7 +127,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             rootJson.setTimeout(null);
 
             boolean infinityLoop = loopCount < 0;
-            int requestAllCount = 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
                 threadCount.set(threadCountMax);
                 doOneRequest(rootJson, index);
@@ -156,7 +155,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             callDbService.saveAsync(prefixLog, resultFromJson, poolIndex, threadCountMax, threadCount);
         }
         while (threadCount.get() > 0)
-            TimeUtil.doSleep(sleepMS, "Ожидание потов Async: " + threadCount.get());
+            TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "Ожидание потов Async: " + threadCount.get());
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
@@ -168,8 +167,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         LocalDateTime time = LocalDateTime.now();
         rootJson.setRequestId(uuid);
         rootJson.setRequestDatetime(time);
-        log.info("[changeIDCodes] [Шаг: {}] Создан ID = {} с временем = {}", step, uuid, time);
-        log.info("[Запрос] rootJson = " + rootJson);
+
+        if (log.isDebugEnabled()) {
+            log.debug("[changeIDCodes] [Шаг: {}] Создан ID = {} с временем = {}", step, uuid, time);
+            log.debug("[Запрос] rootJson = " + rootJson);
+        }
     }
 
 

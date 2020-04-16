@@ -18,7 +18,7 @@ public class AppConst {
     public static final String DB_DEV_POSTGRES_PROFILE = "dev_client";
     public static final String SERVER_PROFILE = "server";
     public static final long MIN_SLEEP_MS = 100;
-    public static final long SLEEP_FUTURE_MS = 100;
+    public static final long SLEEP_FUTURE_MS = 300;
     public static final String SERVER_LOG_CONFIG = "logback-plc-server.xml";
     public static final String CLIENT_LOG_CONFIG = "logback-plc-client.xml";
 }

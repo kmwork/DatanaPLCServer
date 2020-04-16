@@ -1,11 +1,11 @@
 ##### Configuration for  PLC Client with Postgres, installed on localhost #####
 datana:
   global:
-    debug: true
+    debug: false
     log:
       # уровень вывода логов
       level: INFO
-    beauty-json: true
+    beauty-json: false
 
   plc-client:
     tread-count-max: 5
@@ -72,7 +72,7 @@ logging:
       springframework:
         web: ${datana.global.log.level}
     ru:
-      datana: DEBUG
+      datana: INFO
     sun: INFO
     javax: INFO
   file:

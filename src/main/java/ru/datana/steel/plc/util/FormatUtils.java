@@ -21,6 +21,9 @@ public class FormatUtils {
      * @throws AppException
      */
     public static void formatBytes(String methodName, byte[] buffer, EnumFormatBytesType typeFormat) throws AppException {
+        if (!log.isDebugEnabled())
+            return;
+
         String prefixLog = "[DUMP] [Источник:" + methodName + "] ";
 
         if (buffer == null || buffer.length == 0) {
@@ -30,13 +33,13 @@ public class FormatUtils {
 
 
         if (typeFormat == EnumFormatBytesType.CLASSIC) {
-            log.info(prefixLog + " десятичные числа по байтам: " + Arrays.toString(buffer));
+            log.debug(prefixLog + " десятичные числа по байтам: " + Arrays.toString(buffer));
 
         } else if (typeFormat == EnumFormatBytesType.DECIMAL_NUMBER) {
-            log.info(prefixLog + " как большое целое число: " + new BigInteger(buffer).toString());
+            log.debug(prefixLog + " как большое целое число: " + new BigInteger(buffer).toString());
 
         } else if (typeFormat == EnumFormatBytesType.HEX_NUMBER) {
-            log.info(prefixLog + " как hex-число: " + new BigInteger(buffer).toString(16));
+            log.debug(prefixLog + " как hex-число: " + new BigInteger(buffer).toString(16));
 
         } else {
             String args = "methodName = " + methodName + "byte[] = " + Arrays.toString(buffer) + ", typeFormat = " + typeFormat;
