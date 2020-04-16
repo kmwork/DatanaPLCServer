@@ -8,7 +8,7 @@ datana:
     beauty-json: false
 
   plc-client:
-    thread-count-max: 32
+    thread-count-max: 1
   plc-server:
     sleep-on-fatal-error: 30000
     # адрес PLC Сервера
@@ -85,9 +85,8 @@ logging:
       zaxxer:
         hikari: DEBUG
   file:
-    ###name: ${app.dir}/client-logs/plc-client.log
-    name: /home/lin/apps/client-logs/plc-client.log
+    name: ${app.dir}/client-logs/plc-client.log
     max-size: 32 MB
     total-size-cap: 128 MB
     pattern:
-      rolling-file-name: /home/lin/apps/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz
+      rolling-file-name: ${app.dir}/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz

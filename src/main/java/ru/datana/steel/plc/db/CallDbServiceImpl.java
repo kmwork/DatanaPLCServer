@@ -68,7 +68,9 @@ public class CallDbServiceImpl implements CallDbService {
 
     @Override
     public String dbSave(String fromJson, int threadCountMax, int threadCurrent) {
-        log.info("[SQL:Save] data = " + fromJson);
+        log.info("[SQL:Save] start");
+        if (log.isTraceEnabled())
+            log.trace("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
         funcSave.setParameter("fromJson", fromJson);
         funcSave.setParameter("threadCountMax", threadCountMax);
@@ -76,6 +78,7 @@ public class CallDbServiceImpl implements CallDbService {
         String toJson = funcSave.getResultList().get(0).toString();
         if (log.isTraceEnabled())
             log.trace("[SQL:Save] результат = " + toJson);
+        log.info("[SQL:Save] конец");
         return toJson;
     }
 

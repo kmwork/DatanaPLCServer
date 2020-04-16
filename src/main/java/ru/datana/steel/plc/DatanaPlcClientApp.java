@@ -75,6 +75,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
+        System.exit(0);
     }
 
 
@@ -166,9 +167,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         rootJson.setRequestId(uuid);
         rootJson.setRequestDatetime(time);
 
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled())
             log.debug("[changeIDCodes] [Шаг: {}] Создан ID = {} с временем = {}", step, uuid, time);
-            log.debug("[Запрос] rootJson = " + rootJson);
+
+        if (log.isTraceEnabled()) {
+            log.trace("[Запрос] rootJson = " + rootJson);
         }
     }
 
