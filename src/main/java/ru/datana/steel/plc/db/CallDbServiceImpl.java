@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.util.AppException;
@@ -81,6 +82,7 @@ public class CallDbServiceImpl implements CallDbService {
 
     @Override
     @Async
+    @Transactional
     public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
         int threadNumber = threadIndex + 1;
         prefixLog += "[Поток: " + threadNumber + "] ";

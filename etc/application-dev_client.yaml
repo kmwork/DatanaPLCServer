@@ -41,7 +41,7 @@ spring:
     driver-class: ${datana.spring.datasource.driver-class}
     driver-class-name: ${datana.spring.datasource.driver-class}
     hikari:
-      auto-commit: true
+      auto-commit: false
       connection-timeout: 60000
       maximum-pool-size: 5
       schema: ${datana.spring.datasource.schema}
