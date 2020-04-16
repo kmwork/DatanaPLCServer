@@ -83,11 +83,11 @@ public class RestSpringConfig implements WebMvcConfigurer {
 
     public String toJsonFromObject(String logPrefix, Object jsonObject) throws AppException {
         try {
-            if (log.isDebugEnabled())
-                log.debug(logPrefix + "convert to json  for " + jsonObject);
+            if (log.isTraceEnabled())
+                log.trace(logPrefix + "convert to json  for " + jsonObject);
             String json = objectMapper.writeValueAsString(jsonObject);
-            if (log.isDebugEnabled())
-                log.debug(logPrefix + "json = " + json);
+            if (log.isTraceEnabled())
+                log.trace(logPrefix + "json = " + json);
             return json;
         } catch (JsonProcessingException ex) {
             String strArgs = "logPrefix = " + logPrefix + ", jsonObject = " + jsonObject.getClass() + " toString = " + jsonObject;

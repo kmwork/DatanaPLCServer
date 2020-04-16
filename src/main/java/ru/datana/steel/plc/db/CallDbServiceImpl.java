@@ -61,8 +61,8 @@ public class CallDbServiceImpl implements CallDbService {
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
         String toJson = result.get(0).toString();
-        if (log.isDebugEnabled())
-            log.debug("[SQL:Get] результат = " + toJson);
+        if (log.isTraceEnabled())
+            log.trace("[SQL:Get] результат = " + toJson);
         return toJson;
     }
 
@@ -74,8 +74,8 @@ public class CallDbServiceImpl implements CallDbService {
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
         String toJson = funcSave.getResultList().get(0).toString();
-        if (log.isDebugEnabled())
-            log.debug("[SQL:Save] результат = " + toJson);
+        if (log.isTraceEnabled())
+            log.trace("[SQL:Save] результат = " + toJson);
         return toJson;
     }
 
@@ -84,11 +84,15 @@ public class CallDbServiceImpl implements CallDbService {
     @Async
     @Transactional
     public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
-        int threadNumber = threadIndex + 1;
-        prefixLog += "[Поток: " + threadNumber + "] ";
-        log.debug(prefixLog + "save db");
-        String saveJson = dbSave(resultFromJson, threadCountMax, threadNumber);
-        restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
-        threadCount.decrementAndGet();
+        try {
+            int threadNumber = threadIndex + 1;
+            prefixLog += "[Поток: " + threadNumber + "] ";
+            log.debug(prefixLog + "save db");
+            String saveJson = dbSave(resultFromJson, threadCountMax, threadNumber);
+            restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+        } finally {
+            threadCount.decrementAndGet();
+        }
+
     }
 }
