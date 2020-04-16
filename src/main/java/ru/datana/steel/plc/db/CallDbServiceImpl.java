@@ -74,7 +74,7 @@ public class CallDbServiceImpl implements CallDbService {
         funcSave.setParameter("threadCurrent", threadCurrent);
         String toJson = funcSave.getResultList().get(0).toString();
         if (log.isDebugEnabled())
-            log.info("[SQL:Save] результат = " + toJson);
+            log.debug("[SQL:Save] результат = " + toJson);
         return toJson;
     }
 
