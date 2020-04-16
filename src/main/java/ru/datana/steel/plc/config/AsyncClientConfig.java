@@ -30,7 +30,7 @@ public class AsyncClientConfig implements AsyncConfigurer {
         executor.setQueueCapacity(threadCountMax);
         executor.setThreadNamePrefix("PlcExecutor-");
         executor.initialize();
-        log.info("[Профиль многопоточности] настроен на " + threadCountMax + " потоков");
+        log.info("[Конфиг многопоточности] настроен на " + threadCountMax + " потоков");
         return executor;
     }
 }
