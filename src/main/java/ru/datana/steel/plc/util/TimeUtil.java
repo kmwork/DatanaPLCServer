@@ -44,7 +44,7 @@ public class TimeUtil {
         if (time < 100)
             log.warn("Запрещено ставить меньше задержки min = {}", AppConst.MIN_SLEEP_MS);
         time = Math.max(time, AppConst.MIN_SLEEP_MS);
-        log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time);
+        log.warn("[*** СОН Для клиента ***] " + msg + ", на время = " + time + " мс");
         Thread.sleep(time);
     }
 
