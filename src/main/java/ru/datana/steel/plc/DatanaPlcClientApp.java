@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.EnableAsync;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.AsyncClientConfig;
@@ -40,7 +39,6 @@ import java.util.concurrent.atomic.AtomicInteger;
                 ServletWebServerFactoryAutoConfiguration.class,
                 WebMvcAutoConfiguration.class})
 @EnableFeignClients
-@EnableAsync
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
 
