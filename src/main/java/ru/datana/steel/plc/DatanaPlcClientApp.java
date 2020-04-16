@@ -12,11 +12,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableAsync;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
+import ru.datana.steel.plc.config.AsyncClientConfig;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
@@ -59,15 +59,13 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     @Value("${datana.plc-server.sleep-on-fatal-error}")
     private long sleepOnFatalError;
 
-    @Value("${datana.plc-client.tread-count-max}")
-    private int threadCountMax;
     private final AtomicInteger threadCount = new AtomicInteger();
 
     @Autowired
     private CallDbService callDbService;
 
     @Autowired
-    private ApplicationContext context;
+    AsyncClientConfig asyncClientConfig;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -128,9 +126,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
             boolean infinityLoop = loopCount < 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
-                threadCount.set(threadCountMax);
                 doOneRequest(rootJson, index);
-
             }
 
         } catch (Exception ex) {
@@ -149,6 +145,10 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
         String toJson = clientWebService.getData(formattedFromJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
+
+        threadCount.set(asyncClientConfig.getThreadCountMax());
+
+        int threadCountMax = asyncClientConfig.getThreadCountMax();
 
         threadCount.set(threadCountMax);
         for (int poolIndex = 0; poolIndex < threadCountMax; poolIndex++) {

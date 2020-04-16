@@ -8,7 +8,7 @@ datana:
     beauty-json: false
 
   plc-client:
-    tread-count-max: 32
+    tread-count-max: 5
   plc-server:
     sleep-on-fatal-error: 30000
     # адрес PLC Сервера
@@ -16,7 +16,7 @@ datana:
     ###url-server: http://192.168.1.33:8080/
     # количество опросов сервера а потом завершить работу
     # если меньше нуля тогда вечный цикл
-    loop-count: -1
+    loop-count: 100
     # ожидание после каждого цикла в миллисекунд
     sleep-ms: 500
   database-options:
@@ -43,11 +43,11 @@ spring:
     hikari:
       auto-commit: false
       connection-timeout: 60000
-      maximum-pool-size: 32
+      maximum-pool-size: 5
       schema: ${datana.spring.datasource.schema}
       allow-pool-suspension: true
-      # max-lifetime: 600000
-      # idle-timeout: 600000
+      max-lifetime: 600000
+      idle-timeout: 600000
 
     password: ${datana.spring.datasource.password}
     testWhileIdle: true
@@ -78,9 +78,6 @@ logging:
       datana: INFO
     sun: INFO
     javax: INFO
-    com:
-      zaxxer:
-        hikari: DEBUG
   file:
     ###name: ${app.dir}/client-logs/plc-client.log
     name: /home/lin/apps/client-logs/plc-client.log
@@ -88,6 +85,3 @@ logging:
     total-size-cap: 128 MB
     pattern:
       rolling-file-name: /home/lin/apps/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz
-
-
-
