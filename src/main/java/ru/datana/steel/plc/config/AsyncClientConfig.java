@@ -1,6 +1,7 @@
 package ru.datana.steel.plc.config;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -13,6 +14,7 @@ import java.util.concurrent.Executor;
 @Configuration
 @EnableAsync
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
+@Slf4j
 public class AsyncClientConfig implements AsyncConfigurer {
 
 
@@ -28,6 +30,7 @@ public class AsyncClientConfig implements AsyncConfigurer {
         executor.setQueueCapacity(threadCountMax);
         executor.setThreadNamePrefix("PlcExecutor-");
         executor.initialize();
+        log.info("[Профиль многопоточности] настроен на " + threadCountMax + " потоков");
         return executor;
     }
 }
