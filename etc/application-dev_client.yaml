@@ -22,7 +22,7 @@ datana:
     # ожидание после каждого цикла в миллисекунд
     sleep-ms: 500
   database-options:
-    postgresql-get-function: "select datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as jsonb))"
+    postgresql-get-function: "datana.datalake.plc_get_config(case (:input_json_task))"
     postgresql-save-function: "select datalake.plc_proxy_client_save_response(:fromJson , :threadCountMax, :threadCurrent)"
   spring:
     datasource:

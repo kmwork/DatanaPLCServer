@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.AsyncClientConfig;
@@ -41,6 +42,7 @@ import java.util.concurrent.atomic.AtomicInteger;
                 WebMvcAutoConfiguration.class})
 @EnableFeignClients
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
+@EnableJpaRepositories(basePackages = "ru.datana.steel.plc.db")
 public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Autowired
@@ -114,8 +116,8 @@ public class DatanaPlcClientApp implements CommandLineRunner {
                         TimeUtil.doSleep(sleepOnFatalError, "Ждем пока починят хранимку GET");
                     } else
                         makeSleepSQL = true;
-                    String tempJms = callDbService.dbGet();
-                    rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
+                    rootJson = callDbService.dbGet();
+                    //rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
                     success = rootJson != null && rootJson.getStatus() == 1;
                 } catch (Exception e) {
                     log.error(AppConst.ERROR_LOG_PREFIX + "ошибка при работе хранимки get", e);

@@ -16,7 +16,7 @@ public interface CallDbService {
      * @return
      * @throws SQLException
      */
-    String dbGet();
+    JsonRootSensorRequest dbGet();
 
     /**
      * Сохранить через передачу JSON строки с данными датчиков в базу данных Postgresql
