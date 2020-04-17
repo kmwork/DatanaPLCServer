@@ -28,7 +28,7 @@ datana:
       driver-class: org.postgresql.Driver
       jdbcUrl: "jdbc:postgresql://localhost:5432/datana"
       username: postgres
-      password: 1
+      password: postgres
       schema: datalake
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
@@ -62,7 +62,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: ru.datana.steel.plc.db.DatanaJsonPostgreSQLDialect
+        dialect: com.github.wenerme.postjava.hibernate.dialect.PostgreSQLJsonDialect
 ### logging ###
 logging:
   level:
@@ -86,9 +86,8 @@ logging:
       zaxxer:
         hikari: DEBUG
   file:
-    ###name: ${app.dir}/client-logs/plc-client.log
-    name: /home/lin/apps/client-logs/plc-client.log
+    name: ${app.dir}/client-logs/plc-client.log
     max-size: 32 MB
     total-size-cap: 128 MB
     pattern:
-      rolling-file-name: /home/lin/apps/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz
+      rolling-file-name: ${app.dir}/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz

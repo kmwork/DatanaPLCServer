@@ -1,6 +1,6 @@
 package ru.datana.steel.plc.db;
 
-import org.hibernate.dialect.PostgreSQL10Dialect;
+import com.github.wenerme.postjava.hibernate.dialect.PostgreSQLJsonDialect;
 
 import java.sql.Types;
 
@@ -9,13 +9,10 @@ import java.sql.Types;
  *
  * @author timfulmer
  */
-public class DatanaJsonPostgreSQLDialect extends PostgreSQL10Dialect {
+public class DatanaJsonPostgreSQLDialect extends PostgreSQLJsonDialect {
 
     public DatanaJsonPostgreSQLDialect() {
         super();
-        this.registerColumnType(Types.JAVA_OBJECT, "jsonb");
         this.registerColumnType(Types.OTHER, "jsonb");
-        this.registerHibernateType(Types.JAVA_OBJECT, "jsonb");
-        this.registerHibernateType(Types.OTHER, "jsonb");
     }
 }
