@@ -20,7 +20,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -62,9 +61,8 @@ public class CallDbServiceImpl implements CallDbService {
     @Override
     public String dbGet() {
         log.info("[SQL:Get] старт");
-        Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
-        List result = funcGet.getResultList();
-        Object pgResult = result.get(0);
+        Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL, JsonBinaryType.INSTANCE.getClass());
+        Object pgResult = funcGet.getSingleResult();
         log.debug("SQL:Get] pgResult.class =" + pgResult.getClass() + "");
         String toJson = pgResult.toString();
         if (log.isTraceEnabled())
@@ -77,13 +75,12 @@ public class CallDbServiceImpl implements CallDbService {
         log.info("[SQL:Save] start");
         if (log.isTraceEnabled())
             log.trace("[SQL:Save] data = " + fromJson);
-        Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
+        Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL, JsonBinaryType.INSTANCE.getClass());
         TypedParameterValue pgValue = new TypedParameterValue(JsonBinaryType.INSTANCE, fromJson);
         funcSave.setParameter("fromJson", pgValue);
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
-        List result = funcSave.getResultList();
-        Object pgResult = result.get(0);
+        Object pgResult = funcSave.getSingleResult();
         log.debug("[SQL:Save] pgResult.class =" + pgResult.getClass() + "");
         String toJson = pgResult.toString();
         if (log.isTraceEnabled())
