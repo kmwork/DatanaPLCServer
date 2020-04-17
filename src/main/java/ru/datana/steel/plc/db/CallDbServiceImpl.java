@@ -1,7 +1,9 @@
 package ru.datana.steel.plc.db;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.jpa.TypedParameterValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -77,7 +79,8 @@ public class CallDbServiceImpl implements CallDbService {
 //        PGobject pgJson = new PGobject();
 //        pgJson.setType("jsonb");
 //        pgJson.setValue(fromJson);
-        funcSave.setParameter("fromJson", fromJson);
+        TypedParameterValue pgValue = new TypedParameterValue(JsonBinaryType.INSTANCE, fromJson);
+        funcSave.setParameter("fromJson", pgValue);
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
         String toJson = funcSave.getResultList().get(0).toString();

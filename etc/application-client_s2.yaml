@@ -9,8 +9,7 @@ datana:
 
   plc-client:
     thread-count-max: 1
-    async-timeout: 100
-
+    async-timeout: 500
   plc-server:
     sleep-on-fatal-error: 30000
     # адрес PLC Сервера
@@ -18,18 +17,20 @@ datana:
     ###url-server: http://192.168.1.33:8080/
     # количество опросов сервера а потом завершить работу
     # если меньше нуля тогда вечный цикл
-    loop-count: 1
+    loop-count: 3
     # ожидание после каждого цикла в миллисекунд
     sleep-ms: 500
   database-options:
     postgresql-get-function: "select cast( datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as json)) as text)"
-    postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response(:fromJson , :threadCountMax, :threadCurrent) as text)"
+    postgresql-save-function: "select cast (datalake.plc_proxy_client_save_response( cast(:fromJson as json), :threadCountMax, :threadCurrent) as text)"
+  #    postgresql-save-function: "select cast(datalake.plc_proxy_client_save_response( :fromJson, :threadCountMax, :threadCurrent) as text)"
+  #    postgresql-get-function: "prompt cast( datalake.plc_get_config(cast ('{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}' as json)) as text)"
   spring:
     datasource:
       driver-class: org.postgresql.Driver
       jdbcUrl: "jdbc:postgresql://localhost:5432/datana"
       username: postgres
-      password: 1
+      password: postgres
       schema: datalake
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
@@ -63,7 +64,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: com.github.wenerme.postjava.hibernate.dialect.PostgreSQLJsonDialect
+        dialect: ru.datana.steel.plc.db.DatanaJsonPostgreSQLDialect
 ### logging ###
 logging:
   level:
@@ -87,9 +88,8 @@ logging:
       zaxxer:
         hikari: DEBUG
   file:
-    ###name: ${app.dir}/client-logs/plc-client.log
-    name: /home/lin/apps/client-logs/plc-client.log
+    name: ${app.dir}/client-logs/plc-client.log
     max-size: 32 MB
     total-size-cap: 128 MB
     pattern:
-      rolling-file-name: /home/lin/apps/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz
+      rolling-file-name: ${app.dir}/archive-client-logs/plc-client-archive.%d{yyyy-MM-dd}.%i.gz
