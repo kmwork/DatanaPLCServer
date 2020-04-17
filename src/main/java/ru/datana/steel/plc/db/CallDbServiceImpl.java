@@ -64,7 +64,9 @@ public class CallDbServiceImpl implements CallDbService {
         log.info("[SQL:Get] старт");
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
         List result = funcGet.getResultList();
-        String toJson = result.get(0).toString();
+        Object pgResult = result.get(0);
+        log.debug("SQL:Get] pgResult.class =" + pgResult.getClass() + "");
+        String toJson = pgResult.toString();
         if (log.isTraceEnabled())
             log.trace("[SQL:Get] результат = " + toJson);
         return toJson;
@@ -76,14 +78,14 @@ public class CallDbServiceImpl implements CallDbService {
         if (log.isTraceEnabled())
             log.trace("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
-//        PGobject pgJson = new PGobject();
-//        pgJson.setType("jsonb");
-//        pgJson.setValue(fromJson);
         TypedParameterValue pgValue = new TypedParameterValue(JsonBinaryType.INSTANCE, fromJson);
         funcSave.setParameter("fromJson", pgValue);
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
-        String toJson = funcSave.getResultList().get(0).toString();
+        List result = funcSave.getResultList();
+        Object pgResult = result.get(0);
+        log.debug("[SQL:Save] pgResult.class =" + pgResult.getClass() + "");
+        String toJson = pgResult.toString();
         if (log.isTraceEnabled())
             log.trace("[SQL:Save] результат = " + toJson);
         log.info("[SQL:Save] конец");
