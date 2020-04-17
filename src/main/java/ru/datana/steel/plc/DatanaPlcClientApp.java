@@ -146,10 +146,10 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         String prefixLog = "[Шаг: " + step + "] ";
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
-
-        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
-        String toJson = clientWebService.getData(formattedFromJson);
-        String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
+//
+//        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
+//        String toJson = clientWebService.getData(formattedFromJson);
+//        String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
 
         threadCount.set(asyncClientConfig.getThreadCountMax());
 
@@ -157,7 +157,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
         threadCount.set(threadCountMax);
         for (int poolIndex = 0; poolIndex < threadCountMax; poolIndex++) {
-            callDbService.saveAsync(prefixLog, resultFromJson, poolIndex, threadCountMax, threadCount);
+            callDbService.saveAsync(prefixLog, rootJson, poolIndex, threadCountMax, threadCount);
         }
         while (threadCount.get() > 0)
             TimeUtil.doSleep(asyncMS, "Ожидание потов Async: " + threadCount.get());

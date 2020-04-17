@@ -1,5 +1,6 @@
 package ru.datana.steel.plc.db;
 
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 
 import java.sql.SQLException;
@@ -20,13 +21,9 @@ public interface CallDbService {
     /**
      * Сохранить через передачу JSON строки с данными датчиков в базу данных Postgresql
      *
-     * @param fromJson
-     * @param threadCountMax
-     * @param l
-     * @return
      * @throws SQLException
      */
-    String dbSave(String fromJson, int threadCountMax, int threadCurrent);
+    String dbSave(JsonRootSensorRequest fromJson, int threadCountMax, int threadCurrent) throws SQLException;
 
-    void saveAsync(String prefixLog, String resultFromJson, int poolIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException;
+    void saveAsync(String prefixLog, JsonRootSensorRequest resultFromJson, int poolIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException;
 }

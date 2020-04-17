@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,11 +69,14 @@ public class CallDbServiceImpl implements CallDbService {
     }
 
     @Override
-    public String dbSave(String fromJson, int threadCountMax, int threadCurrent) {
+    public String dbSave(JsonRootSensorRequest fromJson, int threadCountMax, int threadCurrent) throws SQLException {
         log.info("[SQL:Save] start");
         if (log.isTraceEnabled())
             log.trace("[SQL:Save] data = " + fromJson);
         Query funcSave = entityManager.createNativeQuery(pgNativeSaveSQL);
+//        PGobject pgJson = new PGobject();
+//        pgJson.setType("jsonb");
+//        pgJson.setValue(fromJson);
         funcSave.setParameter("fromJson", fromJson);
         funcSave.setParameter("threadCountMax", threadCountMax);
         funcSave.setParameter("threadCurrent", threadCurrent);
@@ -86,13 +91,15 @@ public class CallDbServiceImpl implements CallDbService {
     @Override
     @Async
     @Transactional
-    public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
+    public void saveAsync(String prefixLog, JsonRootSensorRequest resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
         try {
             int threadNumber = threadIndex + 1;
             prefixLog += "[Поток: " + threadNumber + "] ";
             log.debug(prefixLog + "save db");
             String saveJson = dbSave(resultFromJson, threadCountMax, threadNumber);
             restSpringConfig.formatBeautyJson(prefixLog + " [Save:RESULT] ", saveJson);
+        } catch (SQLException e) {
+            log.error(AppConst.ERROR_LOG_PREFIX + "Ошибка при вызове хранимки save");
         } finally {
             threadCount.decrementAndGet();
         }
