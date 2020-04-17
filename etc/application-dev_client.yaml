@@ -9,6 +9,8 @@ datana:
 
   plc-client:
     thread-count-max: 32
+    async-timeout: 100
+
   plc-server:
     sleep-on-fatal-error: 30000
     # адрес PLC Сервера

@@ -1,6 +1,7 @@
 package ru.datana.steel.plc;
 
 import feign.FeignException;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     private long sleepOnFatalError;
 
     private final AtomicInteger threadCount = new AtomicInteger();
+
+    @Value("${datana.plc-client.async-timeout}")
+    @Getter
+    private int asyncMS;
+
 
     @Autowired
     private CallDbService callDbService;
@@ -154,7 +160,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             callDbService.saveAsync(prefixLog, resultFromJson, poolIndex, threadCountMax, threadCount);
         }
         while (threadCount.get() > 0)
-            TimeUtil.doSleep(AppConst.SLEEP_FUTURE_MS, "Ожидание потов Async: " + threadCount.get());
+            TimeUtil.doSleep(asyncMS, "Ожидание потов Async: " + threadCount.get());
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
