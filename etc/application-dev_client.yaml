@@ -1,10 +1,10 @@
 ##### Configuration for  PLC Client with Postgres, installed on localhost #####
 datana:
   global:
-    debug: false
+    debug: true
     log:
       # уровень вывода логов
-      level: INFO
+      level: DEBUG
     beauty-json: false
 
   plc-client:
