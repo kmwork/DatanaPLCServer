@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.jpa.TypedParameterValue;
+import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -17,9 +18,7 @@ import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,12 +34,12 @@ public class CallDbServiceImpl implements CallDbService {
     @Autowired
     private RestSpringConfig restSpringConfig;
 
-//    /**
-//     * Хранимка генерации запросов на сервер
-//     */
-//    @Value("${datana.database-options.postgresql-get-function}")
-//    @Setter
-//    private String pgNativeGetSQL;
+    /**
+     * Хранимка генерации запросов на сервер
+     */
+    @Value("${datana.database-options.postgresql-get-function}")
+    @Setter
+    private String pgNativeGetSQL;
 
 
     /**
@@ -49,9 +48,10 @@ public class CallDbServiceImpl implements CallDbService {
     @Value("${datana.database-options.postgresql-save-function}")
     @Setter
     private String pgNativeSaveSQL;
-
-    @Autowired
-    private DatanaStoreProcedureRepository procedureRepository;
+    private StoredProcedureQuery queryGet;
+//
+//    @Autowired
+//    private DatanaStoreProcedureRepository procedureRepository;
 
     @PostConstruct
     private void init() {
@@ -60,19 +60,23 @@ public class CallDbServiceImpl implements CallDbService {
             log.debug("[SQL:Init:Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
         }
 
-//
-//22        queryGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL);
-//        queryGet.registerStoredProcedureParameter(0, Object.class, ParameterMode.OUT);
-//        queryGet.registerStoredProcedureParameter(1, Object.class, ParameterMode.IN);
+
+        queryGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL);
+        queryGet.registerStoredProcedureParameter(0, PGobject.class, ParameterMode.OUT);
+        queryGet.registerStoredProcedureParameter(1, PGobject.class, ParameterMode.IN);
     }
 
 
     @Override
-    public JsonRootSensorRequest dbGet() throws AppException {
+    public JsonRootSensorRequest dbGet() throws AppException, SQLException {
         log.info("[SQL:Get] старт");
         String strValueGet = "{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}";
         JsonHello jsonNode = restSpringConfig.parseValue(strValueGet, JsonHello.class);
-        JsonRootSensorRequest pgResultObject = procedureRepository.procedureGet(jsonNode);
+
+        PGobject object = new PGobject();
+        object.setType("jsonb");
+        object.setValue(strValueGet);
+        Object pgResultObject = queryGet.getSingleResult();
         log.debug("[SQL:Get] результат = " + pgResultObject);
         JsonRootSensorRequest pgResult = null;// (JsonRootSensorRequest) funcGet.getSingleResult();
         if (log.isTraceEnabled())
