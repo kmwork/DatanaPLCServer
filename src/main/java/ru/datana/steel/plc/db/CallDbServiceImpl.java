@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
+import ru.datana.steel.plc.model.json.meta.JsonHello;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 
@@ -67,15 +68,11 @@ public class CallDbServiceImpl implements CallDbService {
 
 
     @Override
-    public JsonRootSensorRequest dbGet() {
+    public JsonRootSensorRequest dbGet() throws AppException {
         log.info("[SQL:Get] старт");
         String strValueGet = "{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}";
-        //JsonBinaryType pgInputValue = new JsonBinaryType(strValueGet);
-        //TypedParameterValue pgInputValue = new TypedParameterValue(JsonBinaryType.INSTANCE, strValueGet);
-        // SimpleEntity entity = new SimpleEntity();
-        JsonRootSensorRequest pgResultObject = procedureRepository.procedureGet(strValueGet);
-        //queryGet.setParameter(1, strValueGet);
-        //Query funcGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL, String.class);
+        JsonHello jsonNode = restSpringConfig.parseValue(strValueGet, JsonHello.class);
+        JsonRootSensorRequest pgResultObject = procedureRepository.procedureGet(jsonNode);
         log.debug("[SQL:Get] результат = " + pgResultObject);
         JsonRootSensorRequest pgResult = null;// (JsonRootSensorRequest) funcGet.getSingleResult();
         if (log.isTraceEnabled())
