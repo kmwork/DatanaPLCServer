@@ -4,7 +4,6 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.jpa.TypedParameterValue;
-import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -18,8 +17,13 @@ import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.*;
-import java.sql.SQLException;
+import javax.annotation.Resource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -49,6 +53,8 @@ public class CallDbServiceImpl implements CallDbService {
     @Setter
     private String pgNativeSaveSQL;
     private StoredProcedureQuery queryGet;
+    @Resource
+    private DataSource dataSource;
 //
 //    @Autowired
 //    private DatanaStoreProcedureRepository procedureRepository;
@@ -59,29 +65,39 @@ public class CallDbServiceImpl implements CallDbService {
             //log.debug("[SQL:Init:Get] pgNativeGetSQL = " + pgNativeGetSQL);
             log.debug("[SQL:Init:Save] pgNativeSaveSQL = " + pgNativeSaveSQL);
         }
-
-
-        queryGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL);
-        queryGet.registerStoredProcedureParameter(0, PGobject.class, ParameterMode.OUT);
-        queryGet.registerStoredProcedureParameter(1, PGobject.class, ParameterMode.IN);
+//
+//
+//        queryGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL);
+//        queryGet.registerStoredProcedureParameter(0, PGobject.class, ParameterMode.OUT);
+//        queryGet.registerStoredProcedureParameter(1, JsonHello.class, ParameterMode.IN);
     }
 
 
     @Override
     public JsonRootSensorRequest dbGet() throws AppException, SQLException {
         log.info("[SQL:Get] старт");
-        String strValueGet = "{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}";
-        JsonHello jsonNode = restSpringConfig.parseValue(strValueGet, JsonHello.class);
+        try (Connection connection = dataSource.getConnection()) {
+            String strValueGet = "{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}";
+            JsonHello jsonNode = restSpringConfig.parseValue(strValueGet, JsonHello.class);
 
-        PGobject object = new PGobject();
-        object.setType("jsonb");
-        object.setValue(strValueGet);
-        Object pgResultObject = queryGet.getSingleResult();
-        log.debug("[SQL:Get] результат = " + pgResultObject);
-        JsonRootSensorRequest pgResult = null;// (JsonRootSensorRequest) funcGet.getSingleResult();
-        if (log.isTraceEnabled())
-            log.trace("[SQL:Get] результат = " + pgResult);
-        return pgResult;
+            CallableStatement callableStatement = connection.prepareCall(pgNativeGetSQL);
+            callableStatement.registerOutParameter(1, Types.JAVA_OBJECT);
+            callableStatement.setObject(2, jsonNode, Types.JAVA_OBJECT);
+//        PGobject object = new PGobject();
+//        object.setType("jsonb");
+//        object.setValue(strValueGet);
+            //TypedParameterValue pgValue = new TypedParameterValue(JsonBinaryType.INSTANCE, jsonNode);
+            queryGet.setParameter(2, jsonNode);
+
+            ResultSet rs = callableStatement.getResultSet();
+            rs.first();
+            Object pgResultObject = rs.getObject(0);
+            log.debug("[SQL:Get] результат = " + pgResultObject);
+            JsonRootSensorRequest pgResult = null;// (JsonRootSensorRequest) funcGet.getSingleResult();
+            if (log.isTraceEnabled())
+                log.trace("[SQL:Get] результат = " + pgResult);
+        }
+        return null;
     }
 
     @Override
