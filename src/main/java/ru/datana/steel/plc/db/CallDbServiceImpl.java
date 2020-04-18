@@ -71,7 +71,9 @@ public class CallDbServiceImpl implements CallDbService {
         log.info("[SQL:Get] старт");
         String strValueGet = "{\"action\": \"plc_get_proxy_client_config\",\"params\": {\"task_id\": 1}}";
         //JsonBinaryType pgInputValue = new JsonBinaryType(strValueGet);
-        Object pgResultObject = procedureRepository.procedureGet(strValueGet);
+        //TypedParameterValue pgInputValue = new TypedParameterValue(JsonBinaryType.INSTANCE, strValueGet);
+        // SimpleEntity entity = new SimpleEntity();
+        JsonRootSensorRequest pgResultObject = procedureRepository.procedureGet(strValueGet);
         //queryGet.setParameter(1, strValueGet);
         //Query funcGet = entityManager.createStoredProcedureQuery(pgNativeGetSQL, String.class);
         log.debug("[SQL:Get] результат = " + pgResultObject);
