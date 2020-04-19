@@ -63,7 +63,7 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: com.github.wenerme.postjava.hibernate.dialect.PostgreSQLJsonDialect
+        dialect: ru.datana.steel.plc.db.DatanaJsonPostgreSQLDialect
 ### logging ###
 logging:
   level:
