@@ -14,7 +14,7 @@ datana:
   global:
     log:
       # уровень вывода логов
-      level: DEBUG
+      level: INFO
     beauty-json: true
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
