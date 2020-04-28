@@ -4,6 +4,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
@@ -20,8 +21,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Сервис по JMS - точка входа в сервис по Apache ActiveMQ
  */
-@Component("plcJmsListener")
+@Component("plcJmServerListener")
 @Slf4j
+@Profile(AppConst.SERVER_PROFILE)
 public class PlcJmsServerListener implements MessageListener {
 
     private final static String PREFIX_LOG = "[JMS:Listener] ";
