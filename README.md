@@ -1,6 +1,7 @@
-# !!!! ТЕСТОВОЕ ПО !!!! - PLC Proxy Server и Client 
-# ****(шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент работают**** 
-# ****в холостом режиме - для проверки нагрузки на транспорт)****
+#!!!! ТЕСТОВОЕ ПО !!!! - PLC Proxy Server и Client 
+****(шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент работают**** 
+****в холостом режиме - для проверки нагрузки на транспорт)****
+---
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
 задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23
