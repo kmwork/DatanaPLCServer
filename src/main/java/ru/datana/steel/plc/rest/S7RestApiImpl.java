@@ -18,7 +18,7 @@ import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
 import ru.datana.steel.plc.s7controller.S7GithubExecutor;
 import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.DatanaJsonHelper;
-import ru.datana.steel.plc.util.JsonParserUtil;
+import ru.datana.steel.plc.util.JsonParserServerUtil;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class S7RestApiImpl implements S7RestApi {
 
     @Override
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
-        JsonParserUtil parserUtil = JsonParserUtil.getInstance();
+        JsonParserServerUtil parserUtil = JsonParserServerUtil.getInstance();
         JsonRootSensorResponse result;
         S7GithubExecutor s7Executor = null;
         try {

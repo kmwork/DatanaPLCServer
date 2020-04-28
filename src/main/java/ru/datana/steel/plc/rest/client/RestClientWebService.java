@@ -8,7 +8,7 @@ import ru.datana.steel.plc.config.AppConst;
 /**
  * Клиент для Restfull WebServices сервера
  */
-@Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
+@Profile(AppConst.CLIENT_PROFILE)
 @RequestMapping(path = "/rest")
 public interface RestClientWebService {
     /**

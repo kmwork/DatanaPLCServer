@@ -15,7 +15,7 @@ public class AppConst {
     public static final Integer JSON_SUCCESS_CODE = 1;
     public static final Integer JSON_ERROR_CODE = 0;
     public final static String EXT_SERVER_YAML = "application-server.yaml";
-    public static final String DB_DEV_POSTGRES_PROFILE = "dev_client";
+    public static final String CLIENT_PROFILE = "dev_client";
     public static final String SERVER_PROFILE = "server";
     public static final long MIN_SLEEP_MS = 100;
     public static final long SLEEP_FUTURE_MS = 300;

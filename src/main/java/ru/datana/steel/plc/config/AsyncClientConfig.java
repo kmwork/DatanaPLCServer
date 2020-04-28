@@ -13,7 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
+@Profile(AppConst.CLIENT_PROFILE)
 @Slf4j
 @EnableAsync
 public class AsyncClientConfig implements AsyncConfigurer {

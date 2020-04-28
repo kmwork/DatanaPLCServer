@@ -14,15 +14,13 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.scheduling.annotation.EnableAsync;
 import ru.datana.steel.plc.config.AppConst;
-import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.AsyncClientConfig;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
-import ru.datana.steel.plc.rest.client.RestClientWebService;
 import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
+import ru.datana.steel.plc.util.JsonParserClientUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
 import java.time.LocalDateTime;
@@ -40,12 +38,9 @@ import java.util.concurrent.atomic.AtomicInteger;
                 ServletWebServerFactoryAutoConfiguration.class,
                 WebMvcAutoConfiguration.class})
 @EnableJms
-@EnableAsync
-@Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
+@Profile(AppConst.CLIENT_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
 
-    @Autowired
-    private RestClientWebService clientWebService;
 
     @Autowired
     private RestSpringConfig restSpringConfig;
@@ -67,9 +62,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
 
     @Autowired
-    private CallDbService callDbService;
-
-    @Autowired
     AsyncClientConfig asyncClientConfig;
 
     public static void main(String[] args) {
@@ -78,7 +70,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             log.error(AppConst.APP_LOG_PREFIX + "Профиль клиента не указан по свойству =  " + AppConst.FILE_YAML_PROP);
             System.exit(-110);
         }
-        ExtSpringProfileUtil.extConfigure(AppConst.DB_DEV_POSTGRES_PROFILE, fileName);
+        ExtSpringProfileUtil.extConfigure(AppConst.CLIENT_PROFILE, fileName);
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
@@ -90,40 +82,10 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     public void run(String... args) {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
-            String serverVersion = null;
-            do {
-                try {
-                    serverVersion = clientWebService.getVersion();
-                } catch (FeignException ex) {
-                    log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage());
-                    TimeUtil.doSleep(sleepOnFatalError, "Ожидание запуска сервера: PLC-Шлюза");
-                }
-            } while (serverVersion == null);
-
-            log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
-            if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
-                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
-                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            }
             boolean makeSleepSQL = false;
             boolean success = false;
-            JsonRootSensorRequest rootJson = null;
-            do {
-                try {
-                    if (makeSleepSQL) {
-                        TimeUtil.doSleep(sleepOnFatalError, "Ждем пока починят хранимку GET");
-                    } else
-                        makeSleepSQL = true;
-                    String tempJms = callDbService.dbGet();
-                    rootJson = restSpringConfig.parseValue(tempJms, JsonRootSensorRequest.class);
-                    success = rootJson != null && rootJson.getStatus() == 1;
-                } catch (Exception e) {
-                    log.error(AppConst.ERROR_LOG_PREFIX + "ошибка при работе хранимки get", e);
-
-                }
-            } while (!success);
-
+            JsonParserClientUtil clientUtil = JsonParserClientUtil.getInstance();
+            JsonRootSensorRequest rootJson = clientUtil.loadJsonRequest();
             if (rootJson.getTimeout() != null)
                 sleepMS = rootJson.getTimeout();
 
