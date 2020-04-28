@@ -83,7 +83,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
-        System.exit(0);
     }
 
 
