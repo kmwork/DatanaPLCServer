@@ -54,9 +54,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     @Value("${datana.plc-server.loop-count}")
     private Long loopCount;
 
-    @Value("${datana.plc-server.sleep-on-fatal-error}")
-    private long sleepOnFatalError;
-
     private final AtomicInteger threadCount = new AtomicInteger();
 
     @Value("${datana.plc-client.async-timeout}")
