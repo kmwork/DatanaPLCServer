@@ -59,8 +59,10 @@ public class JsonParserUtil<TYPE> {
                 prevJson = result;
             } else
                 result = prevJson;
-            log.info("[JSON-Parser:Load-Meta] result = " + result);
-            log.info("[From file:MetaInfo] " + mapper.writeValueAsString(result));
+            if (log.isTraceEnabled()) {
+                log.trace("[JSON-Parser:Load-Meta] result = " + result);
+                log.trace("[From file:MetaInfo] " + mapper.writeValueAsString(result));
+            }
             return result;
         } catch (IOException ex) {
             String msg = "Ошибка  в программе при чтении файла";
