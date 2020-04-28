@@ -3,6 +3,8 @@ datana:
   plc-client:
     # количество потов
     thread-count-max: 10
+
+    # пауза для ожидания всех ответов в одном цикле
     async-timeout: 500
   plc-server:
     # количество циклов (запросов), если меньше нуля то вечность
@@ -11,17 +13,21 @@ datana:
     sleep-ms: 500
 
   activemq:
+    # url jms брокера
     brokerUrl: tcp://localhost:61616
+    # очередь запросов
     requestQueue: jmsFromPLC
+
+    # очередь ответов
     responseQueue: jmsResponseFromDatanaToPLC
+
+    # очередь ошибок
     responseQueueOnError: jmsFromPLCToError
   global:
-    debug: true
     log:
       # уровень вывода логов
       level: DEBUG
     beauty-json: true
-    experimental-s7-algorithm: false
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
 spring:
@@ -49,11 +55,11 @@ logging:
     sun: INFO
     javax: INFO
   file:
-    name: ${app.dir}/client-logs/mes-gatemway.log
+    name: ${app.dir}/datana-client-logs/plc-client-gatemway.log
     max-size: 16 MB
     total-size-cap: 128 MB
   pattern:
-    rolling-file-name:  ${app.dir}/archive-mes-logs/mes-gateway-archive.%d{yyyy-MM-dd}.%i.log
+    rolling-file-name:  ${app.dir}/datana-client-archive-plc-logs/mes-gateway-archive.%d{yyyy-MM-dd}.%i.log
 
 
 
