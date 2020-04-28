@@ -76,7 +76,6 @@ public class PlcJmsServerListener implements MessageListener {
             if (log.isTraceEnabled())
                 log.trace("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
 
-            log.info(prefix + "input message, index =" + indexMsg);
             String result = s7RestApi.getData(jsonRootRequest);
             jmsProducer.sendOnSuccess(result);
         } catch (Exception e) {

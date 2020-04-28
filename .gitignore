@@ -25,3 +25,4 @@ nbdist/
 .nb-gradle/
 /etc/datana-client-logs/*.log
 /etc/datana-client-archive-plc-logs/*.log
+/etc/datana-server-logs/*.log
