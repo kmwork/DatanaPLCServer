@@ -15,7 +15,6 @@ import org.springframework.jms.listener.MessageListenerContainer;
 import ru.datana.steel.plc.jms.PlcJmsServerListener;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.MessageListener;
 
 /**
  * Для теста: ActiveMQ коннект на базе бинов
@@ -31,7 +30,7 @@ public class ServerActiveMqSpringConfig {
     protected JmsProperties jmsProperties;
 
     @Autowired
-    protected MessageListener plcJmsServerListener;
+    protected PlcJmsServerListener plcJmsServerListener;
 
     @Bean
     protected JmsTemplate jmsRequestTemplate(@Qualifier("activeMqJMSConnectionFactory") ConnectionFactory connectionFactory,
@@ -69,11 +68,6 @@ public class ServerActiveMqSpringConfig {
     @Bean
     protected ActiveMQQueue activeMqResponseDestination() {
         return new ActiveMQQueue(jmsProperties.getResponseQueue());
-    }
-
-    @Bean
-    protected MessageListener plcJmsReceiver() {
-        return new PlcJmsServerListener();
     }
 
 }
