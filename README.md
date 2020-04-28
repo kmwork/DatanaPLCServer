@@ -10,25 +10,25 @@ mvn clean compile package spring-boot:repackage -P plcClient
 ```
 ## Как пользоваться для теста
 ##### сервер -- слушает JMS запросы 
-    1) читает конфиги `application-server.yaml` и `plc-meta-response-example.json` из папки app.dir (системное свойство Ява-приложении)
+    1) читает конфиги <b>application-server.yaml</b> и <b>plc-meta-response-example.json</b> из папки app.dir (системное свойство Ява-приложении)
     2) и ждет рест запросы по JMS из очереди
-    ````
+```
     datana:
       activemq:
         brokerUrl: tcp://localhost:61616
         requestQueue: jmsFromPLC
-    ````    
+```    
     и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
-    и пишет в `responseQueue` если успещно и ошибки (стек-трейс) в `responseQueueOnError`
-    ````
+    и пишет в <b>responseQueue</b> если успещно и ошибки (стек-трейс) в `responseQueueOnError</b>
+```
     datana:
       activemq:
         ....
         responseQueue: jmsResponseFromDatanaToPLC
         responseQueueOnError: jmsFromPLCToError
-    ````
+```
 ##### клиент - посылает запросы
-    1) читает конфиги `application-dev_client.yaml` и `plc-meta-request-example.json` из папки app.dir (системное свойство Ява-приложении)
+    1) читает конфиги <b>application-dev_client.yaml</b> и <b>plc-meta-request-example.json</b> из папки app.dir (системное свойство Ява-приложении)
     б) читает переменные 
     datana:
       plc-server:
