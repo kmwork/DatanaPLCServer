@@ -1,7 +1,5 @@
 package ru.datana.steel.plc.s7controller;
 
-import com.github.s7connector.api.DaveArea;
-import com.github.s7connector.impl.S7TCPConnection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -44,7 +42,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component("s7Executor")
 @Profile(AppConst.SERVER_PROFILE)
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class S7GithubExecutor implements Closeable {
+public class S7GithubExecutor<S7TCPConnection> implements Closeable {
 
     private String prefixLog = "[S7 Контроллер] ";
 
@@ -55,11 +53,6 @@ public class S7GithubExecutor implements Closeable {
      * ключ - наш ID в базе данных, значение - описание контроллера
      */
     private final Map<Integer, Controller> metaByControllerId = new HashMap<>();
-
-    /**
-     * Текущий коннект S7
-     */
-    private S7TCPConnection currentConnector = null;
 
     /**
      * Утилита по работе Json
@@ -184,38 +177,6 @@ public class S7GithubExecutor implements Closeable {
         }
 
         return new AsyncResult<>(responseList);
-    }
-
-
-    /**
-     * Пытаться прочитать массив байт на несколько датчиков сразу в рамках одного контроллера
-     *
-     * @param jsonRequest
-     * @param intS7DBNumber
-     * @param length
-     * @param offset
-     * @return
-     * @throws AppException
-     */
-    private byte[] tryRead(@NotNull JsonSensorSingleRequest jsonRequest,
-                           @NotNull int intS7DBNumber,
-                           int length, int offset) throws AppException {
-        long startTime = System.nanoTime();
-        try {
-            return currentConnector.read(DaveArea.DB, intS7DBNumber, length, offset);
-        } catch (Exception ex) {
-            String msg = "Ошибка чтения S7";
-            String strArgs = "controllerId= " + jsonRequest.getControllerId() + ", intS7DBNumber = " + intS7DBNumber + ", length = " + length + ", offset= " + offset;
-            log.warn(AppConst.ERROR_LOG_PREFIX + msg + " args: " + strArgs, ex);
-            throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_READ_DATA, msg, strArgs, ex);
-        } finally {
-            long endTime = System.nanoTime();
-            long deltaNano = endTime - startTime;
-            totalReadTimeNano += deltaNano;
-            totalDataSize += length;
-            if (log.isDebugEnabled())
-                log.debug("Затрачено время = {} на {} байт данных", TimeUtil.formatTimeAsNano(deltaNano), length);
-        }
     }
 
     /**

@@ -95,33 +95,9 @@
             <version>2.0.1.Final</version>
         </dependency>
         <dependency>
-            <groupId>com.github.s7connector</groupId>
-            <artifactId>s7connector</artifactId>
-            <version>2.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.2.12</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.wenerme.postjava</groupId>
-            <artifactId>postjava</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-52</artifactId>
-            <version>2.9.8</version>
-        </dependency>
-
 
     </dependencies>
 
