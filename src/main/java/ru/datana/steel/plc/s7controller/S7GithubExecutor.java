@@ -1,7 +1,6 @@
 package ru.datana.steel.plc.s7controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
@@ -58,10 +57,6 @@ public class S7GithubExecutor<S7TCPConnection> implements Closeable {
      * Утилита по работе Json
      */
     private final DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
-
-    @Value("${datana.global.experimental-s7-algorithm}")
-    private boolean isExperimentalS7;
-
 
     @PostConstruct
     private void postConstructor() {
