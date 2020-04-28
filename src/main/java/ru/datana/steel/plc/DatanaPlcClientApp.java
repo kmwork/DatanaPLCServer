@@ -115,15 +115,16 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         String prefixLog = "[Шаг: " + step + "] ";
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
-
         int threadCountMax = asyncClientConfig.getThreadCountMax();
-        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
-        for (int t = 0; t < threadCountMax; t++)
-            jmsProducer.send("PlcRequest", jmsProperties.getRequestQueue(), formattedFromJson);
 
-        int countThread;
-        while ((countThread = plcJmsClientListener.getCounter().get()) < threadCountMax)
-            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + (threadCountMax - countThread));
+        plcJmsClientListener.initWaitingCounter(threadCountMax);
+        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
+        for (int i = 0; i < threadCountMax; i++)
+            jmsProducer.send("PlcRequest, Index = " + i, jmsProperties.getRequestQueue(), formattedFromJson);
+
+        long countThread;
+        while ((countThread = plcJmsClientListener.getWaitingCounter()) > 0)
+            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + countThread);
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;

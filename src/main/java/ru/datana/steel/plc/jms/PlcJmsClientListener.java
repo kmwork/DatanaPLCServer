@@ -1,6 +1,5 @@
 package ru.datana.steel.plc.jms;
 
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Сервис по JMS - точка входа в сервис по Apache ActiveMQ
@@ -35,26 +35,37 @@ public class PlcJmsClientListener implements MessageListener {
         log.info(PREFIX_LOG + "Остановка Клиент-JMS-сервиса.");
     }
 
-    @Getter
     private AtomicInteger counter = new AtomicInteger(0);
+
+    private AtomicLong waitingCount = new AtomicLong(0);
+
+    public void initWaitingCounter(long count) {
+        waitingCount.set(count);
+    }
+
+    public long getWaitingCounter() {
+        return waitingCount.get();
+    }
 
     @SneakyThrows
     @Override
     public void onMessage(@NonNull Message message) {
+        try {
+            String prefix = PREFIX_LOG + "[onClientMessage] ";
+            int indexMsg = counter.incrementAndGet();
+            log.debug(prefix + "indexMsg = " + indexMsg);
 
-        String prefix = PREFIX_LOG + "[onClientMessage] ";
-        int indexMsg = counter.incrementAndGet();
-        log.debug(prefix + "indexMsg = " + indexMsg);
+            if (message instanceof TextMessage) {
 
-        if (message instanceof TextMessage) {
-
-            if (log.isTraceEnabled()) {
-                String msg = ((TextMessage) message).getText();
-                log.trace(prefix + "input message = " + msg);
-            } else log.info(prefix + "Пришло сообщение от сервера");
-            counter.incrementAndGet();
+                if (log.isTraceEnabled()) {
+                    String msg = ((TextMessage) message).getText();
+                    log.trace(prefix + "input message = " + msg);
+                } else log.info(prefix + "Пришло сообщение от сервера");
+                counter.incrementAndGet();
+            }
+        } finally {
+            waitingCount.decrementAndGet();
         }
-
     }
 
 
