@@ -29,7 +29,6 @@ import ru.datana.steel.plc.util.TimeUtil;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * PLC Proxy Client -- клиент для работы со шлюзом датчиков
@@ -53,8 +52,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Value("${datana.plc-server.loop-count}")
     private Long loopCount;
-
-    private final AtomicInteger threadCount = new AtomicInteger();
 
     @Value("${datana.plc-client.async-timeout}")
     @Getter
@@ -119,14 +116,11 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
 
-        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
-        jmsProducer.send("PlcRequest", jmsProperties.getRequestQueue(), formattedFromJson);
-
-        threadCount.set(asyncClientConfig.getThreadCountMax());
-
         int threadCountMax = asyncClientConfig.getThreadCountMax();
+        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
+        for (int t = 0; t < threadCountMax; t++)
+            jmsProducer.send("PlcRequest", jmsProperties.getRequestQueue(), formattedFromJson);
 
-        threadCount.set(threadCountMax);
         int countThread;
         while ((countThread = plcJmsClientListener.getCounter().get()) < threadCountMax)
             TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + (threadCountMax - countThread));

@@ -18,7 +18,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
 ## Как пользоваться для теста
 ##### сервер -- слушает JMS запросы 
 1. читает конфиги ***application-server.yaml*** и ***plc-meta-response-example.json*** из папки app.dir (системное свойство Ява-приложении)
-2. и ждет рест запросы по JMS из очереди
+2. и ждёт запросы по JMS из очереди
 ```
     datana:
       activemq:
