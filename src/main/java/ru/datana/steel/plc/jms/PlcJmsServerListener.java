@@ -56,7 +56,7 @@ public class PlcJmsServerListener implements MessageListener {
         String msg = null;
         String jmsDestination = null;
         String errorMsg;
-        log.debug(prefix + "indexMsg = " + indexMsg);
+        log.debug(prefix + "Пришло сообщение от клиента");
         try {
             jmsDestination = message.getJMSDestination().toString();
 
@@ -64,8 +64,6 @@ public class PlcJmsServerListener implements MessageListener {
                 msg = ((TextMessage) message).getText();
                 if (log.isTraceEnabled())
                     log.trace(prefix + "input message = " + msg);
-                else
-                    log.info(prefix + "Пришло сообщение от клиента");
             } else {
                 errorMsg = "WARN: not text message, type message : " + message.getJMSType();
                 log.warn(AppConst.ERROR_LOG_PREFIX + "Не валидный JMS: " + errorMsg);
