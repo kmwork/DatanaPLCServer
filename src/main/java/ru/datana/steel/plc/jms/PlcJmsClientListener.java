@@ -37,14 +37,14 @@ public class PlcJmsClientListener implements MessageListener {
 
     private AtomicInteger counter = new AtomicInteger(0);
 
-    private AtomicLong waitingCount = new AtomicLong(0);
+    private static AtomicLong WAITING_COUNT = new AtomicLong(0);
 
-    public void initWaitingCounter(long count) {
-        waitingCount.set(count);
+    public static void initWaitingCounter(long count) {
+        WAITING_COUNT.set(count);
     }
 
-    public long getWaitingCounter() {
-        return waitingCount.get();
+    public static long getWaitingCounter() {
+        return WAITING_COUNT.get();
     }
 
     @SneakyThrows
@@ -64,7 +64,7 @@ public class PlcJmsClientListener implements MessageListener {
                 counter.incrementAndGet();
             }
         } finally {
-            waitingCount.decrementAndGet();
+            WAITING_COUNT.decrementAndGet();
         }
     }
 

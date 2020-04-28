@@ -11,6 +11,9 @@ datana:
 
     # очередь ошибок
     responseQueueOnError: jmsFromPLCToError
+
+    # количество обработчиков JMS в отдельных потоках
+    listener-count: 15
   global:
     log:
       # уровень вывода логов

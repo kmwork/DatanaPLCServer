@@ -56,6 +56,7 @@ public class ServerActiveMqSpringConfig {
         listenerContainer.setConnectionFactory(connectionFactory);
         listenerContainer.setDestination(requestQueue);
         listenerContainer.setMessageListener(plcJmsServerListener);
+        listenerContainer.setConcurrency("1-" + jmsProperties.getListenerCount());
         return listenerContainer;
     }
 

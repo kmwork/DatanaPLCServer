@@ -27,5 +27,10 @@ public class JmsProperties {
      */
     private String requestQueue;
 
+    /**
+     * Количество слушателей jms в разных потоках одновременно
+     */
+    private int listenerCount;
+
 
 }
