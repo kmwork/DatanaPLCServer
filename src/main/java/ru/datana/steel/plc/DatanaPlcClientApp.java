@@ -18,6 +18,7 @@ import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AsyncClientConfig;
 import ru.datana.steel.plc.config.JmsProperties;
 import ru.datana.steel.plc.config.RestSpringConfig;
+import ru.datana.steel.plc.jms.PlcJmsClientListener;
 import ru.datana.steel.plc.jms.PlcJmsProducer;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
@@ -67,10 +68,13 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     private PlcJmsProducer jmsProducer;
 
     @Autowired
-    AsyncClientConfig asyncClientConfig;
+    private AsyncClientConfig asyncClientConfig;
 
     @Autowired
-    protected JmsProperties jmsProperties;
+    private JmsProperties jmsProperties;
+
+    @Autowired
+    private PlcJmsClientListener plcJmsClientListener;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -120,19 +124,14 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
         jmsProducer.send("PlcRequest", jmsProperties.getRequestQueue(), formattedFromJson);
-        String toJson = clientWebService.getData(formattedFromJson);
-        String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
 
         threadCount.set(asyncClientConfig.getThreadCountMax());
 
         int threadCountMax = asyncClientConfig.getThreadCountMax();
 
         threadCount.set(threadCountMax);
-        for (int poolIndex = 0; poolIndex < threadCountMax; poolIndex++) {
-            callDbService.saveAsync(prefixLog, resultFromJson, poolIndex, threadCountMax, threadCount);
-        }
-        while (threadCount.get() > 0)
-            TimeUtil.doSleep(asyncMS, "Ожидание потов Async: " + threadCount.get());
+        while (plcJmsClientListener.getCounter().get() < threadCountMax)
+            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + threadCount.get());
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
