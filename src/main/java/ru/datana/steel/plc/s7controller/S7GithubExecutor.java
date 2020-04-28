@@ -19,8 +19,10 @@ import ru.datana.steel.plc.model.json.request.JsonSensorDatum;
 import ru.datana.steel.plc.model.json.request.JsonSensorSingleRequest;
 import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
 import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
-import ru.datana.steel.plc.moka7.EnumSiemensDataType;
-import ru.datana.steel.plc.util.*;
+import ru.datana.steel.plc.util.AppException;
+import ru.datana.steel.plc.util.DatanaJsonHelper;
+import ru.datana.steel.plc.util.TimeUtil;
+import ru.datana.steel.plc.util.TypeException;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
@@ -47,11 +49,6 @@ public class S7GithubExecutor implements Closeable {
     private String prefixLog = "[S7 Контроллер] ";
 
     private static final AtomicLong instanceCount = new AtomicLong(0);
-    /**
-     * Коннекты
-     * ключ - наш ID в базе данных, значение - коннект Socket с S7
-     */
-    private final Map<Integer, S7TCPConnection> connectionByControllerId = new HashMap<>();
 
     /**
      * Описание контроллеров по ID
@@ -91,62 +88,10 @@ public class S7GithubExecutor implements Closeable {
      */
     public void init(@NotNull JsonMetaRootController controllerMeta) {
         metaByControllerId.clear();
-        connectionByControllerId.clear();
         for (Controller c : controllerMeta.getControllers()) {
             metaByControllerId.put(c.getId(), c);
         }
         log.info(prefixLog + " Прочитаны настройки для {} контролеров : {}", metaByControllerId.size(), metaByControllerId.keySet());
-    }
-
-    /**
-     * Закрыть сокет с S7
-     *
-     * @param controllerId
-     * @return
-     */
-    private boolean closeS7Connect(@NotNull Integer controllerId) {
-
-        log.info(prefixLog + " Завершение сессии для controllerId = {}", controllerId);
-        connectionByControllerId.remove(controllerId);
-        boolean success = false;
-        if (currentConnector != null) {
-            currentConnector.close();
-            currentConnector = null;
-            success = true;
-        }
-        return success;
-    }
-
-    /**
-     * Установить связь с контроллером
-     *
-     * @param controllerId
-     * @throws AppException
-     */
-    private void initS7Connection(@NotNull Integer controllerId) throws AppException {
-        Controller c = metaByControllerId.get(controllerId);
-        String host = c.getIp();
-        int rack = c.getRack();
-        int slot = c.getSlot();
-        int port = c.getPort() == null ? AppConst.S7CONNECTOR_PORT_DEFAULT : c.getPort();
-        int timeout = c.getTimeout();
-
-        try {
-            currentConnector = connectionByControllerId.get(controllerId);
-            if (currentConnector == null) {
-                currentConnector = connectionByControllerId.get(controllerId);
-                if (currentConnector == null) {
-                    currentConnector = new S7TCPConnection(host, rack, slot, port, timeout);
-                    connectionByControllerId.put(controllerId, currentConnector);
-                }
-            }
-        } catch (Exception ex) {
-            String strArgs = "controllerId = " + controllerId + ", " +
-                    "host: " + host + ", rack: " + rack + ", slot: " + slot + ", port: " + port + ", timeout: " + timeout;
-            String msg = "Ошибка подключения к контроллеру Сименса: " + ex.getMessage();
-            log.error(msg + ". args:" + strArgs, ex);
-            throw new AppException(TypeException.S7CONTROLLER_ERROR_OF_CONNECTION, msg, strArgs, ex);
-        }
     }
 
     /**
@@ -227,7 +172,6 @@ public class S7GithubExecutor implements Closeable {
         List<JsonSensorResponse> responseList = new ArrayList<>();
         try {
 
-            initS7Connection(request.getControllerId());
             for (JsonSensorDatum datum : request.getData()) {
                 List<JsonSensorResponse> responsesByOneRequest = readBlockFromS7(rootRequest, request, datum);
                 responseList.addAll(responsesByOneRequest);
@@ -237,10 +181,6 @@ public class S7GithubExecutor implements Closeable {
             List<JsonSensorResponse> responseError = jsonHelper.createJsonRequestWithError(rootRequest, request, null, ex);
 
             responseList.addAll(responseError);
-        } finally {
-            boolean doDisconnect = !metaByControllerId.get(request.getControllerId()).getPermanentConnection();
-            if (doDisconnect)
-                closeS7Connect(request.getControllerId());
         }
 
         return new AsyncResult<>(responseList);
@@ -283,18 +223,7 @@ public class S7GithubExecutor implements Closeable {
      */
     @Override
     public void close() {
-        log.info(prefixLog + " Закрытие коннектов для ID = " + connectionByControllerId.keySet());
-        Set<Integer> ids = new HashSet<>();
-        for (Integer id : connectionByControllerId.keySet()) {
-            try {
-                boolean isSuccess = closeS7Connect(id);
-                if (isSuccess)
-                    ids.add(id);
-            } catch (Exception ex) {
-                log.warn(AppConst.ERROR_LOG_PREFIX + " Ошибка дисконнекта S7 для id = {}, Error: {}", id, ex.getMessage());
-            }
-        }
-        log.info(prefixLog + " Коннекты  весели открытыми с ID = " + ids);
+        log.info(prefixLog + " Финишь");
     }
 
     /**
@@ -313,56 +242,14 @@ public class S7GithubExecutor implements Closeable {
         //читаем данные
         int intS7DBNumber = datum.getDataBlock();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
-        int minOffset = Integer.MAX_VALUE;
-        int maxOffset = Integer.MIN_VALUE;
-
-        // определяем крайние переменные одного блока (минимум  и максимум для offset) для чтения блока данных
-        for (JsonSensorDataVal dataVal : datum.getDataVals()) {
-            int offset = dataVal.getOffset();
-
-            // нужно прочитать кратно байтам, если бит то округляем до 1 байта
-            EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
-            int sizeBytes = Math.min(type.getBitCount() / 8, 1);
-
-            //определяем крайнее датчики по их смещению offset
-            minOffset = Math.min(minOffset, offset);
-
-            //нужно прибавить размер переменной датчика что бы его захватить при чтении блока
-            maxOffset = Math.max(maxOffset, offset + sizeBytes);
-        }
-        int length = maxOffset - minOffset;
         Set<Integer> lastSuccessDataValIds = new HashSet<>();
         try {
 
             byte[] dataBytes = null;
 
             for (JsonSensorDataVal dataVal : datum.getDataVals()) {
-                int bytesOffset = dataVal.getOffset() - minOffset;
-                assert bytesOffset >= 0;
-                EnumSiemensDataType type = EnumSiemensDataType.parseOf(dataVal.getDataType());
-                int intBitPosition = 0;
-
-                //получения позиции если это бит
-                if (type == EnumSiemensDataType.TYPE_BIT) {
-                    intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
-                }
-
-                BigDecimal result = null;
-                if (isExperimentalS7) {
-                    log.info("isExperimentalS7 = true");
-                    int sizeBytes = Math.min(type.getBitCount() / 8, 1);
-                    dataBytes = tryRead(jsonRequest, intS7DBNumber, sizeBytes, dataVal.getOffset());
-                    result = BitOperationsUtils.doBitsOperations(dataBytes, 0, type, intBitPosition);
-                } else {
-                    if (dataBytes == null) {
-                        dataBytes = tryRead(jsonRequest, intS7DBNumber, length, minOffset);
-                        FormatUtils.formatBytes("Чтение с S7 контроллера", dataBytes, EnumFormatBytesType.CLASSIC);
-                    }
-                    result = BitOperationsUtils.doBitsOperations(dataBytes, bytesOffset, type, intBitPosition);
-                }
+                BigDecimal result = BigDecimal.valueOf(Math.random());
                 JsonSensorResponse response = jsonHelper.createJsonRequestForData(result, AppConst.JSON_SUCCESS_CODE, dataVal);
-
-
                 jsonResponseList.add(response);
 
                 lastSuccessDataValIds.add(dataVal.getId());
