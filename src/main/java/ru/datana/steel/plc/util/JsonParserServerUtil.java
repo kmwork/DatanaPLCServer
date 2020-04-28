@@ -12,7 +12,7 @@ public class JsonParserServerUtil {
     @Getter
     private final static JsonParserServerUtil instance = new JsonParserServerUtil();
 
-    private JsonParserUtil<JsonMetaRootController> parserUtil = new JsonParserUtil<JsonMetaRootController>("plc-meta-response-example.json");
+    private JsonParserUtil<JsonMetaRootController> parserUtil = new JsonParserUtil<>("plc-meta-response-example.json");
 
     private JsonParserServerUtil() {
     }

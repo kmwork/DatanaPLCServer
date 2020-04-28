@@ -12,7 +12,7 @@ import java.time.Duration;
 @Slf4j
 public class TimeUtil {
 
-    private static long ONE_MS = 1000 * 1000;
+    private static final long ONE_MS = 1000 * 1000;
 
     public static String formatTimeAsNano(long timeNano) {
         String result = "";

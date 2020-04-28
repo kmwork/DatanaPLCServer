@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-
+    "task_id"
 })
 @Data
 public class JsonHelloParams {

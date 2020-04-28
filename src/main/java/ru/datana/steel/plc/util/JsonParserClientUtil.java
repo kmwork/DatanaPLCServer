@@ -12,7 +12,7 @@ public class JsonParserClientUtil {
     @Getter
     private final static ru.datana.steel.plc.util.JsonParserClientUtil instance = new ru.datana.steel.plc.util.JsonParserClientUtil();
 
-    private JsonParserUtil<JsonRootSensorRequest> parserUtil = new JsonParserUtil<JsonRootSensorRequest>("plc-meta-request-example.json");
+    private JsonParserUtil<JsonRootSensorRequest> parserUtil = new JsonParserUtil<>("plc-meta-request-example.json");
 
     private JsonParserClientUtil() {
     }

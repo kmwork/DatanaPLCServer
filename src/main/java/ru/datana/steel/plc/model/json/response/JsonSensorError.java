@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-
+        "type-code",
+        "str-args",
+        "msg"
 })
 @Data
 public class JsonSensorError {

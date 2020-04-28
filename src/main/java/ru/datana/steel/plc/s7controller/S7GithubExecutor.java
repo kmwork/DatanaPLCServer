@@ -59,10 +59,6 @@ public class S7GithubExecutor<S7TCPConnection> implements Closeable {
      */
     private final DatanaJsonHelper jsonHelper = DatanaJsonHelper.getInstance();
 
-
-    private long totalReadTimeNano = 0;
-    private int totalDataSize = 0;
-
     @Value("${datana.global.experimental-s7-algorithm}")
     private boolean isExperimentalS7;
 
@@ -95,8 +91,6 @@ public class S7GithubExecutor<S7TCPConnection> implements Closeable {
      */
     public JsonRootSensorResponse run(@NotNull JsonRootSensorRequest rootRequest) throws ExecutionException, InterruptedException {
 
-        totalReadTimeNano = 0;
-        totalDataSize = 0;
         long startTime = System.nanoTime();
         LocalDateTime proxyTime = jsonHelper.getCurrentTime();
         List<JsonSensorResponse> jsonResponseList = new ArrayList<>();
