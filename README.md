@@ -20,8 +20,8 @@ mvn clean compile package spring-boot:repackage -P plcClient
         brokerUrl: tcp://localhost:61616
         requestQueue: jmsFromPLC
 ```    
-3.   и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
-4.   и пишет в ***responseQueue*** если успещно и ошибки (стек-трейс) в ***responseQueueOnError***
+3. и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
+4. и пишет в ***responseQueue*** если успещно и ошибки (стек-трейс) в ***responseQueueOnError***
 ```
     datana:
       activemq:
@@ -41,7 +41,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
         sleep-ms: 500
 ```    
     и как в примере 10 раз с задержкой 0.5 секунд стучится на сервер
-* и ждет ответа в очереди `responseQueue`
+* и ждет ответа в очереди ***responseQueue***
         
 #### Для тестирования рекомендация
 желательно использовать Open JDK/JRE 13
