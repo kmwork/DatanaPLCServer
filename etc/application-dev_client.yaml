@@ -62,7 +62,7 @@ logging:
     max-size: 16 MB
     total-size-cap: 128 MB
   pattern:
-    rolling-file-name:  ${app.dir}/datana-client-archive-plc-logs/mes-gateway-archive.%d{yyyy-MM-dd}.%i.log
+    rolling-file-name:  ${app.dir}/datana-client-archive-plc-logs/plc-gateway-archive.%d{yyyy-MM-dd}.%i.log
 
 
 
