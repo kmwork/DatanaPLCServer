@@ -2,14 +2,14 @@
 datana:
   activemq:
     brokerUrl: tcp://localhost:61616
-    requestQueue: jmsFromMes
-    responseQueue: jmsResponseFromDatanaToMes
-    responseQueueOnError: jmsFromMesToError
+    requestQueue: jmsFromPLC
+    responseQueue: jmsResponseFromDatanaToPLC
+    responseQueueOnError: jmsFromPLCToError
   global:
     debug: true
     log:
       # уровень вывода логов
-      level: INFO
+      level: DEBUG
     beauty-json: true
     experimental-s7-algorithm: false
 

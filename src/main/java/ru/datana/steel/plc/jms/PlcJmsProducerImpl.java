@@ -35,12 +35,12 @@ public class PlcJmsProducerImpl implements PlcJmsProducer {
     }
 
     @Override
-    public void send(@NonNull String methodName, @NonNull String queue, @NonNull String xmlAsStringMsg) {
+    public void send(@NonNull String methodName, @NonNull String queue, @NonNull String jsonAsStringMsg) {
         String prefix = PREFIX_LOG + "[Queue:" + queue + "] ";
         log.debug(prefix + " вызов метода " + methodName);
-        jmsTemplate.convertAndSend(queue, xmlAsStringMsg);
+        jmsTemplate.convertAndSend(queue, jsonAsStringMsg);
         if (log.isTraceEnabled())
-            log.trace(prefix + "Отправлен в очередь = {}, xmlAsStringMsg = {}", queue, xmlAsStringMsg);
+            log.trace(prefix + "Отправлен в очередь = {}, xmlAsStringMsg = {}", queue, jsonAsStringMsg);
         else
             log.info("Отправлено сообщение в очередь " + queue);
     }

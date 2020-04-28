@@ -10,9 +10,9 @@ datana:
 
   activemq:
     brokerUrl: tcp://localhost:61616
-    requestQueue: jmsFromMes
-    responseQueue: jmsResponseFromDatanaToMes
-    responseQueueOnError: jmsFromMesToError
+    requestQueue: jmsFromPLC
+    responseQueue: jmsResponseFromDatanaToPLC
+    responseQueueOnError: jmsFromPLCToError
   global:
     debug: true
     log:
