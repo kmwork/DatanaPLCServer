@@ -5,7 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.datana.steel.mes.config.AppConst;
+import ru.datana.steel.plc.config.AppConst;
+import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
+import ru.datana.steel.plc.util.JsonParserUtil;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -21,6 +23,8 @@ import javax.jms.TextMessage;
 public class PlcJmsListener implements MessageListener {
 
     private final static String PREFIX_LOG = "[JMS:Listener] ";
+
+    private JsonParserUtil parser = JsonParserUtil.getInstance();
 
     @Autowired
     private PlcJmsProducer jmsProducer;
@@ -48,11 +52,14 @@ public class PlcJmsListener implements MessageListener {
             if (message instanceof TextMessage) {
                 msg = ((TextMessage) message).getText();
                 log.info(prefix + "input message = " + msg);
-                errorMsg = xmlValidator.validate(msg);
             } else {
                 errorMsg = "WARN: not text message, type message : " + message.getJMSType();
                 log.warn(AppConst.ERROR_LOG_PREFIX + "Не валидный JMS: " + errorMsg);
             }
+
+            //JSON file to Java object
+            JsonRootSensorRequest jsonRootRequest = parser..readValue(msg, JsonRootSensorRequest.class);
+            log.info("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
 
             log.info(prefix + "input message = " + msg);
             boolean isValid = StringUtils.isEmpty(errorMsg);
