@@ -2,7 +2,12 @@
 ****(шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент работают**** 
 ****в холостом режиме - для проверки нагрузки на транспорт)****
 ---
-сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
+
+### для начала - нужно поднять и настроить Apache ActiveMQ
+по ссылке https://activemq.apache.org/components/classic/download/
+
+### Введение
+это тесты для транспорта JMS под проект по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
 задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23
 ## сборка Maven 3 + OpenJDK 13
