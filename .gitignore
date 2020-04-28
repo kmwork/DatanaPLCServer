@@ -23,3 +23,4 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+/etc/datana-client-logs/plc-client-gatemway.log
