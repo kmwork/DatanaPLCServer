@@ -39,7 +39,10 @@ public class PlcJmsProducerImpl implements PlcJmsProducer {
         String prefix = PREFIX_LOG + "[Queue:" + queue + "] ";
         log.debug(prefix + " вызов метода " + methodName);
         jmsTemplate.convertAndSend(queue, xmlAsStringMsg);
-        log.info(prefix + "Отправлен в очередь = {}, xmlAsStringMsg = {}", queue, xmlAsStringMsg);
+        if (log.isTraceEnabled())
+            log.trace(prefix + "Отправлен в очередь = {}, xmlAsStringMsg = {}", queue, xmlAsStringMsg);
+        else
+            log.info("Отправлено сообщение в очередь " + queue);
     }
 
     @Override

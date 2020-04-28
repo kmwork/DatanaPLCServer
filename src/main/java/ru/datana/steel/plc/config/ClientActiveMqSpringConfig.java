@@ -12,7 +12,7 @@ import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
-import ru.datana.steel.plc.jms.PlcJmsServerListener;
+import ru.datana.steel.plc.jms.PlcJmsClientListener;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
@@ -72,7 +72,7 @@ public class ClientActiveMqSpringConfig {
 
     @Bean
     protected MessageListener plcJmsReceiver() {
-        return new PlcJmsServerListener();
+        return new PlcJmsClientListener();
     }
 
 }

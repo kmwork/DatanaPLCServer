@@ -17,7 +17,7 @@ datana:
     debug: true
     log:
       # уровень вывода логов
-      level: INFO
+      level: DEBUG
     beauty-json: true
     experimental-s7-algorithm: false
 

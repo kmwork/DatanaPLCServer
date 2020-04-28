@@ -10,8 +10,6 @@ public class AppConst {
     public static final String ERROR_LOG_PREFIX = "[App-Ошибка] ";
     public static final String RESUME_LOG_PREFIX = "[App-Итог] ";
     public static final String APP_LOG_PREFIX = "[App-Danata] ";
-    public static final int S7CONNECTOR_PORT_DEFAULT = 102;
-    public static final int TRY_S7CONTROLLER_READ_OF_COUNT = 3;
     public static final Integer JSON_SUCCESS_CODE = 1;
     public static final Integer JSON_ERROR_CODE = 0;
     public final static String EXT_SERVER_YAML = "application-server.yaml";
@@ -19,6 +17,4 @@ public class AppConst {
     public static final String SERVER_PROFILE = "server";
     public static final long MIN_SLEEP_MS = 100;
     public static final long SLEEP_FUTURE_MS = 300;
-    public static final String SERVER_LOG_CONFIG = "logback-plc-server.xml";
-    public static final String CLIENT_LOG_CONFIG = "logback-plc-client.xml";
 }
