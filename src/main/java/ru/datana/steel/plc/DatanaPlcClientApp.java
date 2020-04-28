@@ -129,7 +129,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         threadCount.set(threadCountMax);
         int countThread;
         while ((countThread = plcJmsClientListener.getCounter().get()) < threadCountMax)
-            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + countThread);
+            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + (threadCountMax - countThread));
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
