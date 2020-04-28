@@ -121,9 +121,6 @@ public class S7GithubExecutor<S7TCPConnection> implements Closeable {
         jsonResult.setRequestId(rootRequest.getRequestId());
         jsonResult.setTaskId(rootRequest.getTaskId());
         jsonResult.setResponse(jsonResponseList);
-        long endTime = System.nanoTime();
-        long deltaNano = endTime - startTime;
-        log.info(AppConst.RESUME_LOG_PREFIX + "Затраченное время {}, из них время на чтение {}, вычитано {} байт", TimeUtil.formatTimeAsNano(deltaNano), TimeUtil.formatTimeAsNano(totalReadTimeNano), totalDataSize);
         return jsonResult;
     }
 
