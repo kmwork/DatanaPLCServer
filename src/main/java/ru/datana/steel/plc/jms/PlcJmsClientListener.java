@@ -50,11 +50,10 @@ public class PlcJmsClientListener implements MessageListener {
     @SneakyThrows
     @Override
     public void onMessage(@NonNull Message message) {
+        int indexMsg = counter.incrementAndGet();
+        String prefix = PREFIX_LOG + "[onMessage, index = " + indexMsg + "] ";
+        log.debug(prefix + "Пришло сообщение от сервера");
         try {
-            String prefix = PREFIX_LOG + "[onClientMessage] ";
-            int indexMsg = counter.incrementAndGet();
-            log.debug(prefix + "indexMsg = " + indexMsg);
-
             if (message instanceof TextMessage) {
 
                 if (log.isTraceEnabled()) {
