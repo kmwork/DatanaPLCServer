@@ -1,9 +1,11 @@
 ##### Configuration for PLC SERVER #####
 datana:
   plc-client:
-    thread-count-max: 1
+    # количество потов
+    thread-count-max: 10
     async-timeout: 500
   plc-server:
+    # количество циклов (запросов), если меньше нуля то вечность
     loop-count: 1
     # ожидание после каждого цикла в миллисекунд
     sleep-ms: 500
