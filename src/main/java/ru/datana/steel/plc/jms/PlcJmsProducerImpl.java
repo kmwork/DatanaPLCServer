@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,6 +35,7 @@ public class PlcJmsProducerImpl implements PlcJmsProducer {
         send("Method:Отправка ошибок", queueOnError, jmsAsStringMsg);
     }
 
+    @Async
     @Override
     public void send(@NonNull String methodName, @NonNull String queue, @NonNull String jsonAsStringMsg) {
         String prefix = PREFIX_LOG + "[Queue:" + queue + "] ";
