@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Сервис по JMS - точка входа в сервис по Apache ActiveMQ
  */
-@Component("plcJmServerListener")
+@Component("plcJmsServerListener")
 @Slf4j
 @Profile(AppConst.SERVER_PROFILE)
 public class PlcJmsServerListener implements MessageListener {

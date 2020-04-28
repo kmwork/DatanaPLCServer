@@ -51,10 +51,10 @@ public class ClientActiveMqSpringConfig {
 
     @Bean
     protected MessageListenerContainer listenerContainer(@Qualifier("activeMqJMSConnectionFactory") ConnectionFactory connectionFactory,
-                                                         @Qualifier("activeMqRequestDestination") ActiveMQQueue requestQueue) {
+                                                         @Qualifier("activeMqResponseDestination") ActiveMQQueue responseQueue) {
         DefaultMessageListenerContainer listenerContainer = new DefaultMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory);
-        listenerContainer.setDestination(requestQueue);
+        listenerContainer.setDestination(responseQueue);
         listenerContainer.setMessageListener(plcJmsClientListener);
         return listenerContainer;
     }
