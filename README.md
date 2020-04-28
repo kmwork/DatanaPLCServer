@@ -1,5 +1,6 @@
-# !!!! ТЕСТОВОЕ ПО !!!! - PLC Proxy Server и Client (шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент ратают 
-# в холостом режиме - для проверки нагрузки на транспорт)
+# !!!! ТЕСТОВОЕ ПО !!!! - PLC Proxy Server и Client 
+# ****(шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент работают**** 
+# ****в холостом режиме - для проверки нагрузки на транспорт)****
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
 задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23
@@ -10,7 +11,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
 ```
 ## Как пользоваться для теста
 ##### сервер -- слушает JMS запросы 
-    1) читает конфиги <b>application-server.yaml</b> и <b>plc-meta-response-example.json</b> из папки app.dir (системное свойство Ява-приложении)
+    1) читает конфиги ***application-server.yaml*** и ***plc-meta-response-example.json*** из папки app.dir (системное свойство Ява-приложении)
     2) и ждет рест запросы по JMS из очереди
 ```
     datana:
@@ -19,7 +20,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
         requestQueue: jmsFromPLC
 ```    
     и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
-    и пишет в <b>responseQueue</b> если успещно и ошибки (стек-трейс) в `responseQueueOnError</b>
+    и пишет в ***responseQueue*** если успещно и ошибки (стек-трейс) в ***responseQueueOnError***
 ```
     datana:
       activemq:
@@ -28,7 +29,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
         responseQueueOnError: jmsFromPLCToError
 ```
 ##### клиент - посылает запросы
-    1) читает конфиги <b>application-dev_client.yaml</b> и <b>plc-meta-request-example.json</b> из папки app.dir (системное свойство Ява-приложении)
+    1) читает конфиги ***application-dev_client.yaml*** и ***plc-meta-request-example.json*** из папки app.dir (системное свойство Ява-приложении)
     б) читает переменные 
     datana:
       plc-server:
