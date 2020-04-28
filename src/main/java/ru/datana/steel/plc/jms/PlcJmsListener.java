@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
+import ru.datana.steel.plc.rest.S7RestApi;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -23,6 +24,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PlcJmsListener implements MessageListener {
 
     private final static String PREFIX_LOG = "[JMS:Listener] ";
+
+    @Autowired
+    private S7RestApi s7RestApi;
 
     @Autowired
     private RestSpringConfig restSpringConfig;
@@ -65,7 +69,8 @@ public class PlcJmsListener implements MessageListener {
                 log.trace("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
 
             log.info(prefix + "input message, index =" + counter.incrementAndGet());
-
+            String result = s7RestApi.getData(jsonRootRequest);
+            jmsProducer.sendOnSuccess(result);
         } catch (Exception e) {
             log.error(AppConst.ERROR_LOG_PREFIX + "Системная ошибка jmsDestination = {}, ,msg = {}, в классе = {}", jmsDestination, msg, getClass().getSimpleName());
             log.error(AppConst.ERROR_LOG_PREFIX, e);

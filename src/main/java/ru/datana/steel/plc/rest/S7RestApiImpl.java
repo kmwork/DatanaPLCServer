@@ -5,11 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.RestSpringConfig;
@@ -26,10 +23,11 @@ import ru.datana.steel.plc.util.JsonParserUtil;
 import java.util.List;
 
 /**
- * Рест сервера наружу
+ * JMS сервера наружу
  */
 @Slf4j
 @Profile(AppConst.SERVER_PROFILE)
+@Service
 public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private SpringConfig springConfig;
@@ -40,16 +38,12 @@ public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private ApplicationContext context;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
     @Override
     public String getVersion() {
         return AppVersion.getDatanaAppVersion();
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @Override
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
