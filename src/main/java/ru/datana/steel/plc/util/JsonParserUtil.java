@@ -40,7 +40,7 @@ public class JsonParserUtil<TYPE> {
         this.fileName = fileName;
     }
 
-    public <TYPE> TYPE loadJson(Class<TYPE> clazz) throws AppException {
+    public TYPE loadJson(Class<TYPE> clazz) throws AppException {
         if (StringUtils.isEmpty(dir)) {
             String strArgs = AppConst.SYS_DIR_PROP + " = '" + dir + "'";
             throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "пустое значение", strArgs, null);
