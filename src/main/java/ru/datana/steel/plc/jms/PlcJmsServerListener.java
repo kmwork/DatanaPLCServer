@@ -2,6 +2,7 @@ package ru.datana.steel.plc.jms;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.datana.steel.plc.config.AppConst;
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Component("plcJmsListener")
 @Slf4j
-public class PlcJmsListener implements MessageListener {
+public class PlcJmsServerListener implements MessageListener {
 
     private final static String PREFIX_LOG = "[JMS:Listener] ";
 
@@ -45,6 +46,7 @@ public class PlcJmsListener implements MessageListener {
     }
 
     private AtomicInteger counter = new AtomicInteger(0);
+
     @Override
     public void onMessage(@NonNull Message message) {
 
@@ -52,6 +54,8 @@ public class PlcJmsListener implements MessageListener {
         String msg = null;
         String jmsDestination = null;
         String errorMsg;
+        int indexMsg = counter.incrementAndGet();
+        log.debug(prefix + "indexMsg = " + indexMsg);
         try {
             jmsDestination = message.getJMSDestination().toString();
 
@@ -68,12 +72,14 @@ public class PlcJmsListener implements MessageListener {
             if (log.isTraceEnabled())
                 log.trace("[JSON-Parser] jsonRootRequest = " + jsonRootRequest);
 
-            log.info(prefix + "input message, index =" + counter.incrementAndGet());
+            log.info(prefix + "input message, index =" + indexMsg);
             String result = s7RestApi.getData(jsonRootRequest);
             jmsProducer.sendOnSuccess(result);
         } catch (Exception e) {
             log.error(AppConst.ERROR_LOG_PREFIX + "Системная ошибка jmsDestination = {}, ,msg = {}, в классе = {}", jmsDestination, msg, getClass().getSimpleName());
             log.error(AppConst.ERROR_LOG_PREFIX, e);
+            String stacktraceMsg = ExceptionUtils.getStackTrace(e);
+            jmsProducer.sendOnError("indexMsg:" + indexMsg + ", stacktraceMsg = " + stacktraceMsg);
         }
 
     }

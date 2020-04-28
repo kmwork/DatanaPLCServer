@@ -11,4 +11,6 @@ public interface PlcJmsProducer {
     void sendOnError(@NonNull String msg);
 
     void sendOnSuccess(@NonNull String msg);
+
+    void send(@NonNull String methodName, @NonNull String queue, @NonNull String jsonAsStringMsg);
 }

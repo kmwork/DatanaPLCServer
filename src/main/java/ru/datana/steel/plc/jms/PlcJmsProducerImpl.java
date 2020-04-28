@@ -30,11 +30,12 @@ public class PlcJmsProducerImpl implements PlcJmsProducer {
     private String queueForSuccess;
 
     @Override
-    public void sendOnError(@NonNull String xmlAsStringMsg) {
-        send("Method:Отправка ошибок", queueOnError, xmlAsStringMsg);
+    public void sendOnError(@NonNull String jmsAsStringMsg) {
+        send("Method:Отправка ошибок", queueOnError, jmsAsStringMsg);
     }
 
-    private void send(@NonNull String methodName, @NonNull String queue, @NonNull String xmlAsStringMsg) {
+    @Override
+    public void send(@NonNull String methodName, @NonNull String queue, @NonNull String xmlAsStringMsg) {
         String prefix = PREFIX_LOG + "[Queue:" + queue + "] ";
         log.debug(prefix + " вызов метода " + methodName);
         jmsTemplate.convertAndSend(queue, xmlAsStringMsg);
@@ -42,7 +43,7 @@ public class PlcJmsProducerImpl implements PlcJmsProducer {
     }
 
     @Override
-    public void sendOnSuccess(@NonNull String xmlAsStringMsg) {
-        send("Method:Отправка ответов при успехе", queueForSuccess, xmlAsStringMsg);
+    public void sendOnSuccess(@NonNull String jmsAsStringMsg) {
+        send("Method:Отправка ответов при успехе", queueForSuccess, jmsAsStringMsg);
     }
 }

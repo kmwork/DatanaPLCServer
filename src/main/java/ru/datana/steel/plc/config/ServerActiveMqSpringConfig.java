@@ -7,11 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.MessageListenerContainer;
-import ru.datana.steel.plc.jms.PlcJmsListener;
+import ru.datana.steel.plc.jms.PlcJmsServerListener;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
@@ -22,14 +23,15 @@ import javax.jms.MessageListener;
 @Configuration
 @EnableJms
 @Slf4j
-public class MesActiveMqSpringConfig {
+@Profile(AppConst.SERVER_PROFILE)
+public class ServerActiveMqSpringConfig {
 
 
     @Autowired
     protected JmsProperties jmsProperties;
 
     @Autowired
-    protected MessageListener plcJmsListener;
+    protected MessageListener plcJmsServerListener;
 
     @Bean
     protected JmsTemplate jmsRequestTemplate(@Qualifier("activeMqJMSConnectionFactory") ConnectionFactory connectionFactory,
@@ -53,7 +55,7 @@ public class MesActiveMqSpringConfig {
         DefaultMessageListenerContainer listenerContainer = new DefaultMessageListenerContainer();
         listenerContainer.setConnectionFactory(connectionFactory);
         listenerContainer.setDestination(requestQueue);
-        listenerContainer.setMessageListener(plcJmsListener);
+        listenerContainer.setMessageListener(plcJmsServerListener);
         return listenerContainer;
     }
 
@@ -70,7 +72,7 @@ public class MesActiveMqSpringConfig {
 
     @Bean
     protected MessageListener plcJmsReceiver() {
-        return new PlcJmsListener();
+        return new PlcJmsServerListener();
     }
 
 }

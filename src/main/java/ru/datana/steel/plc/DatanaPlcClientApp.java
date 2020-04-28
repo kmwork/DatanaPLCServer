@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.EnableJms;
 import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AsyncClientConfig;
+import ru.datana.steel.plc.config.JmsProperties;
 import ru.datana.steel.plc.config.RestSpringConfig;
+import ru.datana.steel.plc.jms.PlcJmsProducer;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
@@ -62,7 +64,13 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
 
     @Autowired
+    private PlcJmsProducer jmsProducer;
+
+    @Autowired
     AsyncClientConfig asyncClientConfig;
+
+    @Autowired
+    protected JmsProperties jmsProperties;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -111,6 +119,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         changeIDCodes(step, rootJson);
 
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
+        jmsProducer.send("PlcRequest", jmsProperties.getRequestQueue(), formattedFromJson);
         String toJson = clientWebService.getData(formattedFromJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
 
