@@ -45,7 +45,6 @@ mvn clean compile package spring-boot:repackage -P plcClient
 #### Для тестирования рекомендация
 желательно использовать Open JDK/JRE 13
     
-,
 ## техническая документация 
 в папке <this project>/doc-manual
 
