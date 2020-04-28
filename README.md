@@ -1,4 +1,5 @@
-# PLC Proxy Server и Client (шлюзы между контроллером и базой данных PostgeSQL)
+# !!!! ТЕСТОВОЕ ПО !!!! - PLC Proxy Server и Client (шлюзы по Apache ActiveMQ JMS-брокер, при этом сервер и клиент ратают 
+# в холостом режиме - для проверки нагрузки на транспорт)
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
 задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23
@@ -8,24 +9,26 @@ mvn clean compile package spring-boot:repackage -P plcServer
 mvn clean compile package spring-boot:repackage -P plcClient
 ```
 ## Как пользоваться для теста
-##### сервер -- слушает REST запросы 
-    1) читает из папки app.dir (системное свойство Ява-приложении)
-    2) и ждет рест запросы
-        GET - http://localhost:8080/rest/getVersion
-        POST - http://localhost:8080/rest/getData   (в теле нужно передать JSON-запрос)
-        примеры JSON можно copy-past в POSTMEN  -cм в папке `user-manual`
-        
-        если POST то читает по мере необходимости файл - `plc-meta-response-example.json` 
-               если все ок то стучится к PLC контроллеру Ланита (Датана) с 
-               по controller id =2 -- нормальные настройки а остальные ошибочные (так как 2 байта с контроллера можно  
-               вычитывать в текущей версии  настроек S1200)
-               и программа матерится на ошибки так как просят вычитать не доступные данные
-        и JSON формируется в ответ
-##### клиент - посылает запросы
-    а) вызывает хранимки из 
+##### сервер -- слушает JMS запросы 
+    1) читает конфиги `application-server.yaml` и `plc-meta-response-example.json` из папки app.dir (системное свойство Ява-приложении)
+    2) и ждет рест запросы по JMS из очереди
+    ````
     datana:
-      database-options:
-        postgresql-get-function: <тест sql - 1>
+      activemq:
+        brokerUrl: tcp://localhost:61616
+        requestQueue: jmsFromPLC
+    ````    
+    и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
+    и пишет в `responseQueue` если успещно и ошибки (стек-трейс) в `responseQueueOnError`
+    ````
+    datana:
+      activemq:
+        ....
+        responseQueue: jmsResponseFromDatanaToPLC
+        responseQueueOnError: jmsFromPLCToError
+    ````
+##### клиент - посылает запросы
+    1) читает конфиги `application-dev_client.yaml` и `plc-meta-request-example.json` из папки app.dir (системное свойство Ява-приложении)
     б) читает переменные 
     datana:
       plc-server:
@@ -34,15 +37,10 @@ mvn clean compile package spring-boot:repackage -P plcClient
         # ожидание после каждого цикла в миллисекундах
         sleep-ms: 500    
         и как в примере 10 раз с задержкой 0.5 секунд стучится на сервер
-    в) записывает через хранимку
-        datana:
-          database-options:
-            postgresql-save-function: <тест sql - 2>
+    в) и ждет ответа в очереди `responseQueue`
         
 #### Для тестирования рекомендация
 желательно использовать Open JDK/JRE 13
-и для RESTfull запросов POSTMEN как плагин к Хрому - 
-    postmen - расширение к хрому - https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop/related?hl=ru          
     
 ,
 ## техническая документация 
