@@ -1,6 +1,5 @@
 package ru.datana.steel.plc;
 
-import feign.FeignException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -12,15 +11,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Profile;
 import ru.datana.steel.plc.config.AppConst;
-import ru.datana.steel.plc.config.AppVersion;
 import ru.datana.steel.plc.config.AsyncClientConfig;
 import ru.datana.steel.plc.config.RestSpringConfig;
 import ru.datana.steel.plc.db.CallDbService;
 import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
-import ru.datana.steel.plc.rest.client.RestClientWebService;
+import ru.datana.steel.plc.rest.S7RestApi;
 import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import ru.datana.steel.plc.util.TimeUtil;
@@ -39,13 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
         exclude = {
                 ServletWebServerFactoryAutoConfiguration.class,
                 WebMvcAutoConfiguration.class})
-@EnableFeignClients
 @Profile(AppConst.DB_DEV_POSTGRES_PROFILE)
 public class DatanaPlcClientApp implements CommandLineRunner {
-
-    @Autowired
-    private RestClientWebService clientWebService;
-
     @Autowired
     private RestSpringConfig restSpringConfig;
 
@@ -70,6 +62,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
     @Autowired
     AsyncClientConfig asyncClientConfig;
+    private S7RestApi clientWebService;
 
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
@@ -89,22 +82,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     public void run(String... args) {
         log.info(AppConst.APP_LOG_PREFIX + "================ Запуск Клиента  ================. Аргументы = " + Arrays.toString(args));
         try {
-            String serverVersion = null;
-            do {
-                try {
-                    serverVersion = clientWebService.getVersion();
-                } catch (FeignException ex) {
-                    log.warn(AppConst.ERROR_LOG_PREFIX + "PLC-Server (Datana) не доступен: " + ex.getLocalizedMessage());
-                    TimeUtil.doSleep(sleepOnFatalError, "Ожидание запуска сервера: PLC-Шлюза");
-                }
-            } while (serverVersion == null);
-
-            log.info("[Поиск сервера] сервер пропинговался, serverVersion = " + serverVersion);
-            if (!AppVersion.getDatanaAppVersion().equalsIgnoreCase(serverVersion)) {
-                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                log.error("Коллизия версий Клиент-Сервер: версия сервера = {}, версия клиента = {}", serverVersion, AppVersion.getDatanaAppVersion());
-                log.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            }
             boolean makeSleepSQL = false;
             boolean success = false;
             JsonRootSensorRequest rootJson = null;
@@ -147,8 +124,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(prefixLog);
         changeIDCodes(step, rootJson);
 
-        String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
-        String toJson = clientWebService.getData(formattedFromJson);
+        String toJson = clientWebService.getData(rootJson);
         String resultFromJson = restSpringConfig.formatBeautyJson(prefixLog + " [Response] ", toJson);
 
         threadCount.set(asyncClientConfig.getThreadCountMax());
