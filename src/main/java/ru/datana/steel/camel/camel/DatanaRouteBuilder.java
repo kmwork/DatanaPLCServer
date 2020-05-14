@@ -25,7 +25,8 @@ public class DatanaRouteBuilder extends RouteBuilder {
 
         from("timer://foo?period={{datana.period}}")
                 .log("[Request] new generate")
-                .process(new GeneratorCommandProcessor())
+                .bean(GeneratorCommandExecute.class)
+                .bean(PlcExecute.class)
                 .to("kafka:{{datana.producer.topic}}?brokers={{spring.kafka.bootstrap-servers}}");
 
     }

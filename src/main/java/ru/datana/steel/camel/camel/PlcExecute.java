@@ -17,11 +17,10 @@
 package ru.datana.steel.camel.camel;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
-import org.apache.camel.Processor;
-import org.apache.camel.support.DefaultMessage;
+import org.apache.camel.Body;
+import org.apache.camel.Handler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.datana.steel.camel.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.camel.service.ClientManager;
 import ru.datana.steel.camel.util.JsonParserClientUtil;
@@ -30,19 +29,20 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 @Slf4j
-public class PlcProcessor implements Processor {
+public class PlcExecute {
 
-    private final static String PREFIX_LOG = "[Kafka:PlcProcessor] ";
+    private final static String PREFIX_LOG = "[PlcExecute] ";
 
     @PostConstruct
     protected void postConstruct() {
-        log.info(PREFIX_LOG + "Запуск PlcProcessor-сервиса.");
+        log.info(PREFIX_LOG + "Запуск PlcExecute-сервиса.");
     }
 
     @PreDestroy
     protected void preDestroy() {
-        log.info(PREFIX_LOG + "Остановка PlcProcessor-сервиса.");
+        log.info(PREFIX_LOG + "Остановка PlcExecute-сервиса.");
     }
 
     private AtomicInteger counter = new AtomicInteger(0);
@@ -52,16 +52,16 @@ public class PlcProcessor implements Processor {
     @Autowired
     private ClientManager clientManager;
 
-    @Override
-    public void process(Exchange exchange) throws Exception {
+    @Handler
+    public String execute(@Body JsonRootSensorRequest message) throws Exception {
         int indexMsg = counter.incrementAndGet();
         String prefix = PREFIX_LOG + "[onMessage, index = " + indexMsg + "] ";
         log.debug(prefix + "Генерация команды");
-        JsonRootSensorRequest result = exchange.getMessage(JsonRootSensorRequest.class);
-        String strMsg = clientManager.doRequest(result);
-        Message msg = new DefaultMessage(exchange);
-        msg.setBody(strMsg);
-        exchange.setMessage(msg);
+        String response = clientManager.doRequest(message);
+        if (log.isTraceEnabled()) {
+            log.trace(prefix + "[RESPONSE] as json = " + response);
+        }
+        return response;
     }
 
 }

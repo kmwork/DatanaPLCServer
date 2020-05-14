@@ -17,10 +17,10 @@
 package ru.datana.steel.camel.camel;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Message;
+import org.apache.camel.Body;
+import org.apache.camel.Handler;
 import org.apache.camel.Processor;
-import org.apache.camel.support.DefaultMessage;
+import org.springframework.stereotype.Component;
 import ru.datana.steel.camel.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.camel.util.JsonParserClientUtil;
 
@@ -30,10 +30,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Component
 @Slf4j
-public class GeneratorCommandProcessor implements Processor {
+public class GeneratorCommandExecute implements Processor {
 
-    private final static String PREFIX_LOG = "[GeneratorCommandProcessor] ";
+    private final static String PREFIX_LOG = "[GeneratorCommandExecute] ";
 
     @PostConstruct
     protected void postConstruct() {
@@ -49,16 +50,17 @@ public class GeneratorCommandProcessor implements Processor {
 
     private JsonParserClientUtil clientUtil = JsonParserClientUtil.getInstance();
 
-    @Override
-    public void process(Exchange exchange) throws Exception {
+    @Handler
+    public JsonRootSensorRequest execute(@Body String msg) throws Exception {
         int indexMsg = counter.incrementAndGet();
         String prefix = PREFIX_LOG + "[onMessage, index = " + indexMsg + "] ";
         log.debug(prefix + "Генерация команды");
         JsonRootSensorRequest result = clientUtil.loadJsonRequest();
         changeIDCodes(indexMsg, result);
-        Message msg = new DefaultMessage(exchange);
-        msg.setBody(result);
-        exchange.setMessage(msg);
+        if (log.isTraceEnabled()) {
+            log.trace(prefix + "[REQEUST] as json = " + result);
+        }
+        return result;
     }
 
 
