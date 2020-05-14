@@ -1,43 +1,20 @@
-##### Configuration for PLC SERVER #####
 datana:
-  global:
-    debug: false
-    log:
-      # уровень вывода логов
-      level: INFO
-    beauty-json: true
-    experimental-s7-algorithm: false
+  producer:
+    topic: KafkaDatanaDemoTopic
+  consumer:
+    topic: KafkaDatanaDemoTopic
+    group: KafkaDatanaGroup
+    maxPollRecords: 5000
+    partitionValue: 0
+  period: 1000
 
-### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
+camel:
+  component:
+    activemq:
+      broker-url: tcp://localhost:61616
+  springboot:
+    main-run-controller: true
 spring:
-  main:
-    banner-mode: off
-#### logging ###
-logging:
-  level:
-    root: ${datana.global.log.level}
-    executableSql: ${datana.global.log.level}
-    org:
-      apache:
-        tomcat:
-          util: INFO
-      hibernate:
-        engine:
-          transaction: ${datana.global.log.level}
-        SQL: ${datana.global.log.level}
-      springframework:
-        web: ${datana.global.log.level}
-    ru:
-      datana: INFO
-    sun: INFO
-    javax: INFO
-  file:
-    ###name: ${app.dir}/server-logs/plc-server.log
-    name: ~/apps/server-logs/plc-server.log
-    max-size: 64 MB
-    total-size-cap: 512 MB
-  pattern:
-    rolling-file-name:  ~/apps/archive-server-logs/plc-server-archive.%d{yyyy-MM-dd}.%i.gz
-
-
+  kafka:
+    bootstrap-servers: localhost:9092
 
