@@ -7,6 +7,8 @@ datana:
     maxPollRecords: 5000
     partitionValue: 0
   period: 1000
+  global:
+    beauty-json: true
 
 camel:
   component:
