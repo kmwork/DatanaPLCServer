@@ -9,6 +9,7 @@ datana:
   period: 1000
   global:
     beauty-json: true
+    experimental-s7-algorithm: false
 
 camel:
   springboot:
