@@ -1,14 +1,13 @@
 datana:
   producer:
+    ## топик для кафки куда класть json
     topic: KafkaDatanaDemoTopic
-  consumer:
-    topic: KafkaDatanaDemoTopic
-    group: KafkaDatanaGroup
-    maxPollRecords: 5000
-    partitionValue: 0
+  ## время опроса сервера сименса 1000 - секунда, значение в миллисекунд
   period: 1000
   global:
     beauty-json: true
+
+    ## нужно ли читать не монолитно целимы дампом (false - по жирным дампам, true - поштучно каждый датчик)
     experimental-s7-algorithm: false
     log:
       level: INFO
@@ -18,8 +17,10 @@ camel:
     main-run-controller: true
 spring:
   kafka:
+    ## сервер кафки
     bootstrap-servers: 172.29.40.42:9092
 
+### Настройки логгирования
 logging:
   level:
     root: ${datana.global.log.level}
@@ -33,11 +34,13 @@ logging:
     sun: INFO
     javax: INFO
   file:
+    ### файл куда писать логи
     ###name: ${app.dir}/server-logs/plc-server.log
     name: ~/apps/server-logs/camel-server.log
     max-size: 64 MB
     total-size-cap: 512 MB
   pattern:
+    ### файл куда писать Архивные логи
     rolling-file-name:  ~/apps/archive-server-logs/camel-server-archive.%d{yyyy-MM-dd}.%i.gz
 
 
