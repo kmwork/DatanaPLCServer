@@ -2,7 +2,7 @@
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`
 задача в JIRA: https://jira.dds.lanit.ru/browse/VACUM-23 и https://jira.dds.lanit.ru/browse/NKR-364
-## сборка Maven 3 + OpenJDK 11
+## сборка Maven 3 + OpenJDK 11 (или выше 11ой явы)
 ```
 mvn clean compile package spring-boot:repackage 
 ```
