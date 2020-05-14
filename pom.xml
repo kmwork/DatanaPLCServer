@@ -15,7 +15,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <spring.boot.version>2.2.6.RELEASE</spring.boot.version>
-        <app.main.class>ru.datana.steel.camel.service.ClientManager</app.main.class>
+        <app.main.class>ru.datana.steel.camel.service.PlcForKafkaApp</app.main.class>
         <camel-version>3.2.0</camel-version>
         <camel-for-spring-version>3.2.0</camel-for-spring-version>
     </properties>

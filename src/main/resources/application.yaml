@@ -1,3 +1,13 @@
+datana:
+  producer:
+    topic: KafkaDatanaDemoTopic
+  consumer:
+    topic: KafkaDatanaDemoTopic
+    group: KafkaDatanaGroup
+    maxPollRecords: 5000
+    partitionValue: 0
+  period: 1000
+
 camel:
   component:
     activemq:
@@ -6,4 +16,5 @@ camel:
     main-run-controller: true
 spring:
   kafka:
-    bootstrap-servers:
+    bootstrap-servers: localhost:9092
+

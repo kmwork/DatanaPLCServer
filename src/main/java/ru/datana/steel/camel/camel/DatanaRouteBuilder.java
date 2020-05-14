@@ -23,9 +23,9 @@ public class DatanaRouteBuilder extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        from("timer://foo?period={{period}}")
+        from("timer://foo?period={{datana.period}}")
                 .process(new GeneratorCommandProcessor())
-                .to("kafka:{{producer.topic}}?brokers={{kafka.bootstrap.url}}");
+                .to("kafka:{{datana.producer.topic}}?brokers={{spring.kafka.bootstrap-servers}}");
 
     }
 }
