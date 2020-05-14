@@ -17,8 +17,9 @@ camel:
     main-run-controller: true
 spring:
   kafka:
-    ## сервер кафки
-    bootstrap-servers: 172.29.40.42:9092
+    ## сервер кафки сервера
+    ####bootstrap-servers: 172.29.40.42:9092
+    bootstrap-servers: localhost:9092
 
 ### Настройки логгирования
 logging:

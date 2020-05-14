@@ -27,7 +27,8 @@ public class DatanaRouteBuilder extends RouteBuilder {
                 .log("[Request] new generate")
                 .bean(GeneratorCommandExecute.class)
                 .bean(PlcExecute.class)
-                .to("kafka:{{datana.producer.topic}}?brokers={{spring.kafka.bootstrap-servers}}");
+                .to("kafka:{{datana.producer.topic}}?brokers={{spring.kafka.bootstrap-servers}}")
+                .log("[SEND:Kafka]");
 
     }
 }
