@@ -10,6 +10,8 @@ datana:
   global:
     beauty-json: true
     experimental-s7-algorithm: false
+    log:
+      level: INFO
 
 camel:
   springboot:
@@ -17,4 +19,26 @@ camel:
 spring:
   kafka:
     bootstrap-servers: 172.29.40.42:9092
+
+logging:
+  level:
+    root: ${datana.global.log.level}
+    org:
+      apache:
+        tomcat:
+          util: INFO
+      springframework: ${datana.global.log.level}
+    ru:
+      datana: ${datana.global.log.level}
+    sun: INFO
+    javax: INFO
+  file:
+    ###name: ${app.dir}/server-logs/plc-server.log
+    name: ~/apps/server-logs/camel-server.log
+    max-size: 64 MB
+    total-size-cap: 512 MB
+  pattern:
+    rolling-file-name:  ~/apps/archive-server-logs/camel-server-archive.%d{yyyy-MM-dd}.%i.gz
+
+
 
