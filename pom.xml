@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.datana</groupId>
-    <version>alfa-1</version>
-    <artifactId>plc</artifactId>
+    <version>001</version>
+    <artifactId>plc-camel</artifactId>
     <description>Проект PLC Server для Сименс контроллеров под Camel</description>
 
     <properties>
