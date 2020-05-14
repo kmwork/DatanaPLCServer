@@ -3,11 +3,9 @@ package ru.datana.steel.camel.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import ru.datana.steel.camel.config.AppConst;
-import ru.datana.steel.camel.model.json.meta.JsonMetaRootController;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +14,7 @@ import java.io.IOException;
  * Парсер мета информации о контроллерах
  */
 @Slf4j
-public class JsonParserUtil {
-    @Getter
-    private final static JsonParserUtil instance = new JsonParserUtil();
+public class JsonParserUtil<TYPE> {
 
     /**
      * дживок по работе Json
@@ -35,34 +31,38 @@ public class JsonParserUtil {
      * нужно это чтобы читать по мере изменения файла при работе сервера
      */
     private long prevLastModified = 0;
-    private JsonMetaRootController prevJsonRootMetaResponse = null;
+    private TYPE prevJson = null;
+    private final String fileName;
 
-    private JsonParserUtil() {
+    public JsonParserUtil(String fileName) {
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        this.fileName = fileName;
     }
 
-    public JsonMetaRootController loadJsonMetaRootController() throws AppException {
+    public TYPE loadJson(Class<TYPE> clazz) throws AppException {
         if (StringUtils.isEmpty(dir)) {
             String strArgs = AppConst.SYS_DIR_PROP + " = '" + dir + "'";
             throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "пустое значение", strArgs, null);
         }
 
-        File f = new File(dir, "plc-meta-response-example.json");
+        File f = new File(dir, fileName);
         try {
 
-            JsonMetaRootController result;
+            TYPE result;
 
             //проверка - нужно ли перечитать файл если он изменился со временем запуска сервера
-            if (prevLastModified < f.lastModified() || prevJsonRootMetaResponse == null) {
+            if (prevLastModified < f.lastModified() || prevJson == null) {
                 log.info("[JSON-Parser:Load-Meta] Чтение файла = " + f.getAbsoluteFile());
-                result = mapper.readValue(f, JsonMetaRootController.class);
+                result = mapper.readValue(f, clazz);
                 prevLastModified = f.lastModified();
-                prevJsonRootMetaResponse = result;
+                prevJson = result;
             } else
-                result = prevJsonRootMetaResponse;
-            log.info("[JSON-Parser:Load-Meta] result = " + result);
-            log.info("[From file:MetaInfo] " + mapper.writeValueAsString(result));
+                result = prevJson;
+            if (log.isTraceEnabled()) {
+                log.trace("[JSON-Parser:Load-Meta] result = " + result);
+                log.trace("[From file:MetaInfo] " + mapper.writeValueAsString(result));
+            }
             return result;
         } catch (IOException ex) {
             String msg = "Ошибка  в программе при чтении файла";
