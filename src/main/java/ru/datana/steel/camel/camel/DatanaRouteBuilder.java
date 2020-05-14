@@ -14,23 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package ru.datana.steel.camel.kafka;
+package ru.datana.steel.camel.camel;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
+import org.apache.camel.builder.RouteBuilder;
 
-@Slf4j
-public class DatanaKafkaSiemensControllerProcessor implements Processor {
+public class DatanaRouteBuilder extends RouteBuilder {
 
-    public void process(Exchange exc) throws Exception {
-        //un-comment this after build
-        Employee emp = Employee.newBuilder()
-                .setFirstName("kakarla")
-                .setLastName("Ranjith")
-                .setBirthDate(new java.util.Date().getTime())
-                .build();
-        exc. ().setBody(emp);
+    @Override
+    public void configure() throws Exception {
+
+        from("timer://foo?period={{period}}")
+                .process(new GeneratorCommandProcessor())
+                .to("kafka:{{producer.topic}}?brokers={{kafka.bootstrap.url}}");
+
     }
-
 }

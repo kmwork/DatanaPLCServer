@@ -1,4 +1,4 @@
-package ru.datana.steel.camel.rest;
+package ru.datana.steel.camel.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import ru.datana.steel.camel.model.json.request.JsonRootSensorRequest;

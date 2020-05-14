@@ -1,13 +1,11 @@
-package ru.datana.steel.camel.rest;
+package ru.datana.steel.camel.service;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import ru.datana.steel.camel.config.AppConst;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 import ru.datana.steel.camel.config.AppVersion;
 import ru.datana.steel.camel.config.RestSpringConfig;
 import ru.datana.steel.camel.config.SpringConfig;
@@ -25,9 +23,8 @@ import java.util.List;
 /**
  * Рест сервера наружу
  */
-@RestController
+@Component
 @Slf4j
-@Profile(AppConst.SERVER_PROFILE)
 public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private SpringConfig springConfig;
@@ -38,16 +35,12 @@ public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private ApplicationContext context;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
-    @ResponseBody
     @Override
     public String getVersion() {
         return AppVersion.getDatanaAppVersion();
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
     @Override
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {
         JsonParserUtil parserUtil = JsonParserUtil.getInstance();
