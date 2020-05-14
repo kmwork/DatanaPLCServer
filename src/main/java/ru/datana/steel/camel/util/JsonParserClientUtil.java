@@ -12,7 +12,7 @@ public class JsonParserClientUtil {
     @Getter
     private final static JsonParserClientUtil instance = new JsonParserClientUtil();
 
-    private JsonParserUtil<JsonRootSensorRequest> parserUtil = new JsonParserUtil<>("plc-meta-plc-meta-request-example.json");
+    private JsonParserUtil<JsonRootSensorRequest> parserUtil = new JsonParserUtil<>("plc-meta-request-example.json");
 
     private JsonParserClientUtil() {
     }
