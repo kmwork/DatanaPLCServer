@@ -19,7 +19,6 @@ package ru.datana.steel.camel.camel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Body;
 import org.apache.camel.Handler;
-import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 import ru.datana.steel.camel.model.json.request.JsonRootSensorRequest;
 import ru.datana.steel.camel.util.JsonParserClientUtil;
@@ -32,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @Slf4j
-public class GeneratorCommandExecute implements Processor {
+public class GeneratorCommandExecute {
 
     private final static String PREFIX_LOG = "[GeneratorCommandExecute] ";
 
