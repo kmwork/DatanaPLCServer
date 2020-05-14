@@ -12,7 +12,6 @@ public class AppConst {
     public static final int S7CONNECTOR_PORT_DEFAULT = 102;
     public static final Integer JSON_SUCCESS_CODE = 1;
     public static final Integer JSON_ERROR_CODE = 0;
-    public static final String SERVER_PROFILE = "server";
     public static final long MIN_SLEEP_MS = 100;
     public static final long SLEEP_FUTURE_MS = 300;
 }
