@@ -58,7 +58,6 @@ public class DatanaCamelServerApp implements CommandLineRunner {
         SpringApplication app = new SpringApplication(DatanaCamelServerApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
-        System.exit(0);
     }
 
 
