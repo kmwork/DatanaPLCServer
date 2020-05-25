@@ -1,9 +1,9 @@
 ##### Configuration for PLC SERVER #####
 datana:
   # количество циклов (запросов), если меньше нуля то вечность
-  loop-count: 6
+  loop-count: 600
   # ожидание после каждого цикла в миллисекунд
-  sleep-ms: 10000
+  sleep-ms: 1000
 
   # количество датчиков
   sensor-count: 3
