@@ -5,16 +5,17 @@ datana:
     thread-count-max: 10
 
     # пауза для ожидания всех ответов в одном цикле
-    async-timeout: 500
+    async-timeout: 1000
   plc-server:
     # количество циклов (запросов), если меньше нуля то вечность
-    loop-count: -1
+    loop-count: 600
     # ожидание после каждого цикла в миллисекунд
-    sleep-ms: 500
+    sleep-ms: 1000
 
   activemq:
     # url jms брокера
-    brokerUrl: tcp://localhost:61616
+    brokerUrl: tcp://mmk-i1-adapter-emu.datana.ru:61616
+    ######brokerUrl: tcp://localhost:61616
     # очередь запросов
     requestQueue: jmsFromPLC
 
@@ -29,7 +30,7 @@ datana:
   global:
     log:
       # уровень вывода логов
-      level: INFO
+      level: DEBUG
     beauty-json: true
 
 ### НИЖЕ НЕ РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯМ !!!! ####
@@ -46,7 +47,7 @@ logging:
     org:
       apache:
         tomcat:
-          util: INFO
+          util: DEBUG
       hibernate:
         engine:
           transaction: ${datana.global.log.level}

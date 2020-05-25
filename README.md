@@ -15,25 +15,6 @@
 mvn clean compile package spring-boot:repackage -P plcServer
 mvn clean compile package spring-boot:repackage -P plcClient
 ```
-## Как пользоваться для теста
-##### сервер -- слушает JMS запросы 
-1. читает конфиги ***application-server.yaml*** и ***plc-meta-response-example.json*** из папки app.dir (системное свойство Ява-приложении)
-2. и ждёт запросы по JMS из очереди
-```
-    datana:
-      activemq:
-        brokerUrl: tcp://localhost:61616
-        requestQueue: jmsFromPLC
-```    
-3. и JSON формируется в ответ (случайный числа игнорируя тип - все в BigDecimal)
-4. и пишет в ***responseQueue*** если успещно и ошибки (стек-трейс) в ***responseQueueOnError***
-```
-    datana:
-      activemq:
-        ....
-        responseQueue: jmsResponseFromDatanaToPLC
-        responseQueueOnError: jmsFromPLCToError
-```
 ##### клиент - посылает запросы
 * читает конфиги ***application-dev_client.yaml*** и ***plc-meta-request-example.json*** из папки app.dir (системное свойство Ява-приложении)
 * читает переменные
@@ -46,7 +27,7 @@ mvn clean compile package spring-boot:repackage -P plcClient
         sleep-ms: 500
 ```    
     и как в примере 10 раз с задержкой 0.5 секунд стучится на сервер
-* и ждет ответа в очереди ***responseQueue***
+
         
 #### Для тестирования рекомендация
 желательно использовать Open JDK/JRE 13
