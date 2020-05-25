@@ -92,8 +92,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             boolean success = false;
             JsonParserClientUtil clientUtil = JsonParserClientUtil.getInstance();
             JsonRootSensorRequest rootJson = clientUtil.loadJsonRequest();
-            if (rootJson.getTimeout() != null)
-                sleepMS = rootJson.getTimeout();
 
             rootJson.setStatus(null);
             rootJson.setTimeout(null);
@@ -124,7 +122,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
 
 //        long countThread;
 //        while ((countThread = PlcJmsClientListener.getWaitingCounter()) > 0)
-//            TimeUtil.doSleep(asyncMS, "Ожидание потоков Async: " + countThread);
+            TimeUtil.doSleep(sleepMS, prefixLog);
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
