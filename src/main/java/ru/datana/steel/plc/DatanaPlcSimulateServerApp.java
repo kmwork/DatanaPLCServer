@@ -114,7 +114,7 @@ public class DatanaPlcSimulateServerApp implements CommandLineRunner {
             ss.setId(sensorIndex);
             ss.setControllerDatetime(LocalDateTime.now());
             double d = Math.random() * 10000;
-            BigDecimal decimal = BigDecimal.valueOf(Double.toString(d));
+            BigDecimal decimal = BigDecimal.valueOf(d);
             ss.setData(decimal);
             ss.setStatus(0);
             sensors.add(ss);
