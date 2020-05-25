@@ -5,11 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -27,7 +25,7 @@ public class JsonSensorResponse {
      */
     @JsonProperty("id")
     @NotNull
-    private Integer id;
+    private long id;
     /**
      * (Required)
      */
@@ -46,12 +44,6 @@ public class JsonSensorResponse {
     @JsonProperty("status")
     @NotNull
     private Integer status;
-    /**
-     * (Required)
-     */
-    @JsonProperty("errors")
-    @Valid
-    @NotNull
-    private List<JsonSensorError> errors = null;
+
 
 }

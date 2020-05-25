@@ -10,11 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.listener.DefaultMessageListenerContainer;
-import org.springframework.jms.listener.MessageListenerContainer;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.MessageListener;
 
 /**
  * Для теста: ActiveMQ коннект на базе бинов
@@ -28,9 +25,6 @@ public class ClientActiveMqSpringConfig {
 
     @Autowired
     protected JmsProperties jmsProperties;
-
-    @Autowired
-    protected MessageListener plcJmsClientListener;
 
     @Bean
     protected JmsTemplate jmsRequestTemplate(@Qualifier("activeMqJMSConnectionFactory") ConnectionFactory connectionFactory,
@@ -46,17 +40,6 @@ public class ClientActiveMqSpringConfig {
     @Bean
     protected ConnectionFactory activeMqJMSConnectionFactory() {
         return new ActiveMQConnectionFactory(jmsProperties.getBrokerUrl());
-    }
-
-    @Bean
-    protected MessageListenerContainer listenerContainer(@Qualifier("activeMqJMSConnectionFactory") ConnectionFactory connectionFactory,
-                                                         @Qualifier("activeMqResponseDestination") ActiveMQQueue responseQueue) {
-        DefaultMessageListenerContainer listenerContainer = new DefaultMessageListenerContainer();
-        listenerContainer.setConnectionFactory(connectionFactory);
-        listenerContainer.setDestination(responseQueue);
-        listenerContainer.setMessageListener(plcJmsClientListener);
-        listenerContainer.setConcurrency("1-" + jmsProperties.getListenerCount());
-        return listenerContainer;
     }
 
     @Bean

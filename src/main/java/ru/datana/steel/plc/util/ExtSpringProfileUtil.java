@@ -25,7 +25,7 @@ public class ExtSpringProfileUtil {
             System.exit(-100);
         }
 
-        File configPath = new File(configLocation, springFile);
+        File configPath = new File(configLocation + File.separator + springFile);
         log.info(AppConst.APP_LOG_PREFIX + "[Config]: configPath = " + configPath);
         log.info(AppConst.APP_LOG_PREFIX + "Настройка приложения");
 

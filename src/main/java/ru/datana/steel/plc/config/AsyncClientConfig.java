@@ -19,7 +19,7 @@ import java.util.concurrent.Executor;
 public class AsyncClientConfig implements AsyncConfigurer {
     private static final String PREFIX_LOG = "[Config:Async] ";
 
-    @Value("${datana.plc-client.thread-count-max}")
+    @Value("${datana.thread-count-max}")
     @Getter
     private int threadCountMax;
 

@@ -28,34 +28,12 @@ public class JsonRootSensorResponse {
     @JsonProperty("request-datetime")
     @NotNull
     private LocalDateTime requestDatetime;
-    /**
-     * (Required)
-     */
-    @JsonProperty("request-datetime-proxy")
-    @NotNull
-    private LocalDateTime requestDatetimeProxy;
-    /**
-     * (Required)
-     */
+
     @JsonProperty("response-datetime")
     @NotNull
     private LocalDateTime responseDatetime;
-    /**
-     * (Required)
-     */
-    @JsonProperty("request_id")
-    @NotNull
-    private String requestId;
-    /**
-     * (Required)
-     */
-    @JsonProperty("task_id")
-    @NotNull
-    private Integer taskId;
-    /**
-     * (Required)
-     */
-    @JsonProperty("response")
+
+    @JsonProperty("sensors")
     @Valid
     @NotNull
     private List<JsonSensorResponse> response = null;

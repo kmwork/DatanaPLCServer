@@ -4,26 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <profiles>
-        <profile>
-            <id>plcClient</id>
-            <properties>
-                <app.main.class>ru.datana.steel.plc.DatanaPlcClientApp</app.main.class>
-            </properties>
-            <build>
-                <finalName>plc-client</finalName>
-            </build>
-        </profile>
-        <profile>
-            <id>plcServer</id>
-            <properties>
-                <app.main.class>ru.datana.steel.plc.DatanaOnRestPlcServerApp</app.main.class>
-            </properties>
-            <build>
-                <finalName>plc-server</finalName>
-            </build>
-        </profile>
-    </profiles>
+
 
     <groupId>ru.datana</groupId>
     <version>alfa-1</version>
@@ -35,6 +16,7 @@
         <maven.compiler.source>13</maven.compiler.source>
         <maven.compiler.target>13</maven.compiler.target>
         <spring.boot.version>2.2.6.RELEASE</spring.boot.version>
+        <app.main.class>ru.datana.steel.plc.DatanaPlcSimulateServerApp</app.main.class>
     </properties>
 
 

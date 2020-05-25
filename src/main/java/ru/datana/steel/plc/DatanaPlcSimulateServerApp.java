@@ -1,7 +1,6 @@
 package ru.datana.steel.plc;
 
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,18 @@ import ru.datana.steel.plc.config.AppConst;
 import ru.datana.steel.plc.config.AsyncClientConfig;
 import ru.datana.steel.plc.config.JmsProperties;
 import ru.datana.steel.plc.config.RestSpringConfig;
-import ru.datana.steel.plc.jms.PlcJmsClientListener;
 import ru.datana.steel.plc.jms.PlcJmsProducer;
-import ru.datana.steel.plc.model.json.request.JsonRootSensorRequest;
+import ru.datana.steel.plc.model.json.response.JsonRootSensorResponse;
+import ru.datana.steel.plc.model.json.response.JsonSensorResponse;
 import ru.datana.steel.plc.util.AppException;
 import ru.datana.steel.plc.util.ExtSpringProfileUtil;
-import ru.datana.steel.plc.util.JsonParserClientUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
+import java.util.List;
 
 /**
  * PLC Proxy Client -- клиент для работы со шлюзом датчиков
@@ -41,21 +41,23 @@ import java.util.UUID;
                 WebMvcAutoConfiguration.class})
 @EnableJms
 @Profile(AppConst.CLIENT_PROFILE)
-public class DatanaPlcClientApp implements CommandLineRunner {
+public class DatanaPlcSimulateServerApp implements CommandLineRunner {
 
 
     @Autowired
     private RestSpringConfig restSpringConfig;
 
-    @Value("${datana.plc-server.sleep-ms}")
+    @Value("${datana.sleep-ms}")
     private Long sleepMS;
 
-    @Value("${datana.plc-server.loop-count}")
+
+    @Value("${datana.sensor-count}")
+    private Integer sensorCount;
+
+    @Value("${datana.loop-count}")
     private Long loopCount;
 
-    @Value("${datana.plc-client.async-timeout}")
-    @Getter
-    private int asyncMS;
+    private long sensorIndex;
 
 
     @Autowired
@@ -67,9 +69,6 @@ public class DatanaPlcClientApp implements CommandLineRunner {
     @Autowired
     private JmsProperties jmsProperties;
 
-    @Autowired
-    private PlcJmsClientListener plcJmsClientListener;
-
     public static void main(String[] args) {
         String fileName = System.getProperty(AppConst.FILE_YAML_PROP);
         if (StringUtils.isEmpty(fileName)) {
@@ -77,7 +76,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
             System.exit(-110);
         }
         ExtSpringProfileUtil.extConfigure(AppConst.CLIENT_PROFILE, fileName);
-        SpringApplication app = new SpringApplication(DatanaPlcClientApp.class);
+        SpringApplication app = new SpringApplication(DatanaPlcSimulateServerApp.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
         System.exit(0);
@@ -90,15 +89,12 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         try {
             boolean makeSleepSQL = false;
             boolean success = false;
-            JsonParserClientUtil clientUtil = JsonParserClientUtil.getInstance();
-            JsonRootSensorRequest rootJson = clientUtil.loadJsonRequest();
+            JsonRootSensorResponse responseJson = genResponse();
 
-            rootJson.setStatus(null);
-            rootJson.setTimeout(null);
 
             boolean infinityLoop = loopCount < 0;
             for (long index = 0; index < loopCount || infinityLoop; index++) {
-                doOneRequest(rootJson, index);
+                doOneRequest(responseJson, index);
             }
 
         } catch (Exception ex) {
@@ -107,40 +103,44 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         log.info(AppConst.APP_LOG_PREFIX + "********* Завершение программы *********");
     }
 
-    private void doOneRequest(JsonRootSensorRequest rootJson, long index) throws AppException, InterruptedException {
+    private JsonRootSensorResponse genResponse() {
+
+        JsonRootSensorResponse r = new JsonRootSensorResponse();
+
+        List<JsonSensorResponse> sensors = new ArrayList(sensorCount);
+        for (int i = 0; i < sensorCount; i++) {
+
+            JsonSensorResponse ss = new JsonSensorResponse();
+            ss.setId(sensorIndex);
+            ss.setControllerDatetime(LocalDateTime.now());
+            double d = Math.random() * 10000;
+            BigDecimal decimal = BigDecimal.valueOf(Double.toString(d));
+            ss.setData(decimal);
+            ss.setStatus(0);
+            sensors.add(ss);
+            sensorIndex++;
+        }
+
+        r.setResponse(sensors);
+        return r;
+    }
+
+    private void doOneRequest(JsonRootSensorResponse rootJson, long index) throws AppException, InterruptedException {
         long statTime = System.nanoTime();
         long step = index + 1;
         String prefixLog = "[Шаг: " + step + "] ";
         log.info(prefixLog);
-        changeIDCodes(step, rootJson);
         int threadCountMax = asyncClientConfig.getThreadCountMax();
 
-        PlcJmsClientListener.initWaitingCounter(threadCountMax);
         String formattedFromJson = restSpringConfig.toJson(prefixLog + " [Request] ", rootJson);
         for (int i = 0; i < threadCountMax; i++)
             jmsProducer.send("PlcRequest, Index = " + i, jmsProperties.getRequestQueue(), formattedFromJson);
 
-//        long countThread;
-//        while ((countThread = PlcJmsClientListener.getWaitingCounter()) > 0)
-            TimeUtil.doSleep(sleepMS, prefixLog);
+        TimeUtil.doSleep(sleepMS, prefixLog);
 
         long endTime = System.nanoTime();
         long deltaNano = endTime - statTime;
         log.info(AppConst.RESUME_LOG_PREFIX + "Ушло времени за один запрос = {}", TimeUtil.formatTimeAsNano(deltaNano));
-    }
-
-    private void changeIDCodes(long step, JsonRootSensorRequest rootJson) {
-        String uuid = UUID.randomUUID().toString();
-        LocalDateTime time = LocalDateTime.now();
-        rootJson.setRequestId(uuid);
-        rootJson.setRequestDatetime(time);
-
-        if (log.isDebugEnabled())
-            log.debug("[changeIDCodes] [Шаг: {}] Создан ID = {} с временем = {}", step, uuid, time);
-
-        if (log.isTraceEnabled()) {
-            log.trace("[Запрос] rootJson = " + rootJson);
-        }
     }
 
 
