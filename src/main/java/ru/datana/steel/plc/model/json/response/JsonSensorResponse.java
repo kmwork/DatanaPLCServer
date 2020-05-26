@@ -7,7 +7,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -32,12 +31,7 @@ public class JsonSensorResponse {
     @JsonProperty("data")
     @NotNull
     private BigDecimal data;
-    /**
-     * (Required)
-     */
-    @JsonProperty("controller-datetime")
-    @NotNull
-    private LocalDateTime controllerDatetime;
+
     /**
      * (Required)
      */
