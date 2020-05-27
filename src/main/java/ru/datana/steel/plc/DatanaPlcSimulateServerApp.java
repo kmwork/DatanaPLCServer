@@ -25,6 +25,7 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 import ru.datana.steel.plc.util.TimeUtil;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -111,6 +112,7 @@ public class DatanaPlcSimulateServerApp implements CommandLineRunner {
 
             JsonSensorResponse ss = new JsonSensorResponse();
             ss.setId(sensorIndex);
+            ss.setControllerDatetime(LocalDateTime.now());
             double d = Math.random() * 10000;
             BigDecimal decimal = BigDecimal.valueOf(d);
             ss.setData(decimal);
