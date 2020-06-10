@@ -27,7 +27,7 @@ public class JsonSensorResponse {
      */
     @JsonProperty("id")
     @NotNull
-    private Integer id;
+    private Long id;
     /**
      * (Required)
      */

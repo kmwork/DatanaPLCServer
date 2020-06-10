@@ -1,3 +1,4 @@
+# !!!!! Демо для тестирования !!!!!!
 # PLC Proxy Server и Client (шлюзы между контроллером и базой данных PostgeSQL)
 сделано по тех заданию: https://conf.dds.lanit.ru/display/NIOKR/PLC+Proxy+Server
 или файл `NIOKR-PLCProxyServer-220320-1401-76` в папке `<this project>/doc-manual`

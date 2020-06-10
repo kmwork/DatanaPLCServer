@@ -79,12 +79,13 @@ public class DatanaJsonHelper {
         JsonSensorResponse response = new JsonSensorResponse();
 
         //нет времени с контролера
-        response.setControllerDatetime(null/*getCurrentTime()*/);
+        response.setControllerDatetime(getCurrentTime());
 
         if (value != null)
             response.setData(value);
 
-        response.setId(dataVal.getId());
+        //response.setId(dataVal.getId());
+        response.setId(System.nanoTime());
         response.setStatus(status);
         return response;
     }
