@@ -1,0 +1,10 @@
+*.md
+*.sh
+.dockerignore
+.git
+.idea/
+Dockerfile*
+LICENSE
+.iml
+.classpath
+.project
