@@ -8,3 +8,5 @@ LICENSE
 .iml
 .classpath
 .project
+/doc-manual/
+etc/

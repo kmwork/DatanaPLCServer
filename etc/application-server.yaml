@@ -33,11 +33,11 @@ logging:
     javax: INFO
   file:
     ###name: ${app.dir}/server-logs/plc-server.log
-    name: ~/apps/server-logs/plc-server.log
+    name: ${app.dir}/server-logs/plc-server.log
     max-size: 64 MB
     total-size-cap: 512 MB
   pattern:
-    rolling-file-name:  ~/apps/archive-server-logs/plc-server-archive.%d{yyyy-MM-dd}.%i.gz
+    rolling-file-name:  ${app.dir}/archive-server-logs/plc-server-archive.%d{yyyy-MM-dd}.%i.gz
 
 
 
