@@ -82,6 +82,7 @@ public class DatanaPlcClientApp implements CommandLineRunner {
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
         System.exit(0);
+
     }
 
 
