@@ -24,6 +24,7 @@ public class DatanaJsonHelper {
 
     @Getter
     private final static DatanaJsonHelper instance = new DatanaJsonHelper();
+    private static long genId;
 
     private DatanaJsonHelper() {
 
@@ -85,7 +86,9 @@ public class DatanaJsonHelper {
             response.setData(value);
 
         //response.setId(dataVal.getId());
-        response.setId(System.nanoTime());
+        genId++;
+        if (genId >= 10000) genId = 0;
+        response.setId(genId);
         response.setStatus(status);
         return response;
     }

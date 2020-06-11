@@ -168,17 +168,6 @@
                                     <!--                                    <AB_JMX_EXPORTER_CONFIG>/deployments/prometheus-client-config.yml-->
                                     <!--                                    </AB_JMX_EXPORTER_CONFIG>-->
                                 </env>
-                                <!-- для портов наружу >
-<!--                                <ports>-->
-                                <!--                                    &lt;!&ndash; 8081 для диагностики на жизнеспособность &ndash;&gt;-->
-                                <!--                                    <port>8081</port>-->
-
-                                <!--                                    &lt;!&ndash; 80 для внешний сервис &ndash;&gt;-->
-                                <!--                                    <port>80</port>-->
-
-                                <!--                                    &lt;!&ndash; 8443 точка входа в этот микросервис &ndash;&gt;-->
-                                <!--                                    <port>8443</port>-->
-                                <!--                                </ports>-->
                             </build>
                         </image>
                     </images>
