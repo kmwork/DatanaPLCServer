@@ -1,0 +1,34 @@
+// Powered by Infostretch
+
+timestamps {
+
+node () {
+
+	stage ('k2 - Checkout') {
+ 	 checkout([$class: 'GitSCM', branches: [[name: 'Generator_REST_BY_SIEMENS']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kakunin', url: 'https://gitlab.dds.lanit.ru']]])
+	}
+	stage ('k2 - Build') {
+ 			// Maven build step
+	withMaven(maven: 'maven3') {
+ 			if(isUnix()) {
+ 				sh "mvn clean compile package spring-boot:repackage -P plcServer "
+			} else {
+ 				bat "mvn clean compile package spring-boot:repackage -P plcServer "
+			}
+ 		}
+// Unable to convert a build step referring to "org.jenkinsci.plugins.dockerbuildstep.DockerBuilder". Please verify and convert manually if required.
+// Unable to convert a build step referring to "org.jenkinsci.plugins.dockerbuildstep.DockerBuilder". Please verify and convert manually if required.
+// Unable to convert a build step referring to "org.jenkinsci.plugins.dockerbuildstep.DockerBuilder". Please verify and convert manually if required.
+// Unable to convert a build step referring to "org.jenkinsci.plugins.dockerbuildstep.DockerBuilder". Please verify and convert manually if required.		// Shell build step
+gitVar = git(branch: branchName, credentialsId: credential, url: "repository.git")
+echo gitVar.GIT_COMMIT
+
+DatanaAuthor = $(git --no-pager show -s --format='%an' $GIT_COMMIT)
+echo $DatanaAuthor
+
+
+curl -x socks5://proxyuser:secure@94.177.216.245:777 -X POST "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=Собрал. CHANGE_AUTHOR_DISPLAY_NAME = $CHANGE_AUTHOR_DISPLAY_NAME. BUILD_NUMBER = $BUILD_NUMBER. GIT_COMMITTER_NAME = $GIT_COMMITTER_NAME"
+ """
+	}
+}
+}
