@@ -6,13 +6,17 @@ pipeline {
     agent {
         label 'master'
     }
-
-
     environment {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
         constGitCredentialsId = 'kostya5'
     }
+
+    tools {
+        maven 'Maven 3.5.4'
+        jdk 'jdk11'
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
@@ -25,9 +29,7 @@ pipeline {
             }
         }
         stage('k3 - Build') {
-            withMaven(maven: 'maven3') {
-                sh "mvn clean compile package spring-boot:repackage -P plcServer "
-            }
+            sh "mvn clean compile package spring-boot:repackage -P plcServer "
         }
 
         stage('Telegram step') {
