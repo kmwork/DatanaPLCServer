@@ -19,11 +19,8 @@ pipeline {
     }
     stages {
         stage('k2 - Checkout') {
-
-            node {
-                echo "User:" + constGitCredentialsId+"\n" + "GitBranch: "+ constGitBranch
-            }
             steps {
+                echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
                 checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
