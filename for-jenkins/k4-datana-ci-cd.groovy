@@ -29,7 +29,9 @@ pipeline {
             }
         }
         stage('k3 - Build') {
-            sh "mvn clean compile package spring-boot:repackage -P plcServer "
+            script {
+                sh "mvn clean compile package spring-boot:repackage -P plcServer "
+            }
         }
 
         stage('Telegram step') {
