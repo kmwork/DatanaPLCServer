@@ -11,10 +11,10 @@ pipeline {
         timestamps()
     }
     stages {
-        stage('k2 - Checkout') {
+        stage("k2 - Checkout") {
             checkout([$class: 'GitSCM', branches: [[name: 'Generator_REST_BY_SIEMENS']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kakunin', url: 'https://gitlab.dds.lanit.ru']]])
         }
-        stage('k2 - Build') {
+        stage("k2 - Build") {
             // Maven build step
             withMaven(maven: 'maven3') {
                 sh "mvn clean compile package spring-boot:repackage -P plcServer "
