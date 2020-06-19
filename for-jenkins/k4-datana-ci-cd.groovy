@@ -28,10 +28,9 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
-        stage('k3 - Build') {
-            script {
-                sh "mvn clean compile package spring-boot:repackage -P plcServer "
-            }
+
+        script {
+            sh "mvn clean compile package spring-boot:repackage -P plcServer "
         }
 
         stage('Telegram step') {
