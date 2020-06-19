@@ -6,6 +6,12 @@ pipeline {
     agent {
         label 'master'
     }
+
+    environment {
+        constGitBranch = 'Generator_REST_BY_SIEMENS'
+        constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
+        constGitCredentialsId = 'KostyaDatanaV5'
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
@@ -13,7 +19,7 @@ pipeline {
     stages {
         stage('k2 - Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: 'Generator_REST_BY_SIEMENS']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'kakunin', url: 'https://gitlab.dds.lanit.ru']]])
+                checkout([$class: 'GitSCM', branches: [[name: constBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: constGitCredentialsId, url: constGitUrl]]])
             }
         }
         stage('k2 - Build') {
@@ -27,7 +33,7 @@ pipeline {
         stage('Telegram step') {
             steps {
                 script {
-                    gitVar = git(branch: 'Generator_REST_BY_SIEMENS', credentialsId: 'KostyaDatanaV5', url: 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git')
+                    gitVar = git(branch: 'Generator_REST_BY_SIEMENS', credentialsId: constGitCredentialsId, url: constGitUrl)
                     /* echo gitVar.GIT_COMMIT
                         Fields:
 
