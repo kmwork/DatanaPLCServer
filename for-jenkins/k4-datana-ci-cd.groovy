@@ -19,7 +19,7 @@ pipeline {
     stages {
         stage('k2 - Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: env.constBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
+                checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
         stage('k2 - Build') {
