@@ -33,7 +33,7 @@ pipeline {
         stage('Telegram step') {
             steps {
                 script {
-                    gitVar = git(branch: 'Generator_REST_BY_SIEMENS', credentialsId: constGitCredentialsId, url: constGitUrl)
+                    gitVar = git(branch: constGitBranch, credentialsId: constGitCredentialsId, url: constGitUrl)
                     /* echo gitVar.GIT_COMMIT
                         Fields:
 
