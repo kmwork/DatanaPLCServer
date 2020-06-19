@@ -13,7 +13,7 @@ pipeline {
     }
 
     tools {
-        maven 'Maven 3.5.4'
+        maven 'Maven 3.6'
         jdk 'jdk13'
     }
 
