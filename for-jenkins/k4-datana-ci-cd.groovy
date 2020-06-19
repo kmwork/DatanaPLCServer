@@ -54,7 +54,7 @@ pipeline {
                         GIT_PREVIOUS_COMMIT
                         GIT_PREVIOUS_SUCCESSFUL_COMMIT
                         GIT_URL */
-                    sh "curl - x socks5://proxyuser:secure@94.177.216.245:777 -X POST \"https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=Собрал. GIT_COMMITTER_NAME = $gitVar.GIT_COMMITTER_NAME, GIT_AUTHOR_NAME = $gitVar.GIT_AUTHOR_NAME\""
+                    sh "curl - x socks5://proxyuser:secure@94.177.216.245:777 -X POST \"https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=Builed.+GIT_COMMITTER_NAME+=+$env.gitVar.GIT_COMMITTER_NAME,+GIT_AUTHOR_NAME+=+$env.gitVar.GIT_AUTHOR_NAME\""
                 }
             }
         }
