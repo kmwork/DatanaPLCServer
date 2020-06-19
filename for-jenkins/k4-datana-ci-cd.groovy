@@ -10,7 +10,7 @@ pipeline {
     environment {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
-        constGitCredentialsId = 'KostyaDatanaV5'
+        constGitCredentialsId = 'kostya5'
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
