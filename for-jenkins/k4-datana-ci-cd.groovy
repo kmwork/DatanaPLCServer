@@ -12,7 +12,6 @@ pipeline {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
         constGitCredentialsId = 'kostya5'
-        print("User:" + constGitCredentialsId+"\n" + "GitBranch: "+ constGitBranch);
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
@@ -20,6 +19,10 @@ pipeline {
     }
     stages {
         stage('k2 - Checkout') {
+
+            node {
+                echo "User:" + constGitCredentialsId+"\n" + "GitBranch: "+ constGitBranch
+            }
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
