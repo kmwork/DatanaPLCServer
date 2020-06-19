@@ -22,15 +22,19 @@ pipeline {
         timestamps()
     }
     stages {
-        stage('k2 - Checkout') {
+        stage('step1: Checkout') {
             steps {
                 echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
                 checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
 
-        script {
-            sh "mvn clean compile package spring-boot:repackage -P plcServer "
+        stage('step1: Build by maven') {
+            steps {
+                script {
+                    sh "mvn clean compile package spring-boot:repackage -P plcServer "
+                }
+            }
         }
 
         stage('Telegram step') {
