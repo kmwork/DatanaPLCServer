@@ -19,7 +19,7 @@ pipeline {
     stages {
         stage('k2 - Checkout') {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: constBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: constGitCredentialsId, url: constGitUrl]]])
+                checkout([$class: 'GitSCM', branches: [[name: env.constBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
         stage('k2 - Build') {
@@ -33,7 +33,7 @@ pipeline {
         stage('Telegram step') {
             steps {
                 script {
-                    gitVar = git(branch: constGitBranch, credentialsId: constGitCredentialsId, url: constGitUrl)
+                    gitVar = git(branch: env.constGitBranch, credentialsId: env.constGitCredentialsId, url: env.constGitUrl)
                     /* echo gitVar.GIT_COMMIT
                         Fields:
 
