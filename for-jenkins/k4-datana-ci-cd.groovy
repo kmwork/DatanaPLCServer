@@ -7,10 +7,12 @@ pipeline {
         label 'master'
     }
 
+
     environment {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
         constGitCredentialsId = 'kostya5'
+        print("User:" + constGitCredentialsId+"\n" + "GitBranch: "+ constGitBranch);
     }
     options {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
@@ -22,7 +24,7 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
             }
         }
-        stage('k2 - Build') {
+        stage('k3 - Build') {
             withMaven(maven: 'maven3') {
                 sh "mvn clean compile package spring-boot:repackage -P plcServer "
             }
