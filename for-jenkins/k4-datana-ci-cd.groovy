@@ -23,10 +23,8 @@ pipeline {
             }
         }
         stage('k2 - Build') {
-            steps {
-                withMaven(maven: 'maven3') {
-                    sh "mvn clean compile package spring-boot:repackage -P plcServer "
-                }
+            withMaven(maven: 'maven3') {
+                sh "mvn clean compile package spring-boot:repackage -P plcServer "
             }
         }
 
