@@ -1,65 +1,29 @@
 #!groovy
-// Check ub1 properties
-properties([disableConcurrentBuilds()])
-
-pipeline {
-    agent {
-        label 'master'
-    }
-    environment {
-        constGitBranch = 'Generator_REST_BY_SIEMENS'
-        constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
-        constGitCredentialsId = 'kostya5'
-        def gitVar = git(branch: env.constGitBranch, credentialsId: env.constGitCredentialsId, url: env.constGitUrl)
-        constGIT_COMMITTER_NAME = "${env.gitVar.GIT_COMMITTER_NAME}"
-        constGIT_AUTHOR_NAME= "${env.gitVar.GIT_AUTHOR_NAME}"
-    }
-
-    tools {
-        maven 'maven3'
-        jdk 'jdk13'
-    }
-
+// Check datana-first-k1 properties
+node('datana-first-k1') {
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
+        ansiColor('xterm')
+
     }
-    stages {
-        stage('step-1: Checkout') {
-            steps {
-                echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
-                checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
-            }
-        }
+    stage('step-0: Init') {
+        def constGitBranch = 'Generator_REST_BY_SIEMENS'
+        def constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
+        def constGitCredentialsId = 'kostya5'
+        def gitVar = git(branch: env.constGitBranch, credentialsId: env.constGitCredentialsId, url: env.constGitUrl)
+        def constGIT_COMMITTER_NAME = "${env.gitVar.GIT_COMMITTER_NAME}"
+        def constGIT_AUTHOR_NAME = "${env.gitVar.GIT_AUTHOR_NAME}"
+    }
+    stage('step-1: Checkout') {
+        echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
+        checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
+    }
 
-        stage('step-2: Build by maven') {
-            steps {
-                script {
-                    sh "mvn clean compile package spring-boot:repackage -P plcServer "
-                }
-            }
-        }
+    stage('step-2: Build by maven') {
+        sh "mvn clean compile package spring-boot:repackage -P plcServer "
+    }
 
-        stage('step-3: Telegram step') {
-            steps {
-                script {
-                    gitVar = git(branch: env.constGitBranch, credentialsId: env.constGitCredentialsId, url: env.constGitUrl)
-                    /* echo gitVar.GIT_COMMIT
-                        Fields:
-
-                        GIT_AUTHOR_EMAIL
-                        GIT_AUTHOR_NAME
-                        GIT_BRANCH
-                        GIT_COMMIT
-                        GIT_COMMITTER_EMAIL
-                        GIT_COMMITTER_NAME
-                        GIT_LOCAL_BRANCH
-                        GIT_PREVIOUS_COMMIT
-                        GIT_PREVIOUS_SUCCESSFUL_COMMIT
-                        GIT_URL */
-                    sh "curl - x socks5://proxyuser:secure@94.177.216.245:777 -X POST \"https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=Builed.+GIT_COMMITTER_NAME+=+$env.constGIT_COMMITTER_NAME,+GIT_AUTHOR_NAME+=+$env.constGIT_AUTHOR_NAME\""
-                }
-            }
-        }
+    stage('step-3: Telegram step') {
+        sh "curl - x socks5://proxyuser:secure@94.177.216.245:777 -X POST \"https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=Builed.+GIT_COMMITTER_NAME+=+$env.constGIT_COMMITTER_NAME,+GIT_AUTHOR_NAME+=+$env.constGIT_AUTHOR_NAME\""
     }
 }
