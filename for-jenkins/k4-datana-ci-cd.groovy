@@ -11,6 +11,7 @@ pipeline {
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
         constGitCredentialsId = 'kostya5'
         def gitVar = git(branch: env.constGitBranch, credentialsId: env.constGitCredentialsId, url: env.constGitUrl)
+        echo '11111111111111111111: ' + gitVar
         constGIT_COMMITTER_NAME = gitVar.GIT_COMMITTER_NAME
         constGIT_AUTHOR_NAME= gitVar.GIT_AUTHOR_NAME
     }
