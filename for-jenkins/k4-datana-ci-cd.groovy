@@ -11,7 +11,7 @@ node {
     def constGitCredentialsId
     def constGIT_COMMITTER_NAME
     def constGIT_AUTHOR_NAME
-    def $MVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
+    def constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -19,6 +19,7 @@ node {
         gitVar = git(branch: constGitBranch, credentialsId: constGitCredentialsId, url: constGitUrl)
         constGIT_COMMITTER_NAME = gitVar.GIT_COMMITTER_NAME
         constGIT_AUTHOR_NAME = gitVar.GIT_AUTHOR_NAME
+        constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
         echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
     }
     stage('step-1: Checkout') {
@@ -27,7 +28,7 @@ node {
     }
 
     stage('step-2: Build by maven') {
-        sh '$MVN_HOME/bin/mvn clean compile package spring-boot:repackage -P plcServer'
+        sh "$constMVN_HOME/bin/mvn clean compile package spring-boot:repackage -P plcServer"
     }
 
     stage('step-3: Telegram step') {

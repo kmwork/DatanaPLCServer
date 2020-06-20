@@ -145,34 +145,34 @@
             </plugin>
 
 
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>datana-kostya-docker:${project.version}-1</name>
-                            <alias>${project.artifactId}</alias>
-                            <build>
-                                <from>${docker.base.image}</from>
-                                <assembly>
-                                    <basedir>/deployments</basedir>
-                                    <descriptor>artifact-with-includes.xml</descriptor>
-                                </assembly>
-                                <env>
-                                    <JAVA_APP_DIR>/deployments</JAVA_APP_DIR>
-                                    <JAVA_OPTIONS>-XshowSettings:vm -Duser.timezone=Europe/Moscow
-                                        -Dfile.encoding=UTF-8
-                                    </JAVA_OPTIONS>
-                                    <JAVA_MAX_MEM_RATIO>0</JAVA_MAX_MEM_RATIO>
-                                    <!--                                    <AB_JMX_EXPORTER_CONFIG>/deployments/prometheus-client-config.yml-->
-                                    <!--                                    </AB_JMX_EXPORTER_CONFIG>-->
-                                </env>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
+            <!--            <plugin>-->
+            <!--                <groupId>io.fabric8</groupId>-->
+            <!--                <artifactId>fabric8-maven-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    <images>-->
+            <!--                        <image>-->
+            <!--                            <name>datana-kostya-docker:${project.version}-1</name>-->
+            <!--                            <alias>${project.artifactId}</alias>-->
+            <!--                            <build>-->
+            <!--                                <from>${docker.base.image}</from>-->
+            <!--                                <assembly>-->
+            <!--                                    <basedir>/deployments</basedir>-->
+            <!--                                    <descriptor>artifact-with-includes.xml</descriptor>-->
+            <!--                                </assembly>-->
+            <!--                                <env>-->
+            <!--                                    <JAVA_APP_DIR>/deployments</JAVA_APP_DIR>-->
+            <!--                                    <JAVA_OPTIONS>-XshowSettings:vm -Duser.timezone=Europe/Moscow-->
+            <!--                                        -Dfile.encoding=UTF-8-->
+            <!--                                    </JAVA_OPTIONS>-->
+            <!--                                    <JAVA_MAX_MEM_RATIO>0</JAVA_MAX_MEM_RATIO>-->
+            <!--                                    &lt;!&ndash;                                    <AB_JMX_EXPORTER_CONFIG>/deployments/prometheus-client-config.yml&ndash;&gt;-->
+            <!--                                    &lt;!&ndash;                                    </AB_JMX_EXPORTER_CONFIG>&ndash;&gt;-->
+            <!--                                </env>-->
+            <!--                            </build>-->
+            <!--                        </image>-->
+            <!--                    </images>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
 
         </plugins>
     </build>
