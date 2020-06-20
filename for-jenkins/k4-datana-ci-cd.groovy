@@ -1,6 +1,6 @@
 #!groovy
 // Check datana-first-k1 properties
-node('datana-first-k1') {
+node('linux') {
     options {
         timestamps()
         ansiColor('xterm')
