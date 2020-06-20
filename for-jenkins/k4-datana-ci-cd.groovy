@@ -23,8 +23,11 @@ node {
 
         echo "[PARAM] PATH=$PATH"
         echo "[PARAM] gitVar=$gitVar"
-
+        echo "-----------------------------------"
         echo sh(script: 'env|sort', returnStdout: true)
+        echo "___________________________________"
+        echo sh(script: 'env|sort', returnStdout: true)
+        echo "==================================="
     }
     stage('step-1: Checkout') {
         echo 'Building'
