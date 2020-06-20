@@ -24,7 +24,7 @@ node {
         echo "[PARAM] PATH=$PATH"
         echo "[PARAM] gitVar=$gitVar"
         echo "-----------------------------------"
-        echo sh(script: 'env|sort', returnStdout: true)
+        echo sh(script: 'gitVar|sort', returnStdout: true)
         echo "___________________________________"
         echo sh(script: 'env|sort', returnStdout: true)
         echo "==================================="
