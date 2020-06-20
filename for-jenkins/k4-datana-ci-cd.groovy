@@ -1,5 +1,3 @@
-#!groovy
-// Check datana-first-k1 properties
 node('linux') {
     options {
         timestamps()
