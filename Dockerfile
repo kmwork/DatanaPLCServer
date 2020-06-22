@@ -1,3 +1,4 @@
+ADD VERSION 2
 FROM openjdk:13-alpine
 ENV TZ=Europe/Moscow
 WORKDIR /app_plc

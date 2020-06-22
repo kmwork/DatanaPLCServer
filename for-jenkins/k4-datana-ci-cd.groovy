@@ -73,7 +73,7 @@ node {
 
     stage('step-6: Docker pull') {
         sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-        sh "docker push $constDockerDomain/$constDockerName/$constDockerTag"
+        sh "docker push $constDockerDomain/$constDockerName/$constDockerTag:$constDockerImageVersion"
     }
 
 
@@ -84,9 +84,8 @@ node {
         DatanaAuthor = DatanaAuthor.replace(">", " ")
         echo DatanaAuthor
 
-        def valueMessageAsText = "Build with Success, DatanaAuthor = $DatanaAuthor"
+        def valueMessageAsText = "Build with Success, DatanaAuthor = $DatanaAuthor. Number of build = {env.BUILD_NUMBER}"
         echo valueMessageAsText
-        //sh "curl -x $constProxyTelegram  -d text='\"$valueMessageAsText\"' -X POST $constTelegramURL"
         sh "curl -d text=\"$valueMessageAsText\" -X POST \"$constTelegramURL\""
 
     }
