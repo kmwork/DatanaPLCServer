@@ -29,7 +29,7 @@ node {
         env.PATH = "$constMVN_HOME/bin:$constJAVA_HOME/bin:$PATH"
         //constDockerRegistry = "https://hub.docker.com/repository/docker/kmtemp/datana"
         constDockerDomain = "registry.hub.docker.com"
-        constDockerRegistry = "https:/$constDockerDomain"
+        constDockerRegistry = "https://$constDockerDomain"
 
         constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
         constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
@@ -54,21 +54,21 @@ node {
     }
 
     stage('step-3: Docker build') {
-        sh "docker build $constDockerName/$constDockerDomain/datana:latest ."
+        sh "docker build --tag=$constDockerName/$constDockerDomain/datana:latest ."
     }
-//
-//    stage('step-4: Docker remove') {
-//        sh "docker stop $constDockerName || true && docker rm $constDockerName || true"
-//    }
 
-//
-//    stage('step-5: Docker create') {
-//        sh "docker create $constDockerName/datana"
-//    }
+    stage('step-4: Docker remove') {
+        sh "docker stop $constDockerName || true && docker rm $constDockerName || true"
+    }
 
-    stage('step-6: Docker push') {
+
+    stage('step-5: Docker create') {
+        sh "docker create $constDockerName/datana"
+    }
+
+    stage('step-6: Docker pull') {
         sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-        sh "docker push $constDockerName/$constDockerDomain/datana:latest"
+        sh "docker pull $constDockerRegistry/$constDockerDomain/datana"
     }
 
 
