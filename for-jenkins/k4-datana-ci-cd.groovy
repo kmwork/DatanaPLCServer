@@ -11,6 +11,8 @@ node {
     def constGitCredentialsId
     def constMVN_HOME
     def gitVar
+    def constTelegramURL
+    def constProxyTelegram
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -21,11 +23,11 @@ node {
         constJAVA_HOME = '/home/lin/apps/jdk13'
         env.PATH = "$constMVN_HOME/bin:$constJAVA_HOME/bin:$PATH"
 
+        constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
+        constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
         echo "[PARAM] PATH=$PATH"
         echo "[PARAM] gitVar=$gitVar"
         echo "-----------------------------------"
-        echo sh(script: 'gitVar|sort', returnStdout: true)
-        echo "___________________________________"
         echo sh(script: 'env|sort', returnStdout: true)
         echo "==================================="
     }
@@ -39,9 +41,12 @@ node {
     }
 
     stage('step-3: Telegram step') {
-        def valueMessageAsText = ",GIT_COMMITTER_NAME=$gitVar.GIT_COMMITTER_NAME,GIT_AUTHOR_NAME=$gitVar.GIT_AUTHOR_NAME    "
+        def DatanaAuthor = sh script: "git show -s --pretty=\"%an <%ae>\" ${gitVar.GIT_COMMIT}", returnStdout: true
+        echo DatanaAuthor
+
+        def valueMessageAsText = ",DatanaAuthor=$DatanaAuthor"
         echo valueMessageAsText
-        sh "curl -x socks5://proxyuser:secure@94.177.216.245:777 -X POST \"https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML&text=${valueMessageAsText}\""
+        sh "curl -x $constProxyTelegram -X POST $constTelegramURL -d text=\"${valueMessageAsText}\""
 
     }
 }
