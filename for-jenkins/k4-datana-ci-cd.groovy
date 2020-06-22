@@ -18,6 +18,7 @@ node {
     def constDockerRegistryLogin
     def constDockerRegistryPassword
     def constDockerDomain
+    def constDockerTag
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -34,6 +35,7 @@ node {
         constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
         constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
         constDockerName = "kmtemp"
+        constDockerTag = "datana2"
 
         constDockerRegistryLogin = "kmtemp";
         constDockerRegistryPassword = "kostya-docker-2";
@@ -54,7 +56,7 @@ node {
     }
 
     stage('step-3: Docker build') {
-        sh "docker build --tag=$constDockerName/$constDockerDomain/datana:latest ."
+        sh "docker build --tag=$constDockerName/$constDockerDomain/$constDockerTag:latest ."
     }
 
     stage('step-4: Docker remove') {
@@ -63,12 +65,12 @@ node {
 
 
     stage('step-5: Docker create') {
-        sh "docker create $constDockerName/datana"
+        sh "docker create $constDockerName/$constDockerTag"
     }
 
     stage('step-6: Docker pull') {
         sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-        sh "docker pull $constDockerRegistry/$constDockerName/datana"
+        sh "docker pull $constDockerDomain/$constDockerName/$constDockerTag"
     }
 
 
