@@ -42,13 +42,15 @@ node {
 
     stage('step-3: Telegram step') {
         def DatanaAuthor = sh script: "git show -s --pretty=\"%an <%ae>\" ${gitVar.GIT_COMMIT}", returnStdout: true
-        DatanaAuthor = DatanaAuthor.replace("@","\\@")
+        DatanaAuthor = DatanaAuthor.replace("@"," ")
+        DatanaAuthor = DatanaAuthor.replace("<"," ")
+        DatanaAuthor = DatanaAuthor.replace(">"," ")
         echo DatanaAuthor
 
         def valueMessageAsText = ",DatanaAuthor=$DatanaAuthor"
         echo valueMessageAsText
         //sh "curl -x $constProxyTelegram  -d text='\"$valueMessageAsText\"' -X POST $constTelegramURL"
-        sh "curl -d text='\"$valueMessageAsText\"' -X POST \"$constTelegramURL\""
+        sh "curl -d text=\"$valueMessageAsText\" -X POST \"$constTelegramURL\""
 
     }
 }
