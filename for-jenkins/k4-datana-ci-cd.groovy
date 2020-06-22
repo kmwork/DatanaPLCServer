@@ -15,6 +15,8 @@ node {
     def constProxyTelegram
     def constDockerRegistry
     def constDockerName
+    def constDockerRegistryLogin
+    def constDockerRegistryPassword
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -24,11 +26,16 @@ node {
         echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
         constJAVA_HOME = '/home/lin/apps/jdk13'
         env.PATH = "$constMVN_HOME/bin:$constJAVA_HOME/bin:$PATH"
-        constDockerRegistry = "https://hub.docker.com/repository/docker/kmtemp/datana"
+        //constDockerRegistry = "https://hub.docker.com/repository/docker/kmtemp/datana"
+        constDockerRegistry = "https://registry.hub.docker.com"
 
         constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
         constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
         constDockerName = "kmtemp"
+
+        constDockerRegistryLogin = "kmtemp";
+        constDockerRegistryPassword = "kostya-docker-2";
+
         echo "[PARAM] PATH=$PATH"
         echo "[PARAM] gitVar=$gitVar"
         echo "-----------------------------------"
@@ -58,7 +65,9 @@ node {
     }
 
     stage('step-6: Docker push') {
-        sh "docker push $constDockerRegistry datana:latest"
+        sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
+
+        sh "docker push $constDockerName/datana"
     }
 
 
