@@ -40,11 +40,15 @@ node {
         sh "mvn clean compile package spring-boot:repackage -P plcServer"
     }
 
-    stage('step-3: Telegram step') {
+    stage('step-3: Docker build') {
+        sh "docker build - t=kmtemp/datana ."
+    }
+
+    stage('step-4: Telegram step') {
         def DatanaAuthor = sh script: "git show -s --pretty=\"%an <%ae>\" ${gitVar.GIT_COMMIT}", returnStdout: true
-        DatanaAuthor = DatanaAuthor.replace("@"," ")
-        DatanaAuthor = DatanaAuthor.replace("<"," ")
-        DatanaAuthor = DatanaAuthor.replace(">"," ")
+        DatanaAuthor = DatanaAuthor.replace("@", " ")
+        DatanaAuthor = DatanaAuthor.replace("<", " ")
+        DatanaAuthor = DatanaAuthor.replace(">", " ")
         echo DatanaAuthor
 
         def valueMessageAsText = ",DatanaAuthor=$DatanaAuthor"
