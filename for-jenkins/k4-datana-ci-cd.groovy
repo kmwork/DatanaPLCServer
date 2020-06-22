@@ -46,7 +46,7 @@ node {
 
         def valueMessageAsText = ",DatanaAuthor=$DatanaAuthor"
         echo valueMessageAsText
-        sh "curl -x $constProxyTelegram -X POST $constTelegramURL -d text=\"${valueMessageAsText}\""
+        sh "curl -x $constProxyTelegram  -d text=\"${valueMessageAsText}\" -X POST $constTelegramURL"
 
     }
 }
