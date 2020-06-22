@@ -41,7 +41,7 @@ node {
     }
 
     stage('step-3: Docker build') {
-        sh "docker build - t=kmtemp/datana ."
+        sh "docker build -t=kmtemp/datana ."
     }
 
     stage('step-4: Telegram step') {
