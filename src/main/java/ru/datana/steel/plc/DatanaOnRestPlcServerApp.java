@@ -29,6 +29,7 @@ import ru.datana.steel.plc.util.ExtSpringProfileUtil;
 public class DatanaOnRestPlcServerApp {
 
     public static void main(String[] args) {
+        log.debug("Run app");
         ExtSpringProfileUtil.extConfigure(AppConst.SERVER_PROFILE, AppConst.EXT_SERVER_YAML);
         SpringApplication.run(DatanaOnRestPlcServerApp.class, args);
     }
