@@ -1,4 +1,4 @@
-ADD VERSION 2
+LABEL version="2.0"
 FROM openjdk:13-alpine
 ENV TZ=Europe/Moscow
 WORKDIR /app_plc
