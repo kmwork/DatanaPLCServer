@@ -19,6 +19,7 @@ node {
     def constDockerRegistryPassword
     def constDockerDomain
     def constDockerTag
+    def constDockerImageVersion
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -35,7 +36,8 @@ node {
         constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
         constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
         constDockerName = "kmtemp"
-        constDockerTag = "datana2"
+        constDockerTag = "datana"
+        constDockerImageVersion = "2"
 
         constDockerRegistryLogin = "kmtemp";
         constDockerRegistryPassword = "kostya-docker-2";
@@ -56,11 +58,12 @@ node {
     }
 
     stage('step-3: Docker build') {
-        sh "docker build --tag=$constDockerName/$constDockerDomain/$constDockerTag:latest ."
+        sh "docker build --tag=$constDockerName/$constDockerDomain/$constDockerTag:$constDockerImageVersion ."
     }
 
     stage('step-4: Docker remove') {
         sh "docker stop $constDockerName || true && docker rm $constDockerName || true"
+        sh "docker stop $constDockerDomain/$constDockerName/$constDockerTag || true && docker rm $constDockerDomain/$constDockerName/$constDockerTag || true"
     }
 
 
@@ -70,7 +73,7 @@ node {
 
     stage('step-6: Docker pull') {
         sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-        sh "docker pull $constDockerDomain/$constDockerName/$constDockerTag"
+        sh "docker pull $constDockerDomain/$constDockerName/$constDockerTag:$constDockerImageVersion"
     }
 
 
@@ -81,7 +84,7 @@ node {
         DatanaAuthor = DatanaAuthor.replace(">", " ")
         echo DatanaAuthor
 
-        def valueMessageAsText = ",DatanaAuthor=$DatanaAuthor"
+        def valueMessageAsText = "Build with Success, DatanaAuthor = $DatanaAuthor"
         echo valueMessageAsText
         //sh "curl -x $constProxyTelegram  -d text='\"$valueMessageAsText\"' -X POST $constTelegramURL"
         sh "curl -d text=\"$valueMessageAsText\" -X POST \"$constTelegramURL\""
