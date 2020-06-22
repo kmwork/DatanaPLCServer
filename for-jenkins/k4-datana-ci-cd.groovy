@@ -44,7 +44,12 @@ node {
         sh "docker build -t=kmtemp/datana ."
     }
 
-    stage('step-4: Telegram step') {
+    stage('step-4: Docker remove') {
+        sh "docker container rm kmtemp"
+    }
+
+
+    stage('step-5: Telegram step') {
         def DatanaAuthor = sh script: "git show -s --pretty=\"%an <%ae>\" ${gitVar.GIT_COMMIT}", returnStdout: true
         DatanaAuthor = DatanaAuthor.replace("@", " ")
         DatanaAuthor = DatanaAuthor.replace("<", " ")
