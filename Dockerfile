@@ -1,5 +1,5 @@
-LABEL version="2.0"
 FROM openjdk:13-alpine
+LABEL version="2.0"
 ENV TZ=Europe/Moscow
 WORKDIR /app_plc
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
