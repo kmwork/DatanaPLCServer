@@ -73,7 +73,7 @@ node {
 
     stage('step-6: Docker pull') {
         sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-        sh "docker pull $constDockerDomain/$constDockerName/$constDockerTag"
+        sh "docker push $constDockerDomain/$constDockerName/$constDockerTag"
     }
 
 
