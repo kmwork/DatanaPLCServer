@@ -1,11 +1,45 @@
+@NonCPS
+def getChangeLog(passedBuilds, Version) {
+    def log = ""
+    for (int x = 0; x < passedBuilds.size(); x++) {
+        def currentBuild = passedBuilds[x];
+        def changeLogSets = currentBuild.rawBuild.changeSets
+        for (int i = 0; i < changeLogSets.size(); i++) {
+            def entries = changeLogSets[i].items
+            for (int j = 0; j < entries.length; j++) {
+                def entry = entries[j]
+                def comment = entry.msg
+                def jurl ="https://jira.dds.lanit.ru/browse/"
+                def commentcut = comment.replaceAll("${jurl}", "")
+                echo "${commentcut}"
+                def urls = ""
+                def commentcut2 = commentcut
+                commentcut.eachMatch("MDMW19-[0-9]+") {
+                    ch -> urls += '<a href=\\"' + "\"https://jira.dds.lanit.ru/browse/${ch}\"" + '\\">' + "${ch}</a> "
+                        commentcut2 = commentcut2.replaceAll("${ch}", "")
+                        try {
+                            //jiraAddComment comment: "${Version}", idOrKey: "${ch}", site: 'Jira'
+                        }
+                        catch (e) {
+                            echo "ERR"
+
+                        }
+                }
+                echo "Comment: ${commentcut2}"
+                echo "Tasks: ${urls}"
+
+
+                log += "${j+1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentcut2} \nTask: ${urls}\n"
+
+
+            }
+            log +="\n"
+        }
+    }
+    return log;
+}
+
 node {
-//    options {
-//        timestamps()
-//        ansiColor('xterm')
-//
-//    }
-
-
     def constGitBranch
     def constGitUrl
     def constGitCredentialsId
@@ -20,6 +54,9 @@ node {
     def constDockerDomain
     def constDockerTag
     def constDockerImageVersion
+
+    def Version = "0.0.${BUILD_NUMBER}"
+
     stage('step-0: Init') {
         constGitBranch = 'Generator_REST_BY_SIEMENS'
         constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
@@ -41,6 +78,18 @@ node {
 
         constDockerRegistryLogin = "kmtemp";
         constDockerRegistryPassword = "kostya-docker-2";
+
+
+        passedBuilds = []
+        lastSuccessfulBuild(passedBuilds, currentBuild);
+
+        def allJob = env.JOB_NAME.tokenize('/') as String[];
+
+        def changeLog = getChangeLog(passedBuilds, Version)
+        if  (changeLog.trim() == '') { changeLog = 'нет изменений' }
+        sh "/usr/bin/curl -X POST  \"$constTelegramURL\" -d \"text=Начинаю сборку:  ${allJob[0]}/${allJob[1]}/${allJob[2]} 1.2.0 build ${BUILD_NUMBER}\nВ этой серии вы увидите: \n ${changeLog}\""
+        checkout([$class: 'GitSCM', branches: [[name: '*/develop']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'mdm-devops']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'asha', url: 'git@gitlab.dds.lanit.ru:mdm/mdm-devops.git']]])
+
 
         echo "[PARAM] PATH=$PATH"
         echo "[PARAM] gitVar=$gitVar"
@@ -69,6 +118,7 @@ node {
 
     stage('step-5: Docker create') {
         sh "docker create $constDockerName/$constDockerTag"
+        sh "docker tag $constDockerName/$constDockerTag $constDockerDomain/$constDockerName/$constDockerTag:$constDockerImageVersion"
     }
 
     stage('step-6: Docker pull') {
