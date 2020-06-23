@@ -12,7 +12,7 @@ def constDockerRegistryPassword
 def constDockerDomain
 def constDockerTag
 def constDockerImageVersion
-
+def allJob = env.JOB_NAME.tokenize('/') as String[];
 def Version = "0.0.${BUILD_NUMBER}"
 
 def lastSuccessfulBuild(passedBuilds, build) {
@@ -95,8 +95,6 @@ try {
             passedBuilds = []
             lastSuccessfulBuild(passedBuilds, currentBuild);
 
-            def allJob = env.JOB_NAME.tokenize('/') as String[];
-
             def changeLog = getChangeLog(passedBuilds, Version)
             if (changeLog.trim() == '') {
                 changeLog = 'нет изменений'
@@ -154,7 +152,7 @@ try {
 
 } catch (e) {
     currentBuild.result = "FAILED"
-    node ("datana-all") {
+    node {
         sendTelegram("Сборка сломалась ${allJob[0]}/${allJob[1]}/${allJob[2]}. build ${BUILD_NUMBER}")
     }
     throw e
