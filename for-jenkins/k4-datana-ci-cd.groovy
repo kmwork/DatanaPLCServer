@@ -96,16 +96,15 @@ try {
         stage('step-2: Build by maven') {
             sh "mvn clean compile package spring-boot:repackage -P plcServer"
         }
-
-        stage('step-3: Docker build') {
-            sh "docker build --tag=$env.constDockerName/$env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
-        }
-
-        stage('step-4: Docker remove') {
+        stage('step-3: Docker remove') {
             sh "docker stop $env.constDockerName || true && docker rm $env.constDockerName || true"
             sh "docker stop $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true"
         }
 
+
+        stage('step-4: Docker build') {
+            sh "docker build --tag=$env.constDockerName/$env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
+        }
 
         stage('step-5: Docker create') {
             sh "docker create $env.constDockerName/$env.constDockerTag"
