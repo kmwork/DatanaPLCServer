@@ -1,21 +1,20 @@
-env.env.constGitBranch = 'Generator_REST_BY_SIEMENS'
-env.env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
-env.env.constGitCredentialsId = 'kostya5'
-env.env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
-echo "User:" + env.env.constGitCredentialsId + "\n" + "GitBranch: " + env.env.constGitBranch
-env.env.constJAVA_HOME = '/home/lin/apps/jdk13'
-env.env.constDockerDomain = "registry.hub.docker.com"
-env.env.constDockerRegistry = "https://$env.env.constDockerDomain"
+env.constGitBranch = 'Generator_REST_BY_SIEMENS'
+env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
+env.constGitCredentialsId = 'kostya5'
+env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
+env.constJAVA_HOME = '/home/lin/apps/jdk13'
+env.constDockerDomain = "registry.hub.docker.com"
+env.constDockerRegistry = "https://$env.constDockerDomain"
 
-env.env.constDockerName = "kmtemp"
-env.env.constDockerTag = "datana"
-env.env.constDockerImageVersion = "2"
+env.constDockerName = "kmtemp"
+env.constDockerTag = "datana"
+env.constDockerImageVersion = "2"
 
-env.env.constDockerRegistryLogin = "kmtemp";
+env.constDockerRegistryLogin = "kmtemp";
 
-env.env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
-allJob = JOB_NAME;
-Version = "0.0.${BUILD_NUMBER}"
+env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
+env.allJob = JOB_NAME;
+env.Version = "0.0.${BUILD_NUMBER}"
 
 def lastSuccessfulBuild(passedBuilds, build) {
     if ((build != null) && (build.result != 'SUCCESS')) {
@@ -25,7 +24,7 @@ def lastSuccessfulBuild(passedBuilds, build) {
 }
 
 def sendTelegram(String msg) {
-    sh "/usr/bin/curl -X POST  \"${env.env.constTelegramURL}\" -d \"text=${msg}\""
+    sh "/usr/bin/curl -X POST  \"${env.constTelegramURL}\" -d \"text=${msg}\""
 }
 
 @NonCPS
@@ -73,7 +72,7 @@ def getChangeLog(passedBuilds, Version) {
 try {
     node {
         stage('step-0: Init') {
-            env.PATH = "$env.env.constMVN_HOME/bin:$env.env.constJAVA_HOME/bin:$PATH"
+            env.PATH = "$env.constMVN_HOME/bin:$env.constJAVA_HOME/bin:$PATH"
             passedBuilds = []
             lastSuccessfulBuild(passedBuilds, currentBuild);
 
@@ -91,7 +90,7 @@ try {
         }
         stage('step-1: Checkout') {
             echo 'Building'
-            checkout([$class: 'GitSCM', branches: [[name: env.env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.env.constGitCredentialsId, url: env.env.constGitUrl]]])
+            checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
         }
 
         stage('step-2: Build by maven') {
@@ -99,7 +98,7 @@ try {
         }
 
         stage('step-3: Docker build') {
-            sh "docker build --tag=$env.env.constDockerName/$env.env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
+            sh "docker build --tag=$env.constDockerName/$env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
         }
 
         stage('step-4: Docker remove') {
@@ -120,7 +119,7 @@ try {
 
 
         stage('step-7: Telegram step') {
-            sendTelegram("Сборка завершена ${allJob}. build ${BUILD_NUMBER}")
+            sendTelegram("Сборка завершена ${env.allJob}. build ${env.BUILD_NUMBER}")
         }
     }
 
@@ -128,7 +127,7 @@ try {
 } catch (e) {
     currentBuild.result = "FAILED"
     node {
-        sendTelegram("Сборка сломалась ${allJob}. build ${BUILD_NUMBER}")
+        sendTelegram("Сборка сломалась ${env.allJob}. build ${env.BUILD_NUMBER}")
     }
     throw e
 }
