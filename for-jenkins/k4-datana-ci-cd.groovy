@@ -1,7 +1,6 @@
 env.env.constGitBranch = 'Generator_REST_BY_SIEMENS'
 env.env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
 env.env.constGitCredentialsId = 'kostya5'
-gitVar = git(branch: env.env.constGitBranch, credentialsId: env.env.constGitCredentialsId, url: env.env.constGitUrl)
 env.env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
 echo "User:" + env.env.constGitCredentialsId + "\n" + "GitBranch: " + env.env.constGitBranch
 env.env.constJAVA_HOME = '/home/lin/apps/jdk13'
@@ -86,7 +85,6 @@ try {
             sendTelegram("Начинаю сборку:  ${allJob}. build ${BUILD_NUMBER}\nВ этой серии вы увидите: \n ${changeLog}");
 
             echo "[PARAM] PATH=$PATH"
-            echo "[PARAM] gitVar=$gitVar"
             echo "-----------------------------------"
             echo sh(script: 'env|sort', returnStdout: true)
             echo "==================================="
@@ -122,13 +120,7 @@ try {
 
 
         stage('step-7: Telegram step') {
-            def DatanaAuthor = sh script: "git show -s --pretty=\"%an <%ae>\" ${gitVar.GIT_COMMIT}", returnStdout: true
-            DatanaAuthor = DatanaAuthor.replace("@", " ")
-            DatanaAuthor = DatanaAuthor.replace("<", " ")
-            DatanaAuthor = DatanaAuthor.replace(">", " ")
-            echo DatanaAuthor
-
-            sendTelegram("Build with Success, DatanaAuthor = $DatanaAuthor. Number of build = {env.BUILD_NUMBER}")
+            sendTelegram("Сборка завершена ${allJob}. build ${BUILD_NUMBER}")
         }
     }
 
