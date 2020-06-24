@@ -1,16 +1,20 @@
-constGitBranch
-constGitUrl
-constGitCredentialsId
-constMVN_HOME
-gitVar
-constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
-constDockerRegistry
-constDockerName
-constDockerRegistryLogin
-constDockerRegistryPassword
-constDockerDomain
-constDockerTag
-constDockerImageVersion
+env.env.constGitBranch = 'Generator_REST_BY_SIEMENS'
+env.env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
+env.env.constGitCredentialsId = 'kostya5'
+gitVar = git(branch: env.env.constGitBranch, credentialsId: env.env.constGitCredentialsId, url: env.env.constGitUrl)
+env.env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
+echo "User:" + env.env.constGitCredentialsId + "\n" + "GitBranch: " + env.env.constGitBranch
+env.env.constJAVA_HOME = '/home/lin/apps/jdk13'
+env.env.constDockerDomain = "registry.hub.docker.com"
+env.env.constDockerRegistry = "https://$env.env.constDockerDomain"
+
+env.env.constDockerName = "kmtemp"
+env.env.constDockerTag = "datana"
+env.env.constDockerImageVersion = "2"
+
+env.env.constDockerRegistryLogin = "kmtemp";
+
+env.env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
 allJob = JOB_NAME;
 Version = "0.0.${BUILD_NUMBER}"
 
@@ -22,7 +26,7 @@ def lastSuccessfulBuild(passedBuilds, build) {
 }
 
 def sendTelegram(String msg) {
-    sh "/usr/bin/curl -X POST  \"${constTelegramURL}\" -d \"text=${msg}\""
+    sh "/usr/bin/curl -X POST  \"${env.env.constTelegramURL}\" -d \"text=${msg}\""
 }
 
 @NonCPS
@@ -70,26 +74,7 @@ def getChangeLog(passedBuilds, Version) {
 try {
     node {
         stage('step-0: Init') {
-            constGitBranch = 'Generator_REST_BY_SIEMENS'
-            constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
-            constGitCredentialsId = 'kostya5'
-            gitVar = git(branch: constGitBranch, credentialsId: constGitCredentialsId, url: constGitUrl)
-            constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
-            echo "User:" + constGitCredentialsId + "\n" + "GitBranch: " + constGitBranch
-            constJAVA_HOME = '/home/lin/apps/jdk13'
-            env.PATH = "$constMVN_HOME/bin:$constJAVA_HOME/bin:$PATH"
-            //constDockerRegistry = "https://hub.docker.com/repository/docker/kmtemp/datana"
-            constDockerDomain = "registry.hub.docker.com"
-            constDockerRegistry = "https://$constDockerDomain"
-
-            constDockerName = "kmtemp"
-            constDockerTag = "datana"
-            constDockerImageVersion = "2"
-
-            constDockerRegistryLogin = "kmtemp";
-            constDockerRegistryPassword = "kostya-docker-2";
-
-
+            env.PATH = "$env.env.constMVN_HOME/bin:$env.env.constJAVA_HOME/bin:$PATH"
             passedBuilds = []
             lastSuccessfulBuild(passedBuilds, currentBuild);
 
@@ -108,7 +93,7 @@ try {
         }
         stage('step-1: Checkout') {
             echo 'Building'
-            checkout([$class: 'GitSCM', branches: [[name: constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: constGitCredentialsId, url: constGitUrl]]])
+            checkout([$class: 'GitSCM', branches: [[name: env.env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.env.constGitCredentialsId, url: env.env.constGitUrl]]])
         }
 
         stage('step-2: Build by maven') {
@@ -116,23 +101,23 @@ try {
         }
 
         stage('step-3: Docker build') {
-            sh "docker build --tag=$constDockerName/$constDockerDomain/$constDockerTag:$constDockerImageVersion ."
+            sh "docker build --tag=$env.env.constDockerName/$env.env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
         }
 
         stage('step-4: Docker remove') {
-            sh "docker stop $constDockerName || true && docker rm $constDockerName || true"
-            sh "docker stop $constDockerDomain/$constDockerName/$constDockerTag || true && docker rm $constDockerDomain/$constDockerName/$constDockerTag || true"
+            sh "docker stop $env.constDockerName || true && docker rm $env.constDockerName || true"
+            sh "docker stop $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true"
         }
 
 
         stage('step-5: Docker create') {
-            sh "docker create $constDockerName/$constDockerTag"
-            sh "docker tag $constDockerName/$constDockerTag $constDockerDomain/$constDockerName/$constDockerTag:$constDockerImageVersion"
+            sh "docker create $env.constDockerName/$env.constDockerTag"
+            sh "docker tag $env.constDockerName/$env.constDockerTag $env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
         }
 
         stage('step-6: Docker pull') {
-            sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=$constDockerName $constDockerRegistry"
-            sh "docker push $constDockerDomain/$constDockerName/$constDockerTag:$constDockerImageVersion"
+            sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=${env.constDockerRegistryLogin} ${env.constDockerRegistry}"
+            sh "docker push $env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
         }
 
 
