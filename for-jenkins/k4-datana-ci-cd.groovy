@@ -1,19 +1,18 @@
-def constGitBranch
-def constGitUrl
-def constGitCredentialsId
-def constMVN_HOME
-def gitVar
-def constTelegramURL
-def constProxyTelegram
-def constDockerRegistry
-def constDockerName
-def constDockerRegistryLogin
-def constDockerRegistryPassword
-def constDockerDomain
-def constDockerTag
-def constDockerImageVersion
-def allJob = env.JOB_NAME.tokenize('/') as String[];
-def Version = "0.0.${BUILD_NUMBER}"
+constGitBranch
+constGitUrl
+constGitCredentialsId
+constMVN_HOME
+gitVar
+constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
+constDockerRegistry
+constDockerName
+constDockerRegistryLogin
+constDockerRegistryPassword
+constDockerDomain
+constDockerTag
+constDockerImageVersion
+allJob = JOB_NAME;
+Version = "0.0.${BUILD_NUMBER}"
 
 def lastSuccessfulBuild(passedBuilds, build) {
     if ((build != null) && (build.result != 'SUCCESS')) {
@@ -22,8 +21,8 @@ def lastSuccessfulBuild(passedBuilds, build) {
     }
 }
 
-def sendTelegram (String msg){
-    sh "/usr/bin/curl -X POST  \"$constTelegramURL\" -d \"text=Начинаю сборку:  ${msg}\""
+def sendTelegram(String msg) {
+    sh "/usr/bin/curl -X POST  \"${constTelegramURL}\" -d \"text=${msg}\""
 }
 
 @NonCPS
@@ -37,13 +36,14 @@ def getChangeLog(passedBuilds, Version) {
             for (int j = 0; j < entries.length; j++) {
                 def entry = entries[j]
                 def comment = entry.msg
-                def jurl ="https://jira.dds.lanit.ru/browse/"
+                def jurl = "https://jira.dds.lanit.ru/browse/"
                 def commentcut = comment.replaceAll("${jurl}", "")
                 echo "${commentcut}"
                 def urls = ""
                 def commentcut2 = commentcut
                 commentcut.eachMatch("MDMW19-[0-9]+") {
-                    ch -> urls += '<a href=\\"' + "\"https://jira.dds.lanit.ru/browse/${ch}\"" + '\\">' + "${ch}</a> "
+                    ch ->
+                        urls += '<a href=\\"' + "\"https://jira.dds.lanit.ru/browse/${ch}\"" + '\\">' + "${ch}</a> "
                         commentcut2 = commentcut2.replaceAll("${ch}", "")
                         try {
                             //jiraAddComment comment: "${Version}", idOrKey: "${ch}", site: 'Jira'
@@ -57,11 +57,11 @@ def getChangeLog(passedBuilds, Version) {
                 echo "Tasks: ${urls}"
 
 
-                log += "${j+1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentcut2} \nTask: ${urls}\n"
+                log += "${j + 1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentcut2} \nTask: ${urls}\n"
 
 
             }
-            log +="\n"
+            log += "\n"
         }
     }
     return log;
@@ -82,8 +82,6 @@ try {
             constDockerDomain = "registry.hub.docker.com"
             constDockerRegistry = "https://$constDockerDomain"
 
-            constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
-            constProxyTelegram = "socks5://proxyuser:secure@94.177.216.245:777"
             constDockerName = "kmtemp"
             constDockerTag = "datana"
             constDockerImageVersion = "2"
@@ -100,7 +98,7 @@ try {
                 changeLog = 'нет изменений'
             }
 
-            sendTelegram("Начинаю сборку:  ${allJob[0]}/${allJob[1]}/${allJob[2]}. build ${BUILD_NUMBER}\nВ этой серии вы увидите: \n ${changeLog}");
+            sendTelegram("Начинаю сборку:  ${allJob}. build ${BUILD_NUMBER}\nВ этой серии вы увидите: \n ${changeLog}");
 
             echo "[PARAM] PATH=$PATH"
             echo "[PARAM] gitVar=$gitVar"
@@ -153,7 +151,7 @@ try {
 } catch (e) {
     currentBuild.result = "FAILED"
     node {
-        sendTelegram("Сборка сломалась ${allJob[0]}/${allJob[1]}/${allJob[2]}. build ${BUILD_NUMBER}")
+        sendTelegram("Сборка сломалась ${allJob}. build ${BUILD_NUMBER}")
     }
     throw e
 }
