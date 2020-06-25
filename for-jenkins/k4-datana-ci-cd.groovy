@@ -46,7 +46,7 @@ def getChangeLog(passedBuilds) {
                 def commentСut2 = commentСut
                 def urls = ""
                 commentСut.eachMatch("NKR-[0-9]+") {
-                    ch -> urls += '<a href=\\"' + "\"${env.constJiraURL}{ch}\"" + '\\">' + "${ch}</a> "
+                    ch -> urls += '<a href=\\"' + "\"${env.constJiraURL}${ch}\"" + '\\">' + "${ch}</a> "
                         commentСut2 = commentСut2.replaceAll("${ch}", "")
                 }
                 echo "Comment: ${commentСut2}"
