@@ -41,19 +41,15 @@ def getChangeLog(passedBuilds, Version) {
             for (int j = 0; j < entries.length; j++) {
                 def entry = entries[j]
                 def comment = entry.msg
-                def jurl = "https://jira.dds.lanit.ru/browse/"
-                def commentcut = comment.replaceAll("${jurl}", "")
-                def commentcut2 = commentcut
-                echo "${commentcut}"
-                def urls = ""
-                commentcut.eachMatch("NKR-[0-9]+") {
-                    ch ->
-                        urls += '<a href=\\"' + "\"https://jira.dds.lanit.ru/browse/${ch}\"" + '\\">' + "${ch}</a> "
-                        commentcut2 = commentcut2.replaceAll("${ch}", "")
+                def jURL = "https://jira.dds.lanit.ru/browse/"
+                def commentСut = comment.replaceAll("${jURL}", "")
+                def commentСut2 = commentСut
+                commentСut.eachMatch("NKR-[0-9]+") {
+                    ch -> urls += '<a href=\\"' + "\"${jURL}{ch}\"" + '\\">' + "${ch}</a> "
+                        commentСut2 = commentСut2.replaceAll("${ch}", "")
                 }
-                echo "Comment: ${comment}"
+                echo "Comment: ${commentcut2}"
                 echo "Tasks: ${urls}"
-
 
                 log += "${j + 1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentcut2} \nTask: ${urls}\n"
 
