@@ -43,22 +43,15 @@ def getChangeLog(passedBuilds, Version) {
                 def comment = entry.msg
                 def jurl = "https://jira.dds.lanit.ru/browse/"
                 def commentcut = comment.replaceAll("${jurl}", "")
+                def commentcut2 = commentcut
                 echo "${commentcut}"
                 def urls = ""
-                def commentcut2 = commentcut
-                commentcut.eachMatch("MDMW19-[0-9]+") {
+                commentcut.eachMatch("NKR-[0-9]+") {
                     ch ->
                         urls += '<a href=\\"' + "\"https://jira.dds.lanit.ru/browse/${ch}\"" + '\\">' + "${ch}</a> "
                         commentcut2 = commentcut2.replaceAll("${ch}", "")
-                        try {
-                            //jiraAddComment comment: "${Version}", idOrKey: "${ch}", site: 'Jira'
-                        }
-                        catch (e) {
-                            echo "ERR"
-
-                        }
                 }
-                echo "Comment: ${commentcut2}"
+                echo "Comment: ${comment}"
                 echo "Tasks: ${urls}"
 
 
