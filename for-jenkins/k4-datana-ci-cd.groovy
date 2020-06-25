@@ -64,7 +64,10 @@ def getChangeLog(passedBuilds) {
 
 try {
     node {
-        stage('step-0: Init') {
+        stage('step-1: Init') {
+            cleanWs()
+            checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
+
             env.PATH = "$env.constMVN_HOME/bin:$env.constJAVA_HOME/bin:$PATH"
             passedBuilds = []
             lastSuccessfulBuild(passedBuilds, currentBuild);
@@ -80,10 +83,6 @@ try {
             echo "-----------------------------------"
             echo sh(script: 'env|sort', returnStdout: true)
             echo "==================================="
-        }
-        stage('step-1: Checkout') {
-            echo 'Building'
-            checkout([$class: 'GitSCM', branches: [[name: env.constGitBranch]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: env.constGitCredentialsId, url: env.constGitUrl]]])
         }
 
         stage('step-2: Build by maven') {
