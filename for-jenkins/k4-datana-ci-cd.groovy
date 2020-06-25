@@ -1,3 +1,6 @@
+/** пример Jenkins сборки PipeLine **/
+/** сделано по JIRA задаче : https://jira.dds.lanit.ru/browse/NKR-465 **/
+
 env.constGitBranch = 'Generator_REST_BY_SIEMENS'
 env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
 env.constGitCredentialsId = 'kostya5'
