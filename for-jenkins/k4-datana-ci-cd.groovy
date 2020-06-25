@@ -18,7 +18,7 @@ env.constDockerRegistryLogin = "kmtemp";
 env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
 env.allJob = JOB_NAME;
 env.Version = "0.0.${BUILD_NUMBER}"
-
+env.constJiraURL = "https://jira.dds.lanit.ru/browse/"
 def lastSuccessfulBuild(passedBuilds, build) {
     if ((build != null) && (build.result != 'SUCCESS')) {
         passedBuilds.add(build)
@@ -31,7 +31,7 @@ def sendTelegram(String msg) {
 }
 
 @NonCPS
-def getChangeLog(passedBuilds, Version) {
+def getChangeLog(passedBuilds) {
     def log = ""
     for (int x = 0; x < passedBuilds.size(); x++) {
         def currentBuild = passedBuilds[x];
@@ -41,17 +41,18 @@ def getChangeLog(passedBuilds, Version) {
             for (int j = 0; j < entries.length; j++) {
                 def entry = entries[j]
                 def comment = entry.msg
-                def jURL = "https://jira.dds.lanit.ru/browse/"
-                def commentСut = comment.replaceAll("${jURL}", "")
+
+                def commentСut = comment.replaceAll("${env.constJiraURL}", "")
                 def commentСut2 = commentСut
+                def urls = ""
                 commentСut.eachMatch("NKR-[0-9]+") {
-                    ch -> urls += '<a href=\\"' + "\"${jURL}{ch}\"" + '\\">' + "${ch}</a> "
+                    ch -> urls += '<a href=\\"' + "\"${env.constJiraURL}{ch}\"" + '\\">' + "${ch}</a> "
                         commentСut2 = commentСut2.replaceAll("${ch}", "")
                 }
-                echo "Comment: ${commentcut2}"
+                echo "Comment: ${commentСut2}"
                 echo "Tasks: ${urls}"
 
-                log += "${j + 1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentcut2} \nTask: ${urls}\n"
+                log += "${j + 1}. by ${entry.author} on ${new Date(entry.timestamp)}\nComment: ${commentСut2} \nTask: ${urls}\n"
 
 
             }
@@ -68,7 +69,7 @@ try {
             passedBuilds = []
             lastSuccessfulBuild(passedBuilds, currentBuild);
 
-            def changeLog = getChangeLog(passedBuilds, Version)
+            def changeLog = getChangeLog(passedBuilds)
             if (changeLog.trim() == '') {
                 changeLog = 'нет изменений'
             }
