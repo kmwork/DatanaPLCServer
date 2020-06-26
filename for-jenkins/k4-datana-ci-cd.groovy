@@ -93,7 +93,7 @@ try {
         stage('step-3: Docker remove') {
             //sh "docker container prune -f"
             try {
-                sh "docker images | grep $env.constDockerTag | awk '{print \$1}' | xargs docker rmi"
+                sh "docker images | grep \"$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion\" | awk '{print \$1}' | xargs docker rmi"
             } catch (e) {
                 echo "remove docker with error : " + e
             }
@@ -106,7 +106,7 @@ try {
         }
 
         stage('step-5: Docker create') {
-            sh "docker create \"$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion\""
+            sh "docker create $env.constDockerName/$env.constDockerTag"
 
             //kostya-temp
             sh "docker run --rm -d -p 9999:8080 $env.constDockerName/$env.constDockerTag"
