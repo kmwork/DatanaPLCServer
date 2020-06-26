@@ -102,9 +102,11 @@ try {
 
             sh '''
                 #!/bin/sh -xe
-                if ["$(docker images -q $env.constDockerTag:$env.constDockerImageVersion 2> /dev/null)" == ""]; then
-                    echo "[Datana] remove docker-image: $env.constDockerTag:$env.constDockerImageVersion"
-                    docker image rm $env.constDockerTag:$env.constDockerImageVersion
+                if ["$(docker images -q ${constDockerTag}:${constDockerImageVersion} 2> /dev/null)" == ""]; then
+                    echo "[Datana] empty docker image"
+                else
+                    echo "[Datana] remove docker-image: ${constDockerTag}:${constDockerImageVersion}"
+                    docker image rm ${constDockerTag}:${constDockerImageVersion}
                 fi
             '''
 
