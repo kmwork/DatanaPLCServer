@@ -91,25 +91,7 @@ try {
             sh "mvn clean compile package spring-boot:repackage -P plcServer"
         }
         stage('step-3: Docker remove') {
-            //   sh "docker stop $env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerName/$env.constDockerTag || true"
-            //   sh "docker stop $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true"
-//            sh "docker image rm $env.constDockerTag"
-//
-//            sh "docker rmi -f \$(docker images -q  --filter reference='$constDockerTag:*')"
-//
-//            sh "docker image rm datana || true && docker rm $env.constDockerName/$env.constDockerTag || true"
-
-
-            sh '''
-                #!/bin/sh -xe
-                if ["$(docker images -q ${constDockerTag}:${constDockerImageVersion} 2> /dev/null)" == ""]; then
-                    echo "[Datana] empty docker image"
-                else
-                    echo "[Datana] remove docker-image: ${constDockerTag}:${constDockerImageVersion}"
-                    docker image rm ${constDockerTag}:${constDockerImageVersion}
-                fi
-            '''
-
+            sh "docker container prune -f"
         }
 
 
