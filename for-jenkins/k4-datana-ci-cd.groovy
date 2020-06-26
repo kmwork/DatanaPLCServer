@@ -102,7 +102,7 @@ try {
             sh "docker create $env.constDockerName/$env.constDockerTag"
 
             //kostya-temp
-            ///sh "docker run -d -v /var/run/docker.sock:/var/run/docker.sock -v \$(which docker):/usr/bin/docker -p 9999:8080 $env.constDockerName/$env.constDockerTag"
+            sh "docker run --rm -d -p 9999:8080 $env.constDockerName/$env.constDockerTag"
             sh "docker tag $env.constDockerName/$env.constDockerTag $env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
         }
 
