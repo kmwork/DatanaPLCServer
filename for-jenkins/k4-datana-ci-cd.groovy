@@ -19,6 +19,7 @@ env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2
 env.allJob = JOB_NAME;
 env.Version = "0.0.${BUILD_NUMBER}"
 env.constJiraURL = "https://jira.dds.lanit.ru/browse/"
+
 def lastSuccessfulBuild(passedBuilds, build) {
     if ((build != null) && (build.result != 'SUCCESS')) {
         passedBuilds.add(build)
@@ -46,7 +47,8 @@ def getChangeLog(passedBuilds) {
                 def commentСut2 = commentСut
                 def urls = ""
                 commentСut.eachMatch("NKR-[0-9]+") {
-                    ch -> urls += '<a href=\\"' + "\"${env.constJiraURL}${ch}\"" + '\\">' + "${ch}</a> "
+                    ch ->
+                        urls += '<a href=\\"' + "\"${env.constJiraURL}${ch}\"" + '\\">' + "${ch}</a> "
                         commentСut2 = commentСut2.replaceAll("${ch}", "")
                 }
                 echo "Comment: ${commentСut2}"
@@ -89,8 +91,23 @@ try {
             sh "mvn clean compile package spring-boot:repackage -P plcServer"
         }
         stage('step-3: Docker remove') {
-            sh "docker stop $env.constDockerName || true && docker rm $env.constDockerName || true"
-            sh "docker stop $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true"
+            //   sh "docker stop $env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerName/$env.constDockerTag || true"
+            //   sh "docker stop $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true && docker rm $env.constDockerDomain/$env.constDockerName/$env.constDockerTag || true"
+//            sh "docker image rm $env.constDockerTag"
+//
+//            sh "docker rmi -f \$(docker images -q  --filter reference='$constDockerTag:*')"
+//
+//            sh "docker image rm datana || true && docker rm $env.constDockerName/$env.constDockerTag || true"
+
+
+            sh '''
+                #!/bin/sh -xe
+                if ["$(docker images -q $env.constDockerTag:$env.constDockerImageVersion 2> /dev/null)" == ""]; then
+                    echo "[Datana] remove docker-image: $env.constDockerTag:$env.constDockerImageVersion"
+                    docker image rm $env.constDockerTag:$env.constDockerImageVersion
+                fi
+            '''
+
         }
 
 
