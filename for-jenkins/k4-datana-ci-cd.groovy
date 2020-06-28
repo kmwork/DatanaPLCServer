@@ -93,13 +93,23 @@ try {
         stage('step-3: Docker remove') {
             //sh "docker container prune -f"
             try {
-                sh '''#!/bin/sh -xe
-                    docker images | grep "${env.constDockerTag}" | awk '{print $3}' | xargs docker rmi -f
+                sh '''#!/bin/bash -xe
+                    echo "for name = ${env.constDockerTag}"
+                    echo "[cmd] = docker ps | grep ${env.constDockerTag} | awk '{print $1}' | xargs docker stop"
+                    docker ps | grep ${env.constDockerTag} | awk '{print $1}' | xargs docker stop
                 '''
             } catch (e) {
-                echo "remove docker with error : " + e
+                echo "[#1]stop docker with error : " + e
             }
 
+            try {
+                sh '''#!/bin/bash -xe
+                    echo "[cmd] = docker images | grep ${env.constDockerTag} | awk '{print $3}' | xargs docker rmi -f"
+                    docker images | grep ${env.constDockerTag} | awk '{print $3}' | xargs docker rmi -f
+                '''
+            } catch (e) {
+                echo "[#2]remove docker with error : " + e
+            }
         }
 
 
