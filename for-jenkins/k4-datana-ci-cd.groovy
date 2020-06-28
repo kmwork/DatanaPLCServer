@@ -93,7 +93,9 @@ try {
         stage('step-3: Docker remove') {
             //sh "docker container prune -f"
             try {
-                sh "docker images | grep \"$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion\" | awk '{print \$1}' | xargs docker rmi"
+                sh '''#!/bin/sh -xe
+                    docker images | grep "${env.constDockerTag}" | awk '{print $3}' | xargs docker rmi -f
+                '''
             } catch (e) {
                 echo "remove docker with error : " + e
             }
