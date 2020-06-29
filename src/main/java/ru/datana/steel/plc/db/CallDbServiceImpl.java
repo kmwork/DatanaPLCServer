@@ -59,7 +59,7 @@ public class CallDbServiceImpl implements CallDbService {
     public String dbGet() {
         log.info("[SQL:Get] старт");
         Query funcGet = entityManager.createNativeQuery(pgNativeGetSQL);
-        List result = funcGet.getResultList();
+        List<?> result = funcGet.getResultList();
         String toJson = result.get(0).toString();
         if (log.isTraceEnabled())
             log.trace("[SQL:Get] результат = " + toJson);

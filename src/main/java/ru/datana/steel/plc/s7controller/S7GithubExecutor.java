@@ -344,7 +344,7 @@ public class S7GithubExecutor implements Closeable {
 
                 //получения позиции если это бит
                 if (type == EnumSiemensDataType.TYPE_BIT) {
-                    intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf("1");
+                    intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf('1');
                 }
 
                 BigDecimal result = null;

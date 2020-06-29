@@ -37,7 +37,9 @@ public enum EnumSiemensDataType {
                 return TYPE_UNSIGNED_DOUBLE_WORD;
             case "real":
                 return TYPE_REAL;
+            default:
+                throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "Не понятный тип данных S7", "EnumSiemensDataType is '" + strType + "'", null);
         }
-        throw new AppException(TypeException.INVALID_USER_INPUT_DATA, "Не понятный тип данных S7", "EnumSiemensDataType is '" + strType + "'", null);
+
     }
 }

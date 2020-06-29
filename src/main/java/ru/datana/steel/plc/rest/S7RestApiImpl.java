@@ -38,7 +38,7 @@ public class S7RestApiImpl implements S7RestApi {
     @Autowired
     private ApplicationContext context;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping(path = "/rest/getVersion", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseBody
     @Override
     public String getVersion() {
@@ -46,7 +46,7 @@ public class S7RestApiImpl implements S7RestApi {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/rest/getData", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Override
     public String getData(@NonNull @RequestBody JsonRootSensorRequest rootJson) throws AppException {

@@ -22,7 +22,7 @@ public class RestSpringConfig implements WebMvcConfigurer {
 
     @Getter
     @Value("${datana.global.beauty-json}")
-    private Boolean beautyJson;
+    private boolean beautyJson;
 
     private ObjectMapper objectMapper;
 

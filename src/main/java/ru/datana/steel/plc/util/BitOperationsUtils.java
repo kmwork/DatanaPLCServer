@@ -49,7 +49,7 @@ public class BitOperationsUtils {
             result = new BigDecimal(valueLong);
         } else if (type == EnumSiemensDataType.TYPE_REAL) {
             float valueFloat = S7.GetFloatAt(data, bytesOffset);
-            result = new BigDecimal(valueFloat);
+            result = BigDecimal.valueOf(valueFloat);
         } else {
             String args = "тип = " + type + " значение в байт = " + Arrays.toString(data);
             throw new AppException(TypeException.INVALID_USER_INPUT_DATA, " Не определен тип данных", args, null);

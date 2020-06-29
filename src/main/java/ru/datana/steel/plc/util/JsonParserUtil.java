@@ -18,7 +18,7 @@ import java.io.IOException;
 @Slf4j
 public class JsonParserUtil {
     @Getter
-    private final static JsonParserUtil instance = new JsonParserUtil();
+    private static final JsonParserUtil instance = new JsonParserUtil();
 
     /**
      * дживок по работе Json

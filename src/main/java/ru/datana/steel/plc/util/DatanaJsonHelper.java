@@ -23,7 +23,7 @@ import java.util.Set;
 public class DatanaJsonHelper {
 
     @Getter
-    private final static DatanaJsonHelper instance = new DatanaJsonHelper();
+    private static final DatanaJsonHelper instance = new DatanaJsonHelper();
 
     private DatanaJsonHelper() {
 
