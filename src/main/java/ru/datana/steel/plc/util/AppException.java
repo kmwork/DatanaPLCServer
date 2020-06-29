@@ -5,7 +5,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Главный exception приложения для перекидования наружу
+ * Главный exception приложения для перекидывания наружу
  */
 @Slf4j
 @ToString

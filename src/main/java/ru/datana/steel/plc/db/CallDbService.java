@@ -24,9 +24,8 @@ public interface CallDbService {
      * @param threadCountMax
      * @param l
      * @return
-     * @throws SQLException
      */
     String dbSave(String fromJson, int threadCountMax, int threadCurrent);
 
-    void saveAsync(String prefixLog, String resultFromJson, int poolIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException;
+    void saveAsync(String prefixLog, String resultFromJson, int poolIndex, int threadCountMax, AtomicInteger threadCount) throws AppException;
 }

@@ -18,7 +18,7 @@ public class ExtSpringProfileUtil {
      */
     public static void extConfigure(String springProfile, String springFile) {
 
-        // проверка что указано свойсто app.dir
+        // проверка что указано свойство app.dir
         String configLocation = System.getProperty(AppConst.SYS_DIR_PROP); //get the default config directory location
         if (StringUtils.isEmpty(configLocation)) {
             log.error(AppConst.ERROR_LOG_PREFIX + "Путь к настройкам не указан по java.options по имени свойства =  " + AppConst.SYS_DIR_PROP);

@@ -347,7 +347,7 @@ public class S7GithubExecutor implements Closeable {
                     intBitPosition = dataVal.getBitmask().length() - dataVal.getBitmask().indexOf('1');
                 }
 
-                BigDecimal result = null;
+                BigDecimal result;
                 if (isExperimentalS7) {
                     log.info("isExperimentalS7 = true");
                     int sizeBytes = Math.min(type.getBitCount() / 8, 1);

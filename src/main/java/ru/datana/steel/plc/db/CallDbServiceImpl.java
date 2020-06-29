@@ -86,7 +86,7 @@ public class CallDbServiceImpl implements CallDbService {
     @Override
     @Async
     @Transactional
-    public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException, InterruptedException {
+    public void saveAsync(String prefixLog, String resultFromJson, int threadIndex, int threadCountMax, AtomicInteger threadCount) throws AppException {
         try {
             int threadNumber = threadIndex + 1;
             prefixLog += "[Поток: " + threadNumber + "] ";
