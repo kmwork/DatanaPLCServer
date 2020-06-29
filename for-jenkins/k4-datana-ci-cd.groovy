@@ -8,6 +8,8 @@ env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
 env.constJAVA_HOME = '/home/lin/apps/jdk13'
 env.constDockerDomain = "registry.hub.docker.com"
 env.constDockerRegistry = "https://$env.constDockerDomain"
+env.constExtPort = 9991
+env.constInnerPort = 8080
 
 env.constDockerName = "kmtemp"
 env.constDockerTag = "datana"
@@ -121,7 +123,7 @@ try {
             sh "docker create \"$env.constImageDocker\""
 
             //kostya-temp
-            sh "docker run --rm -d -p 9999:8080 \"$env.constImageDocker\""
+            sh "docker run --rm -d -p $env.constExtPort:$env.constInnerPort \"$env.constImageDocker\""
         }
 
         stage('step-6: Docker pull') {
