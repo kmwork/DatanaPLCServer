@@ -6,8 +6,8 @@ env.constGitUrl = 'git@gitlab.dds.lanit.ru:datana_smart/tools-adapters.git'
 env.constGitCredentialsId = 'kostya5'
 env.constMVN_HOME = '/home/lin/apps/apache-maven-3.5.4'
 env.constJAVA_HOME = '/home/lin/apps/jdk13'
-env.constDockerDomain = "registry.hub.docker.com"
-env.constDockerRegistry = "https://$env.constDockerDomain"
+env.constDockerDomain = "172.29.40.56:8083"
+env.constDockerRegistry = "http://$env.constDockerDomain/"
 env.constExtPort = 9991
 env.constInnerPort = 8080
 
@@ -15,7 +15,8 @@ env.constDockerName = "kmtemp"
 env.constDockerTag = "datana"
 env.constDockerImageVersion = "2"
 env.constImageDocker="$env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
-env.constDockerRegistryLogin = "kmtemp";
+env.constDockerRegistryLogin = "kmtemp"
+env.constDockerRegistryLogin = "robot-developer"
 
 env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
 env.allJob = JOB_NAME;
@@ -126,8 +127,8 @@ try {
             sh "docker run --rm -d -p $env.constExtPort:$env.constInnerPort \"$env.constImageDocker\""
         }
 
-        stage('step-6: Docker pull') {
-            sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=${env.constDockerRegistryLogin} ${env.constDockerRegistry}"
+        stage('step-6: Docker push') {
+            sh "cat /home/lin/apps/datana-docker-secret/password-nexus-datana.txt | docker login --password-stdin --username=${env.constDockerRegistryLogin} ${env.constDockerRegistry}"
             sh "docker push $env.constImageDocker"
         }
 
