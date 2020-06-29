@@ -12,7 +12,7 @@ env.constDockerRegistry = "https://$env.constDockerDomain"
 env.constDockerName = "kmtemp"
 env.constDockerTag = "datana"
 env.constDockerImageVersion = "2"
-
+env.constImageDocker="$env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
 env.constDockerRegistryLogin = "kmtemp";
 
 env.constTelegramURL = "https://api.telegram.org/bot1180854473:AAG1BHnbcM4oRRZW2-DKbZMYD2WqkDtUesU/sendMessage?chat_id=-1001325011128&parse_mode=HTML"
@@ -114,20 +114,19 @@ try {
 
 
         stage('step-4: Docker build') {
-            sh "docker build --tag=$env.constDockerName/$env.constDockerDomain/$env.constDockerTag:$env.constDockerImageVersion ."
+            sh "docker build --tag=$env.constImageDocker ."
         }
 
         stage('step-5: Docker create') {
-            sh "docker create $env.constDockerName/$env.constDockerTag"
+            sh "docker create \"$env.constImageDocker\""
 
             //kostya-temp
-            sh "docker run --rm -d -p 9999:8080 $env.constDockerName/$env.constDockerTag"
-            sh "docker tag $env.constDockerName/$env.constDockerTag $env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
+            sh "docker run --rm -d -p 9999:8080 \"$env.constImageDocker\""
         }
 
         stage('step-6: Docker pull') {
             sh "cat /home/lin/apps/datana-docker-secret/rep-password.txt | docker login --password-stdin --username=${env.constDockerRegistryLogin} ${env.constDockerRegistry}"
-            sh "docker push $env.constDockerDomain/$env.constDockerName/$env.constDockerTag:$env.constDockerImageVersion"
+            sh "docker push $env.constImageDocker"
         }
 
 
